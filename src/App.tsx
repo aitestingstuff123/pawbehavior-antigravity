@@ -58,19 +58,19 @@ const TrainingChallengeCard = ({ challenge, onCompleteDay }: { challenge: any, o
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white p-4 lg:p-8 rounded-3xl border border-slate-200 shadow-sm"
+      className="bg-zinc-900 p-4 lg:p-8 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]"
     >
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 lg:w-12 lg:h-12 bg-amber-50 rounded-2xl flex items-center justify-center">
-          <Flame className="w-5 h-5 lg:w-6 lg:h-6 text-amber-600" />
+        <div className="w-10 h-10 lg:w-12 lg:h-12 bg-zinc-800 rounded-2xl flex items-center justify-center">
+          <Flame className="w-5 h-5 lg:w-6 lg:h-6 text-gold-400" />
         </div>
         <div>
-          <h3 className="text-lg lg:text-xl font-bold text-slate-900">{challenge.title}</h3>
-          <p className="text-xs lg:text-sm text-slate-500">7-Day Training Challenge</p>
+          <h3 className="text-lg lg:text-xl font-black font-serif text-gold-400">{challenge.title}</h3>
+          <p className="text-xs lg:text-sm text-zinc-400">7-Day Training Challenge</p>
         </div>
       </div>
       
-      <p className="text-sm lg:text-base text-slate-600 mb-8 leading-relaxed">{challenge.description}</p>
+      <p className="text-sm lg:text-base text-zinc-400 mb-8 leading-relaxed">{challenge.description}</p>
       
       <div className="space-y-4">
         {challenge.days?.map((day: any, idx: number) => {
@@ -83,12 +83,12 @@ const TrainingChallengeCard = ({ challenge, onCompleteDay }: { challenge: any, o
               transition={{ delay: idx * 0.1 }}
               className={`p-4 lg:p-6 rounded-2xl border transition-all ${
                 isCompleted 
-                  ? 'bg-emerald-50 border-emerald-100' 
-                  : 'bg-slate-50 border-slate-100 hover:border-amber-200'
+                  ? 'bg-zinc-800 border-emerald-100' 
+                  : 'bg-zinc-950 border-zinc-800 hover:border-gold-500/50'
               }`}
             >
               <div className="flex items-center justify-between mb-3">
-                <span className={`text-[10px] lg:text-xs font-bold uppercase tracking-widest ${isCompleted ? 'text-emerald-600' : 'text-slate-400'}`}>
+                <span className={`text-[10px] lg:text-xs font-bold uppercase tracking-widest ${isCompleted ? 'text-emerald-600' : 'text-zinc-500'}`}>
                   Day {day.day}
                 </span>
                 {isCompleted && (
@@ -101,17 +101,17 @@ const TrainingChallengeCard = ({ challenge, onCompleteDay }: { challenge: any, o
                   </motion.div>
                 )}
               </div>
-              <p className={`font-bold text-base lg:text-lg mb-1 ${isCompleted ? 'text-emerald-900' : 'text-slate-900'}`}>
+              <p className={`font-bold text-base lg:text-lg mb-1 ${isCompleted ? 'text-emerald-900' : 'text-zinc-100'}`}>
                 {day.exercise}
               </p>
-              <p className={`text-xs lg:text-sm ${isCompleted ? 'text-emerald-700' : 'text-slate-500'}`}>
+              <p className={`text-xs lg:text-sm ${isCompleted ? 'text-emerald-700' : 'text-zinc-400'}`}>
                 <span className="font-semibold">Goal:</span> {day.goal}
               </p>
               
               {!isCompleted && onCompleteDay && (
                 <button 
                   onClick={() => onCompleteDay(day.day)}
-                  className="mt-4 w-full py-2 bg-white border border-slate-200 text-slate-600 rounded-xl text-sm font-bold hover:bg-slate-50 transition-all shadow-sm active:scale-95"
+                  className="mt-4 w-full py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 rounded-xl text-sm font-bold hover:bg-zinc-950 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.4)] active:scale-95"
                 >
                   Mark as Completed
                 </button>
@@ -124,7 +124,7 @@ const TrainingChallengeCard = ({ challenge, onCompleteDay }: { challenge: any, o
   );
 };
 
-const SubscriptionPage = ({ message, onUpgrade, onRestore, onClose, isSandbox, onWatchAd, isWatchingAd, type }: { message: string, onUpgrade: () => void, onRestore: () => void, onClose: () => void, isSandbox?: boolean, onWatchAd?: () => void, isWatchingAd?: boolean, type?: 'analysis' | 'chat' | 'upgrade' }) => {
+const SubscriptionPage = ({ message, onUpgrade, onRestore, onClose, isSandbox, onWatchAd, isWatchingAd, type, onShowTerms, onShowPrivacy }: { message: string, onUpgrade: () => void, onRestore: () => void, onClose: () => void, isSandbox?: boolean, onWatchAd?: () => void, isWatchingAd?: boolean, type?: 'analysis' | 'chat' | 'upgrade', onShowTerms: () => void, onShowPrivacy: () => void }) => {
   return (
     <div className="fixed inset-0 z-[100] flex items-end lg:items-center justify-center p-0 lg:p-4 bg-slate-900/60 backdrop-blur-sm">
       <motion.div 
@@ -132,7 +132,7 @@ const SubscriptionPage = ({ message, onUpgrade, onRestore, onClose, isSandbox, o
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: "100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="bg-white rounded-t-[32px] lg:rounded-[32px] p-8 max-w-md w-full shadow-2xl border border-slate-100 overflow-hidden"
+        className="bg-zinc-900 rounded-t-[32px] lg:rounded-[32px] p-8 max-w-md w-full shadow-2xl border border-zinc-800 overflow-hidden"
       >
         <div className="flex justify-center mb-4 lg:hidden">
           <div className="w-12 h-1.5 bg-slate-200 rounded-full" />
@@ -140,42 +140,42 @@ const SubscriptionPage = ({ message, onUpgrade, onRestore, onClose, isSandbox, o
 
         <div className="flex justify-between items-start mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center">
-              <Zap className="w-8 h-8 text-indigo-600" />
+            <div className="w-16 h-16 bg-gold-500/10 rounded-2xl flex items-center justify-center">
+              <Zap className="w-8 h-8 text-gold-400" />
             </div>
             {isSandbox && (
-              <span className="bg-amber-100 text-amber-600 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
+              <span className="bg-gold-500/20 text-gold-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
                 Sandbox Mode
               </span>
             )}
           </div>
-          <button onClick={onClose} className="p-2 text-slate-400 hover:bg-slate-50 rounded-full transition-all">
+          <button onClick={onClose} className="p-2 text-zinc-500 hover:bg-zinc-950 rounded-full transition-all">
             <X className="w-6 h-6" />
           </button>
         </div>
 
-        <h3 className="text-2xl font-black text-slate-900 mb-3">
+        <h3 className="text-2xl font-black font-serif text-gold-400 mb-3">
           Unlock PawBehavior Pro
         </h3>
-        <p className="text-slate-500 mb-8 leading-relaxed">
+        <p className="text-zinc-400 mb-8 leading-relaxed">
           {message || "Get unlimited access to behavioral analyses, expert chats, and advanced training tools."}
         </p>
 
         <div className="space-y-4 mb-8">
-          <div className="flex items-center gap-3 text-sm text-slate-600">
-            <div className="w-5 h-5 bg-emerald-100 rounded-full flex items-center justify-center shrink-0">
+          <div className="flex items-center gap-3 text-sm text-zinc-400">
+            <div className="w-5 h-5 bg-emerald-500/20 rounded-full flex items-center justify-center shrink-0">
               <CheckCircle2 className="w-3 h-3 text-emerald-600" />
             </div>
             Unlimited Video Analyses
           </div>
-          <div className="flex items-center gap-3 text-sm text-slate-600">
-            <div className="w-5 h-5 bg-emerald-100 rounded-full flex items-center justify-center shrink-0">
+          <div className="flex items-center gap-3 text-sm text-zinc-400">
+            <div className="w-5 h-5 bg-emerald-500/20 rounded-full flex items-center justify-center shrink-0">
               <CheckCircle2 className="w-3 h-3 text-emerald-600" />
             </div>
             Unlimited Expert Chat Follow-ups
           </div>
-          <div className="flex items-center gap-3 text-sm text-slate-600">
-            <div className="w-5 h-5 bg-emerald-100 rounded-full flex items-center justify-center shrink-0">
+          <div className="flex items-center gap-3 text-sm text-zinc-400">
+            <div className="w-5 h-5 bg-emerald-500/20 rounded-full flex items-center justify-center shrink-0">
               <CheckCircle2 className="w-3 h-3 text-emerald-600" />
             </div>
             Priority AI Processing
@@ -185,7 +185,7 @@ const SubscriptionPage = ({ message, onUpgrade, onRestore, onClose, isSandbox, o
         <div className="space-y-3">
           <button 
             onClick={onUpgrade}
-            className="w-full py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 flex items-center justify-center gap-2"
+            className="w-full py-4 bg-gold-500 text-white font-bold rounded-2xl hover:bg-gold-600 transition-all shadow-[0_10px_40px_rgba(0,0,0,0.6)] shadow-gold-500/20 flex items-center justify-center gap-2"
           >
             Subscribe for $9.99/mo
           </button>
@@ -194,7 +194,7 @@ const SubscriptionPage = ({ message, onUpgrade, onRestore, onClose, isSandbox, o
             <button 
               onClick={onWatchAd}
               disabled={isWatchingAd}
-              className="w-full py-3 bg-slate-100 text-slate-700 font-bold rounded-2xl hover:bg-slate-200 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-3 bg-zinc-800 text-zinc-300 font-bold rounded-2xl hover:bg-zinc-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isWatchingAd ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -207,15 +207,15 @@ const SubscriptionPage = ({ message, onUpgrade, onRestore, onClose, isSandbox, o
           
           <button 
             onClick={onRestore}
-            className="w-full py-3 text-slate-500 font-bold hover:bg-slate-50 rounded-2xl transition-all text-sm"
+            className="w-full py-3 text-zinc-400 font-bold hover:bg-zinc-950 rounded-2xl transition-all text-sm"
           >
             Restore Purchases
           </button>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-slate-100 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[10px] text-slate-400 font-medium">
-          <a href="https://pawbehavior.app/terms" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 underline">Terms of Use (EULA)</a>
-          <a href="https://pawbehavior.app/privacy" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 underline">Privacy Policy</a>
+        <div className="mt-8 pt-6 border-t border-zinc-800 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[10px] text-zinc-500 font-medium">
+          <button onClick={onShowTerms} className="hover:text-gold-400 underline">Terms of Use (EULA)</button>
+          <button onClick={onShowPrivacy} className="hover:text-gold-400 underline">Privacy Policy</button>
         </div>
       </motion.div>
     </div>
@@ -238,8 +238,8 @@ const ConsistencyChart = ({ activityLog }: { activityLog: any[] }) => {
 
   if (data.length === 0) {
     return (
-      <div className="h-48 flex items-center justify-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-        <p className="text-slate-400 text-sm">Start training to see your progress!</p>
+      <div className="h-48 flex items-center justify-center bg-zinc-950 rounded-2xl border border-dashed border-zinc-800">
+        <p className="text-zinc-500 text-sm">Start training to see your progress!</p>
       </div>
     );
   }
@@ -271,9 +271,9 @@ const ConsistencyChart = ({ activityLog }: { activityLog: any[] }) => {
             content={({ active, payload }) => {
               if (active && payload && payload.length) {
                 return (
-                  <div className="bg-white p-3 rounded-xl shadow-xl border border-slate-100">
-                    <p className="text-xs font-bold text-slate-400 uppercase mb-1">{payload[0].payload.date}</p>
-                    <p className="text-sm font-bold text-amber-600">Total Sessions: {payload[0].value}</p>
+                  <div className="bg-zinc-900 p-3 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.6)] border border-zinc-800">
+                    <p className="text-xs font-bold text-zinc-500 uppercase mb-1">{payload[0].payload.date}</p>
+                    <p className="text-sm font-bold text-gold-400">Total Sessions: {payload[0].value}</p>
                   </div>
                 );
               }
@@ -307,12 +307,12 @@ const StreakHeader = ({ streak, activityLog }: { streak: number, activityLog: an
   const hasUploadedToday = activityLog.some(ts => new Date(ts.toMillis()).toDateString() === today);
 
   return (
-    <div className="flex flex-col sm:flex-row items-center gap-4 lg:gap-6 bg-white p-4 lg:p-6 rounded-3xl border border-slate-200 shadow-sm mb-8">
+    <div className="flex flex-col sm:flex-row items-center gap-4 lg:gap-6 bg-zinc-900 p-4 lg:p-6 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)] mb-8">
       <div className="relative w-16 h-16 lg:w-20 lg:h-20">
         <svg className="w-full h-full" viewBox="0 0 100 100">
           <circle className="text-slate-100 stroke-current" strokeWidth="8" cx="50" cy="50" r="40" fill="transparent" />
           <motion.circle 
-            className="text-amber-500 stroke-current" 
+            className="text-gold-500 stroke-current" 
             strokeWidth="8" 
             strokeDasharray={251.2}
             initial={{ strokeDashoffset: 251.2 }}
@@ -330,20 +330,20 @@ const StreakHeader = ({ streak, activityLog }: { streak: number, activityLog: an
             } : {}}
             transition={{ repeat: Infinity, duration: 2 }}
           >
-            <Flame className={`w-6 h-6 lg:w-8 lg:h-8 ${hasUploadedToday ? 'text-amber-500' : 'text-slate-300'}`} />
+            <Flame className={`w-6 h-6 lg:w-8 lg:h-8 ${hasUploadedToday ? 'text-gold-500' : 'text-slate-300'}`} />
           </motion.div>
         </div>
       </div>
       <div className="text-center sm:text-left">
         <div className="flex flex-col sm:flex-row items-center gap-2">
-          <h2 className="text-2xl lg:text-3xl font-black text-slate-900">🔥 {streak} Day Streak</h2>
+          <h2 className="text-2xl lg:text-3xl font-black font-serif text-zinc-100">🔥 {streak} Day Streak</h2>
           {hasUploadedToday && (
-            <span className="bg-amber-100 text-amber-600 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
+            <span className="bg-gold-500/20 text-gold-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
               Daily Goal Met
             </span>
           )}
         </div>
-        <p className="text-sm text-slate-500 mt-1">
+        <p className="text-sm text-zinc-400 mt-1">
           {hasUploadedToday 
             ? "Great job! You've completed your training for today." 
             : "Keep the momentum going! Upload a video to maintain your streak."}
@@ -385,6 +385,7 @@ import {
 import { rewardedAdService } from './lib/adService';
 import { Capacitor } from '@capacitor/core';
 import { Purchases } from '@revenuecat/purchases-capacitor';
+import { Share } from '@capacitor/share';
 
 export default function App() {
   const { user, userData, loading, isAdmin, setUserData } = useAuth();
@@ -431,7 +432,7 @@ export default function App() {
   });
 
   // Auth states
-  const [authMode, setAuthMode] = useState<'login' | 'signup' | 'google'>('google');
+  const [authMode, setAuthMode] = useState<'login' | 'signup' | 'google' | 'forgot'>('google');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
@@ -1323,6 +1324,10 @@ export default function App() {
       if (authMode === 'signup') {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(userCredential.user, { displayName });
+      } else if (authMode === 'forgot') {
+        await sendPasswordResetEmail(auth, email);
+        setNotification({ message: 'Password reset email sent!', type: 'success' });
+        setAuthMode('login');
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
@@ -1511,7 +1516,14 @@ export default function App() {
     };
 
     try {
-      if (navigator.share) {
+      if (Capacitor.isNativePlatform()) {
+        await Share.share({
+          title: shareData.title,
+          text: shareData.text,
+          url: shareData.url,
+          dialogTitle: 'Share Behavioral Analysis',
+        });
+      } else if (navigator.share) {
         await navigator.share(shareData);
       } else {
         await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
@@ -1537,7 +1549,14 @@ export default function App() {
     };
 
     try {
-      if (navigator.share) {
+      if (Capacitor.isNativePlatform()) {
+        await Share.share({
+          title: shareData.title,
+          text: shareData.text,
+          url: shareData.url,
+          dialogTitle: 'Share Challenge Progress',
+        });
+      } else if (navigator.share) {
         await navigator.share(shareData);
       } else {
         await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
@@ -1550,29 +1569,53 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-zinc-950 relative overflow-hidden">
+        {/* Ambient glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold-500/5 rounded-full blur-[100px] pointer-events-none" />
+        
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="flex flex-col items-center gap-6 relative z-10"
+        >
+          <div className="w-24 h-24 bg-gold-500 rounded-[2.5rem] flex items-center justify-center shadow-[0_20px_50px_rgba(212,175,55,0.15)] border border-gold-400/20">
+            <Dog className="w-12 h-12 text-white" />
+          </div>
+          
+          <div className="text-center">
+            <h1 className="text-3xl font-black font-serif tracking-[0.2em] text-gold-400 uppercase">PawBehavior</h1>
+            <p className="text-[10px] tracking-[0.5em] uppercase text-gold-600/70 mt-3 font-bold">Premium Concierge</p>
+          </div>
+          
+          <div className="mt-12 flex items-center gap-3">
+            <div className="w-1.5 h-1.5 bg-gold-500 rounded-full animate-bounce [animation-delay:-0.3s]" />
+            <div className="w-1.5 h-1.5 bg-gold-500 rounded-full animate-bounce [animation-delay:-0.15s]" />
+            <div className="w-1.5 h-1.5 bg-gold-500 rounded-full animate-bounce" />
+          </div>
+        </motion.div>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center p-4 relative overflow-hidden">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-md w-full text-center space-y-8"
         >
           <div className="flex justify-center">
-            <div className="w-20 h-20 bg-indigo-600 rounded-3xl flex items-center justify-center shadow-xl shadow-indigo-200">
+            <div className="w-20 h-20 bg-gold-500 rounded-3xl flex items-center justify-center shadow-[0_10px_40px_rgba(0,0,0,0.6)] shadow-indigo-200">
               <Dog className="w-12 h-12 text-white" />
             </div>
           </div>
           
           <div className="space-y-2">
-            <h1 className="text-4xl font-bold tracking-tight text-slate-900">PawBehavior</h1>
-            <p className="text-slate-500 text-lg">Professional AI behavior analysis for your beloved pets.</p>
+            <h1 className="text-4xl font-black font-serif tracking-tight text-gold-400">PawBehavior</h1>
+            <p className="text-[10px] tracking-[0.3em] uppercase text-gold-600 mt-2 font-bold">Premium Concierge</p>
+            <p className="text-zinc-400 text-lg">Professional AI behavior analysis for your beloved pets.</p>
           </div>
 
           {authMode === 'google' ? (
@@ -1580,10 +1623,10 @@ export default function App() {
               <button
                 onClick={handleGoogleSignIn}
                 disabled={isLoggingIn}
-                className={`w-full flex items-center justify-center gap-3 bg-white border border-slate-200 text-slate-700 px-6 py-4 rounded-2xl font-medium transition-all shadow-sm hover:shadow-md active:scale-[0.98] ${isLoggingIn ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-50'}`}
+                className={`w-full flex items-center justify-center gap-3 bg-zinc-900 border border-zinc-800 text-zinc-300 px-6 py-4 rounded-2xl font-medium transition-all shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] active:scale-[0.98] ${isLoggingIn ? 'opacity-50 cursor-not-allowed' : 'hover:bg-zinc-950'}`}
               >
                 {isLoggingIn ? (
-                  <div className="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-gold-500 border-t-transparent rounded-full animate-spin" />
                 ) : (
                   <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/layout/google.svg" className="w-5 h-5" alt="Google" />
                 )}
@@ -1591,59 +1634,79 @@ export default function App() {
               </button>
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-slate-200"></span>
+                  <span className="w-full border-t border-zinc-800"></span>
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2 text-slate-400">Or continue with</span>
+                  <span className="bg-zinc-900 px-2 text-zinc-500">Or continue with</span>
                 </div>
               </div>
               <button
                 onClick={() => setAuthMode('login')}
-                className="w-full flex items-center justify-center gap-3 bg-slate-900 text-white px-6 py-4 rounded-2xl font-medium hover:bg-slate-800 transition-all shadow-sm hover:shadow-md active:scale-[0.98]"
+                className="w-full flex items-center justify-center gap-3 bg-zinc-800 border border-zinc-700 text-zinc-100 px-6 py-4 rounded-2xl font-medium hover:bg-zinc-700 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.4)] active:scale-[0.98]"
               >
                 Sign in with Email
+              </button>
+              <button 
+                type="button" 
+                onClick={() => setAuthMode('forgot')}
+                className="text-xs font-bold text-gold-500 hover:text-gold-400 uppercase tracking-widest pt-2"
+              >
+                Forgot Password?
               </button>
             </div>
           ) : (
             <form onSubmit={handleEmailAuth} className="space-y-4 text-left">
               {authMode === 'signup' && (
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 uppercase">Full Name</label>
+                  <label className="text-xs font-bold text-zinc-400 uppercase">Full Name</label>
                   <input 
                     required
                     type="text"
                     value={displayName}
                     onChange={e => setDisplayName(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-100 placeholder-zinc-600 focus:ring-2 focus:ring-gold-500 outline-none"
                     placeholder="John Doe"
                   />
                 </div>
               )}
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-500 uppercase">Email Address</label>
+                <label className="text-xs font-bold text-zinc-400 uppercase">Email Address</label>
                 <input 
                   required
                   type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+                  className="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-100 placeholder-zinc-600 focus:ring-2 focus:ring-gold-500 outline-none"
                   placeholder="name@example.com"
                 />
               </div>
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-500 uppercase">Password</label>
-                <input 
-                  required
-                  type="password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
-                  placeholder="••••••••"
-                />
-              </div>
+              {authMode !== 'forgot' && (
+                <div className="space-y-1">
+                  <div className="flex justify-between items-center">
+                    <label className="text-xs font-bold text-zinc-400 uppercase">Password</label>
+                    {authMode === 'login' && (
+                      <button 
+                        type="button" 
+                        onClick={() => setAuthMode('forgot')}
+                        className="text-sm font-black text-gold-400 hover:text-gold-300 transition-colors uppercase tracking-widest underline decoration-2 underline-offset-4"
+                      >
+                        Forgot Password?
+                      </button>
+                    )}
+                  </div>
+                  <input 
+                    required
+                    type="password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-100 placeholder-zinc-600 focus:ring-2 focus:ring-gold-500 outline-none"
+                    placeholder="••••••••"
+                  />
+                </div>
+              )}
 
               {authError && (
-                <div className="p-4 rounded-2xl bg-red-50 text-red-600 text-sm space-y-2">
+                <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm space-y-2">
                   <div className="flex items-center gap-2 font-bold">
                     <AlertCircle className="w-4 h-4" />
                     Authentication Error
@@ -1657,31 +1720,31 @@ export default function App() {
 
               <button
                 type="submit"
-                className="w-full bg-indigo-600 text-white px-6 py-4 rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 active:scale-[0.98]"
+                className="w-full bg-gold-500 text-white px-6 py-4 rounded-2xl font-bold hover:bg-gold-600 transition-all shadow-lg shadow-gold-500/20 active:scale-[0.98]"
               >
-                {authMode === 'login' ? 'Sign In' : 'Create Account'}
+                {authMode === 'login' ? 'Sign In' : authMode === 'signup' ? 'Create Account' : 'Send Reset Link'}
               </button>
 
               <div className="text-center space-y-4">
                 <button
                   type="button"
-                  onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
-                  className="text-indigo-600 text-sm font-medium hover:underline"
+                  onClick={() => setAuthMode(authMode === 'signup' ? 'login' : 'signup')}
+                  className="text-gold-400 text-sm font-medium hover:underline"
                 >
-                  {authMode === 'login' ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+                  {authMode === 'signup' ? "Already have an account? Sign in" : "Don't have an account? Sign up"}
                 </button>
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t border-slate-200"></span>
+                    <span className="w-full border-t border-zinc-800"></span>
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-white px-2 text-slate-400">Or</span>
+                    <span className="bg-zinc-900 px-2 text-zinc-500">Or</span>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setAuthMode('google')}
-                  className="text-slate-500 text-sm font-medium hover:underline"
+                  className="text-zinc-400 text-sm font-medium hover:underline"
                 >
                   Back to Google Sign In
                 </button>
@@ -1689,27 +1752,134 @@ export default function App() {
             </form>
           )}
           
-          <p className="text-xs text-slate-400">
-            By signing in, you agree to our Terms of Service and Privacy Policy.
+          <p className="text-xs text-zinc-500">
+            By signing in, you agree to our <button type="button" onClick={() => setShowTermsModal(true)} className="hover:text-gold-400 underline">Terms of Service</button> and <button type="button" onClick={() => setShowPrivacyModal(true)} className="hover:text-gold-400 underline">Privacy Policy</button>.
           </p>
         </motion.div>
+
+        {/* Terms of Use Modal */}
+        <AnimatePresence>
+          {showTermsModal && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="bg-zinc-900 rounded-3xl p-8 max-w-2xl w-full shadow-2xl border border-zinc-800 max-h-[90vh] overflow-y-auto"
+              >
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-black font-serif text-gold-400">Terms of Use (EULA)</h2>
+                  <button onClick={() => setShowTermsModal(false)} className="p-2 text-zinc-500 hover:bg-zinc-800 rounded-full transition-colors">
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+                
+                <div className="space-y-6 text-zinc-400 text-sm leading-relaxed">
+                  <p className="italic">Last Updated: April 2026</p>
+                  
+                  <div>
+                    <h4 className="font-black font-serif text-gold-400 mb-1">1. Acceptance of Terms</h4>
+                    <p>By accessing and using PawBehavior, you agree to be bound by these Terms of Use. If you do not agree, please do not use the application.</p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-black font-serif text-gold-400 mb-1">2. Medical Disclaimer</h4>
+                    <p>PawBehavior provides AI-driven behavioral analysis for educational and training purposes only. It is NOT a substitute for professional veterinary or trainer's advice, diagnosis, or treatment. Always consult a qualified veterinarian for medical concerns.</p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-black font-serif text-gold-400 mb-1">3. User Content</h4>
+                    <p>You retain ownership of the videos and audio you upload. By uploading, you grant PawBehavior a license to process this media solely for the purpose of providing the analysis service.</p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-black font-serif text-gold-400 mb-1">4. Subscriptions and Billing</h4>
+                    <p>Premium features require a subscription. Payments are processed securely through your device's app store (Apple App Store or Google Play). Subscriptions automatically renew unless canceled at least 24 hours before the end of the current period.</p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setShowTermsModal(false)}
+                  className="w-full mt-8 py-4 bg-zinc-800 text-zinc-100 font-bold rounded-2xl hover:bg-zinc-700 transition-all"
+                >
+                  Close
+                </button>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+
+        {/* Privacy Policy Modal */}
+        <AnimatePresence>
+          {showPrivacyModal && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="bg-zinc-900 rounded-3xl p-8 max-w-2xl w-full shadow-2xl border border-zinc-800 max-h-[90vh] overflow-y-auto"
+              >
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-black font-serif text-gold-400">Privacy Policy</h2>
+                  <button onClick={() => setShowPrivacyModal(false)} className="p-2 text-zinc-500 hover:bg-zinc-800 rounded-full transition-colors">
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+                
+                <div className="space-y-6 text-zinc-400 text-sm leading-relaxed">
+                  <p className="italic">Last Updated: April 2026</p>
+                  
+                  <div>
+                    <h4 className="font-black font-serif text-gold-400 mb-1">1. Information We Collect</h4>
+                    <p>We collect information you provide directly to us, including your email address, pet profiles (name, breed, age), and the media (video/audio) you upload for analysis.</p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-black font-serif text-gold-400 mb-1">2. How We Use Your Information</h4>
+                    <p>Your media is processed using advanced AI models to provide behavioral insights. We do not use your personal videos to train public AI models. Your data is used strictly to deliver and improve your personal experience within the app.</p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-black font-serif text-gold-400 mb-1">3. Data Storage and Security</h4>
+                    <p>Your data is securely stored using industry-standard cloud infrastructure. We implement robust security measures to protect your personal information from unauthorized access.</p>
+                  </div>
+
+                  <div>
+                    <h4 className="font-black font-serif text-gold-400 mb-1">4. Data Deletion</h4>
+                    <p>You can delete your pet profiles, analyses, or your entire account at any time from within the app. Deleting an item permanently removes it from our active servers.</p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setShowPrivacyModal(false)}
+                  className="w-full mt-8 py-4 bg-zinc-800 text-zinc-100 font-bold rounded-2xl hover:bg-zinc-700 transition-all"
+                >
+                  Close
+                </button>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-zinc-950 flex flex-col lg:flex-row">
       {/* Mobile Header */}
-      <header className="lg:hidden bg-white border-b border-slate-200 p-4 flex items-center justify-between sticky top-0 z-50">
+      <header className="lg:hidden bg-zinc-900 border-b border-zinc-800 p-4 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-gold-500 rounded-lg flex items-center justify-center">
             <Dog className="w-5 h-5 text-white" />
           </div>
-          <span className="font-bold text-lg text-slate-900">PawBehavior</span>
+          <div className="flex flex-col">
+              <span className="font-black font-serif text-xl text-gold-400 leading-none">PawBehavior</span>
+              <span className="text-[8px] tracking-[0.2em] uppercase text-gold-600 font-bold">Concierge</span>
+            </div>
         </div>
         <button 
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="p-2 text-slate-500 hover:bg-slate-50 rounded-lg"
+          className="p-2 text-zinc-400 hover:bg-zinc-950 rounded-lg"
         >
           {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
@@ -1718,18 +1888,21 @@ export default function App() {
       {/* Sidebar */}
       <aside className={`
         fixed inset-0 z-40 lg:relative lg:z-0
-        w-full lg:w-64 bg-white border-r border-slate-200 flex flex-col
+        w-full lg:w-64 bg-zinc-900 border-r border-zinc-800 flex flex-col
         transition-transform duration-300 ease-in-out
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         <div className="p-6 hidden lg:flex items-center gap-3">
-          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-gold-500 rounded-xl flex items-center justify-center">
             <Dog className="w-6 h-6 text-white" />
           </div>
-          <span className="font-bold text-xl text-slate-900">PawBehavior</span>
+          <div className="flex flex-col">
+              <span className="font-black font-serif text-2xl text-gold-400 leading-none">PawBehavior</span>
+              <span className="text-[9px] tracking-[0.2em] uppercase text-gold-600 font-bold mt-1">Premium Concierge</span>
+            </div>
         </div>
 
-        <nav className="flex-1 px-4 py-6 lg:py-0 space-y-2 overflow-y-auto">
+        <nav className="flex-1 px-4 pt-20 pb-6 lg:py-0 space-y-2 overflow-y-auto">
           <NavItem 
             active={activeTab === 'dashboard'} 
             onClick={() => { setActiveTab('dashboard'); setSelectedAnalysis(null); setIsSidebarOpen(false); }}
@@ -1774,23 +1947,23 @@ export default function App() {
           />
         </nav>
 
-        <div className="p-4 border-t border-slate-100">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 mb-4">
+        <div className="p-4 border-t border-zinc-800">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-zinc-950 mb-4">
             {user.photoURL ? (
-              <img src={user.photoURL} className="w-10 h-10 rounded-full border-2 border-white shadow-sm" alt="" />
+              <img src={user.photoURL} className="w-10 h-10 rounded-full border-2 border-white shadow-[0_4px_20px_rgba(0,0,0,0.4)]" alt="" />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center border-2 border-white shadow-sm">
-                <UserIcon className="w-5 h-5 text-indigo-600" />
+              <div className="w-10 h-10 rounded-full bg-gold-500/20 flex items-center justify-center border-2 border-white shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
+                <UserIcon className="w-5 h-5 text-gold-400" />
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-slate-900 truncate">{user.displayName || 'User'}</p>
-              <p className="text-xs text-slate-500 truncate">{user.email}</p>
+              <p className="text-sm font-semibold text-zinc-100 truncate">{user.displayName || 'User'}</p>
+              <p className="text-xs text-zinc-400 truncate">{user.email}</p>
             </div>
           </div>
           <button 
             onClick={logout}
-            className="w-full flex items-center gap-2 text-slate-500 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-colors text-sm font-medium"
+            className="w-full flex items-center gap-2 text-zinc-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-colors text-sm font-medium"
           >
             <LogOut className="w-4 h-4" />
             Sign Out
@@ -1802,7 +1975,7 @@ export default function App() {
       <main className="flex-1 overflow-y-auto p-4 lg:p-8">
         <header className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <h2 className="text-2xl lg:text-3xl font-bold text-slate-900">
+            <h2 className="text-2xl lg:text-3xl font-black font-serif text-gold-400">
               {selectedAnalysis ? 'Analysis Report' : 
                activeTab === 'dashboard' ? 'Dashboard' : 
                activeTab === 'upload' ? 'New Analysis' : 
@@ -1811,7 +1984,7 @@ export default function App() {
                activeTab === 'challenges' ? 'Training Challenges' :
                'Report History'}
             </h2>
-            <p className="text-slate-500 mt-1 text-sm lg:text-base">
+            <p className="text-zinc-400 mt-1 text-sm lg:text-base">
               {selectedAnalysis ? `Report for ${selectedAnalysis.petName || 'My Pet'}` : `Welcome back, ${(user.displayName || 'User').split(' ')[0]}`}
             </p>
           </div>
@@ -1819,7 +1992,7 @@ export default function App() {
             {activeTab === 'dashboard' && !selectedAnalysis && (
               <button 
                 onClick={() => setActiveTab('upload')}
-                className="w-full sm:w-auto bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center justify-center gap-2"
+                className="w-full sm:w-auto bg-gold-500 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-gold-600 transition-all shadow-lg shadow-gold-500/20 flex items-center justify-center gap-2"
               >
                 <Upload className="w-4 h-4" />
                 New Analysis
@@ -1829,14 +2002,14 @@ export default function App() {
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <button 
                   onClick={() => handleShareAnalysis(selectedAnalysis)}
-                  className="flex-1 sm:flex-none bg-white text-slate-600 border border-slate-200 px-4 py-2.5 rounded-xl font-medium hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
+                  className="flex-1 sm:flex-none bg-zinc-900 text-zinc-400 border border-zinc-800 px-4 py-2.5 rounded-xl font-medium hover:bg-zinc-950 transition-all flex items-center justify-center gap-2"
                 >
                   <Share2 className="w-4 h-4" />
                   Share
                 </button>
                 <button 
                   onClick={() => setSelectedAnalysis(null)}
-                  className="flex-1 sm:flex-none text-slate-500 hover:text-slate-900 font-medium flex items-center justify-center gap-2 px-4 py-2.5"
+                  className="flex-1 sm:flex-none text-zinc-400 hover:text-zinc-100 font-medium flex items-center justify-center gap-2 px-4 py-2.5"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Back
@@ -1877,13 +2050,13 @@ export default function App() {
 
                   {/* User Question & Answer */}
                   {selectedAnalysis.userQuestion && (
-                    <div className="bg-indigo-600 p-8 rounded-3xl text-white shadow-xl shadow-indigo-100 relative overflow-hidden">
+                    <div className="bg-gold-500 p-8 rounded-3xl text-white shadow-[0_10px_40px_rgba(0,0,0,0.6)] shadow-gold-500/20 relative overflow-hidden">
                       <div className="absolute top-0 right-0 p-4 opacity-10">
                         <MessageSquare className="w-24 h-24" />
                       </div>
                       <h3 className="text-sm font-bold uppercase tracking-wider opacity-80 mb-2">Your Initial Question</h3>
                       <p className="text-2xl font-medium mb-8 leading-tight">"{selectedAnalysis.userQuestion}"</p>
-                      <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
+                      <div className="bg-zinc-900/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
                         <h4 className="text-xs font-bold uppercase tracking-wider opacity-80 mb-3">AI Behaviorist Answer</h4>
                         <p className="text-white/90 leading-relaxed text-lg">
                           {selectedAnalysis.result?.userQuestionAnswer || "No specific answer provided."}
@@ -1893,36 +2066,36 @@ export default function App() {
                   )}
 
                   {/* Observations */}
-                  <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-                    <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-3">
-                      <Activity className="w-6 h-6 text-indigo-600" />
+                  <div className="bg-zinc-900 p-8 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
+                    <h3 className="text-xl font-black font-serif text-gold-400 mb-6 flex items-center gap-3">
+                      <Activity className="w-6 h-6 text-gold-400" />
                       Detailed Observations
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {selectedAnalysis.result?.observations?.map((obs: any, i: number) => (
-                        <div key={i} className="p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:border-indigo-200 transition-colors">
-                          <p className="font-bold text-indigo-600 text-xs uppercase tracking-widest mb-2">{obs.event}</p>
-                          <p className="text-slate-700 leading-relaxed">{obs.meaning}</p>
+                        <div key={i} className="p-5 bg-zinc-950 rounded-2xl border border-zinc-800 hover:border-indigo-200 transition-colors">
+                          <p className="font-bold text-gold-400 text-xs uppercase tracking-widest mb-2">{obs.event}</p>
+                          <p className="text-zinc-300 leading-relaxed">{obs.meaning}</p>
                         </div>
-                      )) || <p className="text-slate-500 italic">No detailed observations recorded.</p>}
+                      )) || <p className="text-zinc-400 italic">No detailed observations recorded.</p>}
                     </div>
                   </div>
 
                   {/* Action Steps */}
-                  <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-                    <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+                  <div className="bg-zinc-900 p-8 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
+                    <h3 className="text-xl font-black font-serif text-gold-400 mb-6 flex items-center gap-3">
                       <CheckCircle2 className="w-6 h-6 text-emerald-600" />
                       Recommended Action Steps
                     </h3>
                     <div className="space-y-4">
                       {selectedAnalysis.result?.actionSteps?.map((step: string, i: number) => (
-                        <div key={i} className="flex items-start gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors">
-                          <div className="w-8 h-8 bg-emerald-100 text-emerald-700 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-sm">
+                        <div key={i} className="flex items-start gap-4 p-4 rounded-2xl hover:bg-zinc-950 transition-colors">
+                          <div className="w-8 h-8 bg-emerald-500/20 text-emerald-700 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-sm">
                             {i + 1}
                           </div>
-                          <span className="text-slate-700 text-lg leading-relaxed">{step}</span>
+                          <span className="text-zinc-300 text-lg leading-relaxed">{step}</span>
                         </div>
-                      )) || <p className="text-slate-500 italic">No specific action steps provided.</p>}
+                      )) || <p className="text-zinc-400 italic">No specific action steps provided.</p>}
                     </div>
                   </div>
 
@@ -1934,27 +2107,27 @@ export default function App() {
 
                 <div className="space-y-8">
                   {/* Emotional State Card */}
-                  <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-3xl text-white shadow-xl shadow-indigo-100">
+                  <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-3xl text-white shadow-[0_10px_40px_rgba(0,0,0,0.6)] shadow-gold-500/20">
                     <h3 className="text-xs font-bold uppercase tracking-widest opacity-70 mb-2">Primary Emotional State</h3>
-                    <p className="text-4xl font-black tracking-tight">
+                    <p className="text-4xl font-black font-serif tracking-tight">
                       {selectedAnalysis.result?.emotionalState || 'Unknown'}
                     </p>
                   </div>
 
                   {/* Follow-up Chat */}
-                  <div className="bg-white rounded-3xl border border-slate-200 shadow-sm flex flex-col h-[500px] lg:h-[600px] overflow-hidden">
-                    <div className="p-4 lg:p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
-                      <div className="w-8 h-8 lg:w-10 lg:h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
+                  <div className="bg-zinc-900 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)] flex flex-col h-[500px] lg:h-[600px] overflow-hidden">
+                    <div className="p-4 lg:p-6 border-b border-zinc-800 bg-zinc-950/50 flex items-center gap-3">
+                      <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gold-500 rounded-xl flex items-center justify-center">
                         <MessageSquare className="w-4 h-4 lg:w-5 lg:h-5 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-slate-900 text-sm lg:text-base">Follow-up Chat</h3>
-                        <p className="text-[10px] lg:text-xs text-slate-500">Ask more about this behavior</p>
+                        <h3 className="font-black font-serif text-gold-400 text-sm lg:text-base">Follow-up Chat</h3>
+                        <p className="text-[10px] lg:text-xs text-zinc-400">Ask more about this behavior</p>
                       </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4 bg-slate-50/30">
-                      <div className="bg-indigo-50 p-3 lg:p-4 rounded-2xl rounded-tl-none text-xs lg:text-sm text-indigo-900 border border-indigo-100">
+                    <div className="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4 bg-zinc-950/30">
+                      <div className="bg-gold-500/10 p-3 lg:p-4 rounded-2xl rounded-tl-none text-xs lg:text-sm text-indigo-900 border border-gold-500/20">
                         Hello! I'm your AI Behaviorist. Based on the analysis above, do you have any specific questions about your pet's behavior?
                       </div>
                       {chatMessages.map((msg) => (
@@ -1964,8 +2137,8 @@ export default function App() {
                         >
                           <div className={`max-w-[85%] p-3 lg:p-4 rounded-2xl text-xs lg:text-sm ${
                             msg.role === 'user' 
-                              ? 'bg-indigo-600 text-white rounded-tr-none' 
-                              : 'bg-white text-slate-700 border border-slate-200 rounded-tl-none shadow-sm'
+                              ? 'bg-gold-500 text-white rounded-tr-none' 
+                              : 'bg-zinc-900 text-zinc-300 border border-zinc-800 rounded-tl-none shadow-[0_4px_20px_rgba(0,0,0,0.4)]'
                           }`}>
                             {msg.content}
                           </div>
@@ -1973,24 +2146,24 @@ export default function App() {
                       ))}
                       {isSendingMessage && (
                         <div className="flex justify-start">
-                          <div className="bg-white p-3 lg:p-4 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm">
-                            <Loader2 className="w-4 h-4 animate-spin text-indigo-600" />
+                          <div className="bg-zinc-900 p-3 lg:p-4 rounded-2xl rounded-tl-none border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
+                            <Loader2 className="w-4 h-4 animate-spin text-gold-400" />
                           </div>
                         </div>
                       )}
                     </div>
 
-                    <form onSubmit={handleSendMessage} className="p-3 lg:p-4 bg-white border-t border-slate-100 flex gap-2">
+                    <form onSubmit={handleSendMessage} className="p-3 lg:p-4 bg-zinc-900 border-t border-zinc-800 flex gap-2">
                       <input 
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         placeholder="Type a follow-up question..."
-                        className="flex-1 px-3 lg:px-4 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none text-xs lg:text-sm"
+                        className="flex-1 px-3 lg:px-4 py-2 rounded-xl border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none text-xs lg:text-sm"
                       />
                       <button 
                         type="submit"
                         disabled={!newMessage.trim() || isSendingMessage}
-                        className="p-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all disabled:opacity-50"
+                        className="p-2 bg-gold-500 text-white rounded-xl hover:bg-gold-600 transition-all disabled:opacity-50"
                       >
                         <Send className="w-4 h-4 lg:w-5 lg:h-5" />
                       </button>
@@ -2000,23 +2173,23 @@ export default function App() {
                   {/* Metadata */}
                   <div className="bg-slate-900 p-6 lg:p-8 rounded-3xl text-white space-y-6">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white/10 rounded-2xl flex items-center justify-center">
+                      <div className="w-10 h-10 lg:w-12 lg:h-12 bg-zinc-900/10 rounded-2xl flex items-center justify-center">
                         <FileText className="w-5 h-5 lg:w-6 lg:h-6 text-indigo-400" />
                       </div>
                       <div>
-                        <h4 className="text-[10px] lg:text-xs font-bold text-slate-400 uppercase tracking-widest">Report ID</h4>
+                        <h4 className="text-[10px] lg:text-xs font-bold text-zinc-500 uppercase tracking-widest">Report ID</h4>
                         <p className="text-slate-200 font-mono text-[10px] lg:text-xs">{selectedAnalysis.id}</p>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4 lg:gap-6">
                       <div>
-                        <h4 className="text-[10px] lg:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Date</h4>
+                        <h4 className="text-[10px] lg:text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">Date</h4>
                         <p className="text-slate-200 font-medium text-sm lg:text-base">
                           {new Date(selectedAnalysis.createdAt?.seconds * 1000).toLocaleDateString()}
                         </p>
                       </div>
                       <div>
-                        <h4 className="text-[10px] lg:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Media</h4>
+                        <h4 className="text-[10px] lg:text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">Media</h4>
                         <p className="text-slate-200 font-medium capitalize text-sm lg:text-base">{selectedAnalysis.mediaType}</p>
                       </div>
                     </div>
@@ -2037,7 +2210,7 @@ export default function App() {
                   <div className="flex justify-between items-center">
                     <button 
                       onClick={() => setSelectedChallenge(null)}
-                      className="flex items-center gap-2 text-slate-500 hover:text-slate-900 font-medium"
+                      className="flex items-center gap-2 text-zinc-400 hover:text-zinc-100 font-medium"
                     >
                       <ArrowLeft className="w-4 h-4" />
                       Back to Challenges
@@ -2045,7 +2218,7 @@ export default function App() {
                     <div className="flex items-center gap-2">
                       <button 
                         onClick={() => handleShareChallenge(selectedChallenge)}
-                        className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-medium px-4 py-2 rounded-xl hover:bg-indigo-50 transition-all"
+                        className="flex items-center gap-2 text-gold-400 hover:text-gold-300 font-medium px-4 py-2 rounded-xl hover:bg-gold-500/10 transition-all"
                       >
                         <Share2 className="w-4 h-4" />
                         Share Progress
@@ -2111,12 +2284,12 @@ export default function App() {
                     </div>
                     
                     <div className="space-y-6">
-                      <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-                        <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                          <Upload className="w-4 h-4 text-indigo-600" />
+                      <div className="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
+                        <h4 className="font-black font-serif text-gold-400 mb-4 flex items-center gap-2">
+                          <Upload className="w-4 h-4 text-gold-400" />
                           Focused Progress Upload
                         </h4>
-                        <p className="text-sm text-slate-500 mb-6">
+                        <p className="text-sm text-zinc-400 mb-6">
                           Upload a video of your pet performing today's exercise for a targeted analysis of their progress.
                         </p>
                         <button 
@@ -2125,7 +2298,7 @@ export default function App() {
                             setSelectedPetId(selectedChallenge.petId);
                             setActiveTab('upload');
                           }}
-                          className="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center justify-center gap-2"
+                          className="w-full py-3 bg-gold-500 text-white rounded-xl font-bold hover:bg-gold-600 transition-all shadow-lg shadow-gold-500/20 flex items-center justify-center gap-2"
                         >
                           <Play className="w-4 h-4" />
                           Upload Progress Video
@@ -2134,7 +2307,7 @@ export default function App() {
 
                       <div className="bg-slate-900 p-6 rounded-3xl text-white">
                         <h4 className="font-bold mb-2">Why this challenge?</h4>
-                        <p className="text-sm text-slate-400 leading-relaxed">
+                        <p className="text-sm text-zinc-500 leading-relaxed">
                           This challenge was custom-generated by our AI Behaviorist based on your analysis of {selectedChallenge.petName}. 
                           Consistent daily practice is key to long-term behavioral change.
                         </p>
@@ -2144,9 +2317,9 @@ export default function App() {
                 </div>
               ) : (
                 <div className="space-y-8">
-                  <div className="bg-indigo-600 p-6 lg:p-8 rounded-[32px] text-white relative overflow-hidden shadow-xl shadow-indigo-100">
+                  <div className="bg-gold-500 p-6 lg:p-8 rounded-[32px] text-white relative overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.6)] shadow-gold-500/20">
                     <div className="relative z-10">
-                      <h3 className="text-2xl lg:text-3xl font-black mb-2">Training Challenges</h3>
+                      <h3 className="text-2xl lg:text-3xl font-black font-serif mb-2">Training Challenges</h3>
                       <p className="text-indigo-100 max-w-md text-sm lg:text-base">
                         Custom 7-day plans generated from your behavioral analyses to help you and your pet reach your goals.
                       </p>
@@ -2160,15 +2333,15 @@ export default function App() {
                         <div 
                           key={challenge.id}
                           onClick={() => setSelectedChallenge(challenge)}
-                          className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:border-indigo-300 transition-all cursor-pointer group"
+                          className="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:border-indigo-300 transition-all cursor-pointer group"
                         >
                           <div className="flex items-center justify-between mb-4">
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${challenge.status === 'completed' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${challenge.status === 'completed' ? 'bg-zinc-800 text-emerald-600' : 'bg-zinc-800 text-gold-400'}`}>
                               {challenge.status === 'completed' ? <CheckCircle2 className="w-5 h-5" /> : <Flame className="w-5 h-5" />}
                             </div>
                             <div className="flex items-center gap-2">
                               <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-full ${
-                                challenge.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+                                challenge.status === 'completed' ? 'bg-emerald-500/20 text-emerald-700' : 'bg-gold-500/20 text-amber-700'
                               }`}>
                                 {challenge.status}
                               </span>
@@ -2177,7 +2350,7 @@ export default function App() {
                                   e.stopPropagation();
                                   handleShareChallenge(challenge);
                                 }}
-                                className="p-2 text-slate-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                className="p-2 text-slate-300 hover:text-gold-400 hover:bg-gold-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
                               >
                                 <Share2 className="w-4 h-4" />
                               </button>
@@ -2196,29 +2369,29 @@ export default function App() {
                               </button>
                             </div>
                           </div>
-                          <h4 className="font-bold text-slate-900 mb-1 group-hover:text-indigo-600 transition-colors">{challenge.title}</h4>
-                          <p className="text-xs text-slate-500 mb-4">{challenge.petName}</p>
+                          <h4 className="font-black font-serif text-gold-400 mb-1 group-hover:text-gold-400 transition-colors">{challenge.title}</h4>
+                          <p className="text-xs text-zinc-400 mb-4">{challenge.petName}</p>
                           
-                          <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mb-4">
+                          <div className="w-full bg-zinc-800 h-2 rounded-full overflow-hidden mb-4">
                             <div 
-                              className={`h-full transition-all duration-500 ${challenge.status === 'completed' ? 'bg-emerald-500' : 'bg-amber-500'}`}
+                              className={`h-full transition-all duration-500 ${challenge.status === 'completed' ? 'bg-zinc-8000' : 'bg-zinc-8000'}`}
                               style={{ width: `${(challenge.completedDays?.length || 0) / 7 * 100}%` }}
                             ></div>
                           </div>
                           
-                          <div className="flex items-center justify-between text-xs font-bold text-slate-400">
+                          <div className="flex items-center justify-between text-xs font-bold text-zinc-500">
                             <span>{challenge.completedDays?.length || 0}/7 Days</span>
                             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                           </div>
                         </div>
                       ))
                     ) : (
-                      <div className="col-span-full py-20 text-center bg-white rounded-3xl border border-dashed border-slate-200">
-                        <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <div className="col-span-full py-20 text-center bg-zinc-900 rounded-3xl border border-dashed border-zinc-800">
+                        <div className="w-16 h-16 bg-zinc-950 rounded-2xl flex items-center justify-center mx-auto mb-4">
                           <Flame className="w-8 h-8 text-slate-300" />
                         </div>
-                        <h4 className="text-lg font-bold text-slate-900 mb-1">No challenges yet</h4>
-                        <p className="text-slate-500 text-sm max-w-xs mx-auto">
+                        <h4 className="text-lg font-black font-serif text-gold-400 mb-1">No challenges yet</h4>
+                        <p className="text-zinc-400 text-sm max-w-xs mx-auto">
                           Upload a video for analysis to receive your first custom 7-day training challenge!
                         </p>
                       </div>
@@ -2240,31 +2413,31 @@ export default function App() {
               )}
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <StatCard label="Total Analyses" value={analyses.length} icon={<Activity className="text-indigo-600" />} />
-                <StatCard label="Current Streak" value={userStats?.current_streak || 0} icon={<Flame className="text-amber-600" />} />
+                <StatCard label="Total Analyses" value={analyses.length} icon={<Activity className="text-gold-400" />} />
+                <StatCard label="Current Streak" value={userStats?.current_streak || 0} icon={<Flame className="text-gold-400" />} />
                 <StatCard label="Total Sessions" value={userStats?.total_sessions || 0} icon={<CheckCircle2 className="text-emerald-600" />} />
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-8">
-                  <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                  <div className="bg-zinc-900 p-8 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
                     <div className="flex justify-between items-center mb-8">
                       <div>
-                        <h3 className="text-xl font-bold text-slate-900">Training Consistency</h3>
-                        <p className="text-sm text-slate-500">Cumulative training sessions over time</p>
+                        <h3 className="text-xl font-black font-serif text-gold-400">Training Consistency</h3>
+                        <p className="text-sm text-zinc-400">Cumulative training sessions over time</p>
                       </div>
-                      <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
-                        <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                      <div className="flex items-center gap-2 text-xs font-bold text-zinc-500 uppercase tracking-widest">
+                        <div className="w-3 h-3 rounded-full bg-zinc-8000"></div>
                         Sessions
                       </div>
                     </div>
                     <ConsistencyChart activityLog={userStats?.activity_log || []} />
                   </div>
 
-                  <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-                    <div className="p-6 border-b border-slate-100 flex justify-between items-center">
-                      <h3 className="font-bold text-slate-900">Recent Analyses</h3>
-                      <button onClick={() => setActiveTab('history')} className="text-indigo-600 text-sm font-medium hover:underline">View All</button>
+                  <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
+                    <div className="p-6 border-b border-zinc-800 flex justify-between items-center">
+                      <h3 className="font-black font-serif text-gold-400">Recent Analyses</h3>
+                      <button onClick={() => setActiveTab('history')} className="text-gold-400 text-sm font-medium hover:underline">View All</button>
                     </div>
                     <div className="divide-y divide-slate-50">
                       {analyses.slice(0, 5).map((analysis, idx) => (
@@ -2274,32 +2447,32 @@ export default function App() {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: idx * 0.05 }}
                           onClick={() => setSelectedAnalysis(analysis)}
-                          className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between cursor-pointer group"
+                          className="p-4 hover:bg-zinc-950 transition-colors flex items-center justify-between cursor-pointer group"
                         >
                           <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center group-hover:bg-indigo-50 transition-colors">
-                              {analysis.mediaType === 'video' ? <Play className="w-6 h-6 text-slate-400 group-hover:text-indigo-600" /> : <Activity className="w-6 h-6 text-slate-400 group-hover:text-indigo-600" />}
+                            <div className="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center group-hover:bg-gold-500/10 transition-colors">
+                              {analysis.mediaType === 'video' ? <Play className="w-6 h-6 text-zinc-500 group-hover:text-gold-400" /> : <Activity className="w-6 h-6 text-zinc-500 group-hover:text-gold-400" />}
                             </div>
                             <div>
-                              <p className="font-semibold text-slate-900 truncate max-w-[200px] group-hover:text-indigo-600 transition-colors">
+                              <p className="font-semibold text-zinc-100 truncate max-w-[200px] group-hover:text-gold-400 transition-colors">
                                 {analysis.result?.emotionalState ? 
                                   (analysis.result.emotionalState.length > 40 ? 
                                     analysis.result.emotionalState.substring(0, 40) + '...' : 
                                     analysis.result.emotionalState) : 
                                   'New Analysis'}
                               </p>
-                              <p className="text-xs text-slate-500">
+                              <p className="text-xs text-zinc-400">
                                 {analysis.petName || 'My Pet'} • {analysis.createdAt?.seconds ? new Date(analysis.createdAt.seconds * 1000).toLocaleDateString() : 'Just now'}
                               </p>
                             </div>
                           </div>
                           <div className="flex items-center gap-4">
                             <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                              analysis.status === 'completed' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
+                              analysis.status === 'completed' ? 'bg-zinc-800 text-emerald-700' : 'bg-zinc-800 text-amber-700'
                             }`}>
                               {analysis.status}
                             </span>
-                            <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all" />
+                            <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-gold-400 group-hover:translate-x-1 transition-all" />
                           </div>
                         </motion.div>
                       ))}
@@ -2309,11 +2482,11 @@ export default function App() {
                           animate={{ opacity: 1 }}
                           className="p-12 text-center"
                         >
-                          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <div className="w-16 h-16 bg-zinc-950 rounded-full flex items-center justify-center mx-auto mb-4">
                             <FileText className="w-8 h-8 text-slate-300" />
                           </div>
-                          <p className="text-slate-500 font-medium">No analyses yet.</p>
-                          <p className="text-xs text-slate-400 mt-1">Start by uploading a video of your pet!</p>
+                          <p className="text-zinc-400 font-medium">No analyses yet.</p>
+                          <p className="text-xs text-zinc-500 mt-1">Start by uploading a video of your pet!</p>
                         </motion.div>
                       )}
                     </div>
@@ -2321,10 +2494,10 @@ export default function App() {
                 </div>
 
                 <div className="space-y-8">
-                  <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                  <div className="bg-zinc-900 p-8 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
                     <div className="flex justify-between items-center mb-6">
-                      <h3 className="text-lg font-bold text-slate-900">Upcoming Care</h3>
-                      <button onClick={() => setActiveTab('reminders')} className="text-indigo-600 text-xs font-bold uppercase tracking-widest hover:underline">View All</button>
+                      <h3 className="text-lg font-black font-serif text-gold-400">Upcoming Care</h3>
+                      <button onClick={() => setActiveTab('reminders')} className="text-gold-400 text-xs font-bold uppercase tracking-widest hover:underline">View All</button>
                     </div>
                     <div className="space-y-4">
                       {reminders.filter(r => !r.completed).slice(0, 4).map((reminder, idx) => (
@@ -2333,20 +2506,20 @@ export default function App() {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: idx * 0.05 }}
-                          className="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-indigo-200 transition-colors group"
+                          className="flex items-start gap-4 p-4 rounded-2xl bg-zinc-950 border border-zinc-800 hover:border-indigo-200 transition-colors group"
                         >
                           <div className={`p-2 rounded-xl transition-colors ${
-                            reminder.type === 'vaccination' ? 'bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white' :
-                            reminder.type === 'medication' ? 'bg-rose-100 text-rose-600 group-hover:bg-rose-600 group-hover:text-white' :
-                            'bg-amber-100 text-amber-600 group-hover:bg-amber-600 group-hover:text-white'
+                            reminder.type === 'vaccination' ? 'bg-gold-500/20 text-gold-400 group-hover:bg-gold-500 group-hover:text-white' :
+                            reminder.type === 'medication' ? 'bg-rose-500/20 text-rose-600 group-hover:bg-rose-600 group-hover:text-white' :
+                            'bg-gold-500/20 text-gold-400 group-hover:bg-amber-600 group-hover:text-white'
                           }`}>
                             {reminder.type === 'vaccination' ? <Syringe className="w-4 h-4" /> : 
                              reminder.type === 'medication' ? <Activity className="w-4 h-4" /> : 
                              <Bell className="w-4 h-4" />}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-slate-900 truncate group-hover:text-indigo-600 transition-colors">{reminder.title}</p>
-                            <p className="text-xs text-slate-500">{reminder.petName} • {new Date(reminder.dueDate).toLocaleDateString()}</p>
+                            <p className="text-sm font-black font-serif text-gold-400 truncate group-hover:text-gold-400 transition-colors">{reminder.title}</p>
+                            <p className="text-xs text-zinc-400">{reminder.petName} • {new Date(reminder.dueDate).toLocaleDateString()}</p>
                           </div>
                         </motion.div>
                       ))}
@@ -2357,14 +2530,14 @@ export default function App() {
                           className="py-8 text-center"
                         >
                           <Calendar className="w-8 h-8 text-slate-200 mx-auto mb-2" />
-                          <p className="text-xs text-slate-400 font-medium">All caught up!</p>
+                          <p className="text-xs text-zinc-500 font-medium">All caught up!</p>
                           <p className="text-[10px] text-slate-300">No upcoming tasks for today.</p>
                         </motion.div>
                       )}
                     </div>
                   </div>
 
-                  <div className="bg-amber-600 p-8 rounded-3xl text-white shadow-xl shadow-amber-100">
+                  <div className="bg-amber-600 p-8 rounded-3xl text-white shadow-[0_10px_40px_rgba(0,0,0,0.6)] shadow-amber-100">
                     <h3 className="text-lg font-bold mb-2">Trainer Status</h3>
                     <p className="text-amber-100 text-sm leading-relaxed">
                       Complete 30 sessions and unlock your pet's potential!
@@ -2386,31 +2559,31 @@ export default function App() {
                   <div className="flex items-center gap-4">
                     <button 
                       onClick={() => setSelectedPetForAnalyses(null)}
-                      className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                      className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
                     >
-                      <ArrowLeft className="w-5 h-5 text-slate-600" />
+                      <ArrowLeft className="w-5 h-5 text-zinc-400" />
                     </button>
                     <div className="flex items-center gap-4">
                       {selectedPetForAnalyses.photoUrl ? (
                         <img 
                           src={selectedPetForAnalyses.photoUrl} 
                           alt={selectedPetForAnalyses.name}
-                          className="w-12 h-12 rounded-xl object-cover border border-slate-200"
+                          className="w-12 h-12 rounded-xl object-cover border border-zinc-800"
                           referrerPolicy="no-referrer"
                         />
                       ) : (
-                        <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-                          {selectedPetForAnalyses.species === 'dog' ? <Dog className="w-6 h-6 text-indigo-600" /> : <Cat className="w-6 h-6 text-indigo-600" />}
+                        <div className="w-12 h-12 bg-gold-500/10 rounded-xl flex items-center justify-center">
+                          {selectedPetForAnalyses.species === 'dog' ? <Dog className="w-6 h-6 text-gold-400" /> : <Cat className="w-6 h-6 text-gold-400" />}
                         </div>
                       )}
                       <div>
-                        <h3 className="text-xl font-bold text-slate-900">{selectedPetForAnalyses.name}'s History</h3>
-                        <p className="text-sm text-slate-500">All behavioral analyses for {selectedPetForAnalyses.name}</p>
+                        <h3 className="text-xl font-black font-serif text-gold-400">{selectedPetForAnalyses.name}'s History</h3>
+                        <p className="text-sm text-zinc-400">All behavioral analyses for {selectedPetForAnalyses.name}</p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                  <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
                     <div className="divide-y divide-slate-50">
                       {analyses.filter(a => a.petId === selectedPetForAnalyses.id).length > 0 ? (
                         analyses
@@ -2419,28 +2592,28 @@ export default function App() {
                             <div 
                               key={analysis.id} 
                               onClick={() => setSelectedAnalysis(analysis)}
-                              className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between cursor-pointer"
+                              className="p-4 hover:bg-zinc-950 transition-colors flex items-center justify-between cursor-pointer"
                             >
                               <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
-                                  {analysis.mediaType === 'video' ? <Play className="w-6 h-6 text-slate-400" /> : <Activity className="w-6 h-6 text-slate-400" />}
+                                <div className="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center">
+                                  {analysis.mediaType === 'video' ? <Play className="w-6 h-6 text-zinc-500" /> : <Activity className="w-6 h-6 text-zinc-500" />}
                                 </div>
                                 <div>
-                                  <p className="font-semibold text-slate-900 truncate max-w-[200px]">
+                                  <p className="font-semibold text-zinc-100 truncate max-w-[200px]">
                                     {analysis.result?.emotionalState ? 
                                       (analysis.result.emotionalState.length > 40 ? 
                                         analysis.result.emotionalState.substring(0, 40) + '...' : 
                                         analysis.result.emotionalState) : 
                                       'New Analysis'}
                                   </p>
-                                  <p className="text-xs text-slate-500">
+                                  <p className="text-xs text-zinc-400">
                                     {analysis.createdAt?.seconds ? new Date(analysis.createdAt.seconds * 1000).toLocaleString() : 'Just now'}
                                   </p>
                                 </div>
                               </div>
                               <div className="flex items-center gap-4">
                                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                  analysis.status === 'completed' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
+                                  analysis.status === 'completed' ? 'bg-zinc-800 text-emerald-700' : 'bg-zinc-800 text-amber-700'
                                 }`}>
                                   {analysis.status}
                                 </span>
@@ -2463,13 +2636,13 @@ export default function App() {
                           ))
                       ) : (
                         <div className="p-12 text-center">
-                          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <div className="w-16 h-16 bg-zinc-950 rounded-full flex items-center justify-center mx-auto mb-4">
                             <FileText className="w-8 h-8 text-slate-300" />
                           </div>
-                          <p className="text-slate-500">No analyses found for {selectedPetForAnalyses.name}.</p>
+                          <p className="text-zinc-400">No analyses found for {selectedPetForAnalyses.name}.</p>
                           <button 
                             onClick={() => setActiveTab('upload')}
-                            className="mt-4 text-indigo-600 font-medium hover:underline"
+                            className="mt-4 text-gold-400 font-medium hover:underline"
                           >
                             Upload a video for {selectedPetForAnalyses.name}
                           </button>
@@ -2481,7 +2654,7 @@ export default function App() {
               ) : (
                 <>
                   <div className="flex justify-between items-center">
-                    <h3 className="text-xl font-bold text-slate-900">My Pet Profiles</h3>
+                    <h3 className="text-xl font-black font-serif text-gold-400">My Pet Profiles</h3>
                     <button 
                       onClick={() => {
                         setIsAddingPet(true);
@@ -2498,7 +2671,7 @@ export default function App() {
                           vaccinations: ''
                         });
                       }}
-                      className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-indigo-700 transition-all flex items-center gap-2"
+                      className="bg-gold-500 text-white px-4 py-2 rounded-xl font-medium hover:bg-gold-600 transition-all flex items-center gap-2"
                     >
                       <Plus className="w-4 h-4" />
                       Add Pet
@@ -2506,25 +2679,25 @@ export default function App() {
                   </div>
 
                   {isAddingPet && (
-                    <div className="bg-white p-6 rounded-2xl border border-indigo-100 shadow-xl shadow-indigo-50 animate-in fade-in slide-in-from-top-4 duration-300">
-                      <h4 className="text-lg font-bold text-slate-900 mb-4">{editingPetId ? 'Edit Pet Profile' : 'Add New Pet'}</h4>
+                    <div className="bg-zinc-900 p-6 rounded-2xl border border-gold-500/20 shadow-[0_10px_40px_rgba(0,0,0,0.6)] shadow-indigo-50 animate-in fade-in slide-in-from-top-4 duration-300">
+                      <h4 className="text-lg font-black font-serif text-gold-400 mb-4">{editingPetId ? 'Edit Pet Profile' : 'Add New Pet'}</h4>
                       <form onSubmit={handleSavePet} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-1">
-                          <label className="text-xs font-bold text-slate-500 uppercase">Pet Name</label>
+                          <label className="text-xs font-bold text-zinc-400 uppercase">Pet Name</label>
                           <input 
                             required
                             value={newPet.name}
                             onChange={e => setNewPet({...newPet, name: e.target.value})}
-                            className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+                            className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none"
                             placeholder="e.g., Buddy"
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-xs font-bold text-slate-500 uppercase">Species</label>
+                          <label className="text-xs font-bold text-zinc-400 uppercase">Species</label>
                           <select 
                             value={newPet.species}
                             onChange={e => setNewPet({...newPet, species: e.target.value})}
-                            className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+                            className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none"
                           >
                             <option value="dog">Dog</option>
                             <option value="cat">Cat</option>
@@ -2532,25 +2705,25 @@ export default function App() {
                           </select>
                         </div>
                         <div className="space-y-1">
-                          <label className="text-xs font-bold text-slate-500 uppercase">Breed</label>
+                          <label className="text-xs font-bold text-zinc-400 uppercase">Breed</label>
                           <input 
                             value={newPet.breed}
                             onChange={e => setNewPet({...newPet, breed: e.target.value})}
-                            className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+                            className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none"
                             placeholder="e.g., Golden Retriever"
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-xs font-bold text-slate-500 uppercase">Age</label>
+                          <label className="text-xs font-bold text-zinc-400 uppercase">Age</label>
                           <input 
                             value={newPet.age}
                             onChange={e => setNewPet({...newPet, age: e.target.value})}
-                            className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+                            className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none"
                             placeholder="e.g., 3 years"
                           />
                         </div>
                         <div className="md:col-span-2 space-y-1">
-                          <label className="text-xs font-bold text-slate-500 uppercase">Profile Picture</label>
+                          <label className="text-xs font-bold text-zinc-400 uppercase">Profile Picture</label>
                           <div className="flex items-center gap-4">
                             <label className="flex-1">
                               <input 
@@ -2559,13 +2732,13 @@ export default function App() {
                                 className="hidden" 
                                 onChange={(e) => setPetImageFile(e.target.files?.[0] || null)}
                               />
-                              <div className="w-full px-4 py-2 rounded-lg border border-dashed border-slate-300 hover:border-indigo-400 hover:bg-indigo-50 transition-all cursor-pointer flex items-center justify-center gap-2 text-sm text-slate-600">
+                              <div className="w-full px-4 py-2 rounded-lg border border-dashed border-slate-300 hover:border-indigo-400 hover:bg-gold-500/10 transition-all cursor-pointer flex items-center justify-center gap-2 text-sm text-zinc-400">
                                 <Upload className="w-4 h-4" />
                                 {petImageFile ? petImageFile.name : 'Choose Image'}
                               </div>
                             </label>
                             {(petImageFile || newPet.photoUrl) && (
-                              <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-200">
+                              <div className="w-10 h-10 rounded-lg overflow-hidden border border-zinc-800">
                                 <img 
                                   src={petImageFile ? URL.createObjectURL(petImageFile) : newPet.photoUrl} 
                                   alt="Preview" 
@@ -2577,29 +2750,29 @@ export default function App() {
                           </div>
                         </div>
                         <div className="md:col-span-2 space-y-1">
-                          <label className="text-xs font-bold text-slate-500 uppercase">Dietary Information</label>
+                          <label className="text-xs font-bold text-zinc-400 uppercase">Dietary Information</label>
                           <textarea 
                             value={newPet.diet}
                             onChange={e => setNewPet({...newPet, diet: e.target.value})}
-                            className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none h-20 resize-none"
+                            className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none h-20 resize-none"
                             placeholder="e.g., Grain-free kibble, twice a day..."
                           />
                         </div>
                         <div className="md:col-span-2 space-y-1">
-                          <label className="text-xs font-bold text-slate-500 uppercase">Vaccination Records</label>
+                          <label className="text-xs font-bold text-zinc-400 uppercase">Vaccination Records</label>
                           <textarea 
                             value={newPet.vaccinations}
                             onChange={e => setNewPet({...newPet, vaccinations: e.target.value})}
-                            className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none h-20 resize-none"
+                            className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none h-20 resize-none"
                             placeholder="e.g., Rabies (2025), DHPP (2024)..."
                           />
                         </div>
                         <div className="md:col-span-2 space-y-1">
-                          <label className="text-xs font-bold text-slate-500 uppercase">Personality / Notes</label>
+                          <label className="text-xs font-bold text-zinc-400 uppercase">Personality / Notes</label>
                           <textarea 
                             value={newPet.personality}
                             onChange={e => setNewPet({...newPet, personality: e.target.value})}
-                            className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none h-20 resize-none"
+                            className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none h-20 resize-none"
                             placeholder="e.g., Very energetic, afraid of thunder..."
                           />
                         </div>
@@ -2610,14 +2783,14 @@ export default function App() {
                               setIsAddingPet(false);
                               setEditingPetId(null);
                             }}
-                            className="px-4 py-2 text-slate-500 font-medium hover:bg-slate-50 rounded-lg transition-colors"
+                            className="px-4 py-2 text-zinc-400 font-medium hover:bg-zinc-950 rounded-lg transition-colors"
                           >
                             Cancel
                           </button>
                           <button 
                             type="submit"
                             disabled={isUploadingPetImage}
-                            className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                            className="px-6 py-2 bg-gold-500 text-white font-bold rounded-lg hover:bg-gold-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                           >
                             {isUploadingPetImage ? (
                               <>
@@ -2636,7 +2809,7 @@ export default function App() {
                       <div 
                         key={pet.id} 
                         onClick={() => setSelectedPetForAnalyses(pet)}
-                        className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all relative group cursor-pointer hover:border-indigo-200"
+                        className="bg-zinc-900 p-6 rounded-2xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-all relative group cursor-pointer hover:border-indigo-200"
                       >
                         <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
                           <button 
@@ -2656,7 +2829,7 @@ export default function App() {
                               setIsAddingPet(true);
                               setPetImageFile(null);
                             }}
-                            className="p-2 text-slate-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                            className="p-2 text-slate-300 hover:text-gold-400 hover:bg-gold-500/10 rounded-lg transition-all"
                           >
                             <Pencil className="w-4 h-4" />
                           </button>
@@ -2679,55 +2852,55 @@ export default function App() {
                             <img 
                               src={pet.photoUrl} 
                               alt={pet.name}
-                              className="w-12 h-12 rounded-xl object-cover border border-slate-100"
+                              className="w-12 h-12 rounded-xl object-cover border border-zinc-800"
                               referrerPolicy="no-referrer"
                             />
                           ) : (
-                            <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center">
-                              {pet.species === 'dog' ? <Dog className="w-6 h-6 text-indigo-600" /> : <Cat className="w-6 h-6 text-indigo-600" />}
+                            <div className="w-12 h-12 bg-gold-500/10 rounded-xl flex items-center justify-center">
+                              {pet.species === 'dog' ? <Dog className="w-6 h-6 text-gold-400" /> : <Cat className="w-6 h-6 text-gold-400" />}
                             </div>
                           )}
                           <div>
-                            <h4 className="font-bold text-slate-900">{pet.name}</h4>
-                            <p className="text-xs text-slate-500 capitalize">{pet.species} • {pet.breed || 'Unknown Breed'}</p>
+                            <h4 className="font-black font-serif text-gold-400">{pet.name}</h4>
+                            <p className="text-xs text-zinc-400 capitalize">{pet.species} • {pet.breed || 'Unknown Breed'}</p>
                           </div>
                         </div>
                         <div className="space-y-3">
                           <div>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Age</p>
-                            <p className="text-sm text-slate-700">{pet.age || 'Not specified'}</p>
+                            <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Age</p>
+                            <p className="text-sm text-zinc-300">{pet.age || 'Not specified'}</p>
                           </div>
                           <div>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Personality</p>
-                            <p className="text-sm text-slate-700 line-clamp-1">{pet.personality || 'No notes added.'}</p>
+                            <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Personality</p>
+                            <p className="text-sm text-zinc-300 line-clamp-1">{pet.personality || 'No notes added.'}</p>
                           </div>
                           {pet.diet && (
                             <div>
-                              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                              <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider flex items-center gap-1">
                                 <Utensils className="w-2 h-2" /> Diet
                               </p>
-                              <p className="text-sm text-slate-700 line-clamp-1">{pet.diet}</p>
+                              <p className="text-sm text-zinc-300 line-clamp-1">{pet.diet}</p>
                             </div>
                           )}
                           {pet.vaccinations && (
                             <div>
-                              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                              <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider flex items-center gap-1">
                                 <Syringe className="w-2 h-2" /> Vaccinations
                               </p>
-                              <p className="text-sm text-slate-700 line-clamp-1">{pet.vaccinations}</p>
+                              <p className="text-sm text-zinc-300 line-clamp-1">{pet.vaccinations}</p>
                             </div>
                           )}
                         </div>
                         <div className="mt-4 pt-4 border-t border-slate-50 flex justify-between items-center">
-                          <span className="text-xs font-medium text-indigo-600">View History</span>
+                          <span className="text-xs font-medium text-gold-400">View History</span>
                           <ChevronRight className="w-4 h-4 text-indigo-400" />
                         </div>
                       </div>
                     ))}
                     {pets.length === 0 && !isAddingPet && (
-                      <div className="md:col-span-3 py-20 text-center bg-white rounded-3xl border-2 border-dashed border-slate-100">
+                      <div className="md:col-span-3 py-20 text-center bg-zinc-900 rounded-3xl border-2 border-dashed border-zinc-800">
                         <Dog className="w-12 h-12 text-slate-200 mx-auto mb-4" />
-                        <p className="text-slate-500">No pet profiles yet. Add your first pet to get started!</p>
+                        <p className="text-zinc-400">No pet profiles yet. Add your first pet to get started!</p>
                       </div>
                     )}
                   </div>
@@ -2740,35 +2913,35 @@ export default function App() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm"
+              className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.4)]"
             >
               <div className="divide-y divide-slate-50">
                 {analyses.map((analysis) => (
                   <div 
                     key={analysis.id} 
                     onClick={() => setSelectedAnalysis(analysis)}
-                    className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between cursor-pointer"
+                    className="p-4 hover:bg-zinc-950 transition-colors flex items-center justify-between cursor-pointer"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
-                        {analysis.mediaType === 'video' ? <Play className="w-6 h-6 text-slate-400" /> : <Activity className="w-6 h-6 text-slate-400" />}
+                      <div className="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center">
+                        {analysis.mediaType === 'video' ? <Play className="w-6 h-6 text-zinc-500" /> : <Activity className="w-6 h-6 text-zinc-500" />}
                       </div>
                       <div>
-                        <p className="font-semibold text-slate-900 truncate max-w-[250px]">
+                        <p className="font-semibold text-zinc-100 truncate max-w-[250px]">
                           {analysis.result?.emotionalState ? 
                             (analysis.result.emotionalState.length > 50 ? 
                               analysis.result.emotionalState.substring(0, 50) + '...' : 
                               analysis.result.emotionalState) : 
                             'New Analysis'}
                         </p>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-zinc-400">
                           {analysis.petName || 'My Pet'} • {analysis.createdAt?.seconds ? new Date(analysis.createdAt.seconds * 1000).toLocaleString() : 'Just now'}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        analysis.status === 'completed' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
+                        analysis.status === 'completed' ? 'bg-zinc-800 text-emerald-700' : 'bg-zinc-800 text-amber-700'
                       }`}>
                         {analysis.status}
                       </span>
@@ -2800,10 +2973,10 @@ export default function App() {
               className="space-y-8"
             >
               <div className="flex justify-between items-center">
-                <h3 className="text-xl font-bold text-slate-900">Care Reminders</h3>
+                <h3 className="text-xl font-black font-serif text-gold-400">Care Reminders</h3>
                 <button 
                   onClick={() => setIsAddingReminder(true)}
-                  className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-indigo-700 transition-all flex items-center gap-2"
+                  className="bg-gold-500 text-white px-4 py-2 rounded-xl font-medium hover:bg-gold-600 transition-all flex items-center gap-2"
                 >
                   <Plus className="w-4 h-4" />
                   Add Reminder
@@ -2811,16 +2984,16 @@ export default function App() {
               </div>
 
               {isAddingReminder && (
-                <div className="bg-white p-6 rounded-2xl border border-indigo-100 shadow-xl shadow-indigo-50 animate-in fade-in slide-in-from-top-4 duration-300">
-                  <h4 className="text-lg font-bold text-slate-900 mb-4">{editingReminderId ? 'Edit Reminder' : 'New Reminder'}</h4>
+                <div className="bg-zinc-900 p-6 rounded-2xl border border-gold-500/20 shadow-[0_10px_40px_rgba(0,0,0,0.6)] shadow-indigo-50 animate-in fade-in slide-in-from-top-4 duration-300">
+                  <h4 className="text-lg font-black font-serif text-gold-400 mb-4">{editingReminderId ? 'Edit Reminder' : 'New Reminder'}</h4>
                   <form onSubmit={handleSaveReminder} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Pet</label>
+                      <label className="text-xs font-bold text-zinc-400 uppercase">Pet</label>
                       <select 
                         required
                         value={newReminder.petId}
                         onChange={e => setNewReminder({...newReminder, petId: e.target.value})}
-                        className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+                        className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none"
                       >
                         <option value="">Select Pet</option>
                         {pets.map(pet => (
@@ -2829,11 +3002,11 @@ export default function App() {
                       </select>
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Type</label>
+                      <label className="text-xs font-bold text-zinc-400 uppercase">Type</label>
                       <select 
                         value={newReminder.type}
                         onChange={e => setNewReminder({...newReminder, type: e.target.value})}
-                        className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+                        className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none"
                       >
                         <option value="vaccination">Vaccination</option>
                         <option value="medication">Medication</option>
@@ -2843,23 +3016,23 @@ export default function App() {
                       </select>
                     </div>
                     <div className="md:col-span-2 space-y-1">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Reminder Title</label>
+                      <label className="text-xs font-bold text-zinc-400 uppercase">Reminder Title</label>
                       <input 
                         required
                         value={newReminder.title}
                         onChange={e => setNewReminder({...newReminder, title: e.target.value})}
-                        className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+                        className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none"
                         placeholder="e.g., Annual Rabies Shot"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Due Date</label>
+                      <label className="text-xs font-bold text-zinc-400 uppercase">Due Date</label>
                       <input 
                         required
                         type="date"
                         value={newReminder.dueDate}
                         onChange={e => setNewReminder({...newReminder, dueDate: e.target.value})}
-                        className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+                        className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none"
                       />
                     </div>
                     <div className="md:col-span-2 flex justify-end gap-3 mt-2">
@@ -2869,13 +3042,13 @@ export default function App() {
                           setIsAddingReminder(false);
                           setEditingReminderId(null);
                         }}
-                        className="px-4 py-2 text-slate-500 font-medium hover:bg-slate-50 rounded-lg transition-colors"
+                        className="px-4 py-2 text-zinc-400 font-medium hover:bg-zinc-950 rounded-lg transition-colors"
                       >
                         Cancel
                       </button>
                       <button 
                         type="submit"
-                        className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors"
+                        className="px-6 py-2 bg-gold-500 text-white font-bold rounded-lg hover:bg-gold-600 transition-colors"
                       >
                         {editingReminderId ? 'Update Reminder' : 'Save Reminder'}
                       </button>
@@ -2888,8 +3061,8 @@ export default function App() {
                 {reminders.map(reminder => (
                   <div 
                     key={reminder.id}
-                    className={`bg-white p-6 rounded-2xl border transition-all relative group ${
-                      reminder.completed ? 'border-slate-100 opacity-60' : 'border-slate-200 shadow-sm hover:shadow-md'
+                    className={`bg-zinc-900 p-6 rounded-2xl border transition-all relative group ${
+                      reminder.completed ? 'border-zinc-800 opacity-60' : 'border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)]'
                     }`}
                   >
                     <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
@@ -2905,7 +3078,7 @@ export default function App() {
                           });
                           setIsAddingReminder(true);
                         }}
-                        className="p-2 text-slate-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                        className="p-2 text-slate-300 hover:text-gold-400 hover:bg-gold-500/10 rounded-lg transition-all"
                       >
                         <Pencil className="w-4 h-4" />
                       </button>
@@ -2918,22 +3091,22 @@ export default function App() {
                     </div>
                     <div className="flex items-center gap-4 mb-4">
                       <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                        reminder.completed ? 'bg-slate-100 text-slate-400' :
-                        reminder.type === 'vaccination' ? 'bg-indigo-50 text-indigo-600' :
-                        reminder.type === 'medication' ? 'bg-rose-50 text-rose-600' :
-                        'bg-amber-50 text-amber-600'
+                        reminder.completed ? 'bg-zinc-800 text-zinc-500' :
+                        reminder.type === 'vaccination' ? 'bg-gold-500/10 text-gold-400' :
+                        reminder.type === 'medication' ? 'bg-zinc-800 text-rose-600' :
+                        'bg-zinc-800 text-gold-400'
                       }`}>
                         {reminder.type === 'vaccination' ? <Syringe className="w-6 h-6" /> : 
                          reminder.type === 'medication' ? <Activity className="w-6 h-6" /> : 
                          <Bell className="w-6 h-6" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className={`font-bold text-slate-900 truncate ${reminder.completed ? 'line-through' : ''}`}>{reminder.title}</h4>
-                        <p className="text-xs text-slate-500 capitalize">{reminder.petName} • {reminder.type}</p>
+                        <h4 className={`font-black font-serif text-gold-400 truncate ${reminder.completed ? 'line-through' : ''}`}>{reminder.title}</h4>
+                        <p className="text-xs text-zinc-400 capitalize">{reminder.petName} • {reminder.type}</p>
                       </div>
                     </div>
                     <div className="flex items-center justify-between mt-6">
-                      <div className="flex items-center gap-2 text-slate-500">
+                      <div className="flex items-center gap-2 text-zinc-400">
                         <Calendar className="w-4 h-4" />
                         <span className="text-xs font-medium">{new Date(reminder.dueDate).toLocaleDateString()}</span>
                       </div>
@@ -2941,8 +3114,8 @@ export default function App() {
                         onClick={() => handleToggleReminder(reminder.id, reminder.completed)}
                         className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
                           reminder.completed 
-                            ? 'bg-slate-100 text-slate-500' 
-                            : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white'
+                            ? 'bg-zinc-800 text-zinc-400' 
+                            : 'bg-gold-500/10 text-gold-400 hover:bg-gold-500 hover:text-white'
                         }`}
                       >
                         {reminder.completed ? 'Completed' : 'Mark Done'}
@@ -2951,9 +3124,9 @@ export default function App() {
                   </div>
                 ))}
                 {reminders.length === 0 && !isAddingReminder && (
-                  <div className="md:col-span-3 py-20 text-center bg-white rounded-3xl border-2 border-dashed border-slate-100">
+                  <div className="md:col-span-3 py-20 text-center bg-zinc-900 rounded-3xl border-2 border-dashed border-zinc-800">
                     <Bell className="w-12 h-12 text-slate-200 mx-auto mb-4" />
-                    <p className="text-slate-500">No care reminders yet. Stay on top of your pet's health!</p>
+                    <p className="text-zinc-400">No care reminders yet. Stay on top of your pet's health!</p>
                   </div>
                 )}
               </div>
@@ -2966,16 +3139,16 @@ export default function App() {
               exit={{ opacity: 0, y: -10 }}
               className="max-w-2xl mx-auto space-y-8"
             >
-              <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-                <h3 className="text-2xl font-bold text-slate-900 mb-6">Account Settings</h3>
+              <div className="bg-zinc-900 p-8 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
+                <h3 className="text-2xl font-black font-serif text-gold-400 mb-6">Account Settings</h3>
                 
                 {userData?.subscriptionTier === 'pro' && (
-                  <div className="mb-8 p-6 bg-indigo-50 rounded-2xl border border-indigo-100">
+                  <div className="mb-8 p-6 bg-gold-500/10 rounded-2xl border border-gold-500/20">
                     <h4 className="text-lg font-bold text-indigo-900 mb-2 flex items-center gap-2">
                       <Zap className="w-5 h-5" />
                       Pro Membership Active
                     </h4>
-                    <p className="text-sm text-indigo-700">
+                    <p className="text-sm text-gold-300">
                       You have unlimited access to all AI Behaviorist features.
                     </p>
                   </div>
@@ -2984,7 +3157,7 @@ export default function App() {
                 <div className="space-y-8">
                   {/* Profile Section */}
                   <section className="space-y-4">
-                    <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Profile Information</h4>
+                    <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Profile Information</h4>
                     
                     <div className="flex items-center gap-6 mb-6">
                       <div className="relative group">
@@ -2992,12 +3165,12 @@ export default function App() {
                           <img 
                             src={user.photoURL} 
                             alt={user.displayName || 'Profile'} 
-                            className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-md"
+                            className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
                             referrerPolicy="no-referrer"
                           />
                         ) : (
-                          <div className="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center border-4 border-white shadow-md">
-                            <UserIcon className="w-8 h-8 text-indigo-600" />
+                          <div className="w-20 h-20 rounded-full bg-gold-500/20 flex items-center justify-center border-4 border-white shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
+                            <UserIcon className="w-8 h-8 text-gold-400" />
                           </div>
                         )}
                         <label className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
@@ -3016,34 +3189,34 @@ export default function App() {
                         </label>
                       </div>
                       <div>
-                        <p className="font-bold text-slate-900">Profile Picture</p>
-                        <p className="text-xs text-slate-500">Click the image to upload a new one.</p>
+                        <p className="font-black font-serif text-gold-400">Profile Picture</p>
+                        <p className="text-xs text-zinc-400">Click the image to upload a new one.</p>
                       </div>
                     </div>
 
                     <form onSubmit={handleUpdateProfile} className="space-y-4">
                       <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-500 uppercase">Display Name</label>
+                        <label className="text-xs font-bold text-zinc-400 uppercase">Display Name</label>
                         <input 
                           value={settingsName}
                           onChange={(e) => setSettingsName(e.target.value)}
-                          className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                          className="w-full px-4 py-3 rounded-xl border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none transition-all"
                           placeholder="Your full name"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-500 uppercase">Email Address</label>
+                        <label className="text-xs font-bold text-zinc-400 uppercase">Email Address</label>
                         <input 
                           disabled
                           value={user?.email || ''}
-                          className="w-full px-4 py-3 rounded-xl border border-slate-100 bg-slate-50 text-slate-400 outline-none cursor-not-allowed"
+                          className="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-500 outline-none cursor-not-allowed"
                         />
-                        <p className="text-[10px] text-slate-400 italic">Email cannot be changed currently.</p>
+                        <p className="text-[10px] text-zinc-500 italic">Email cannot be changed currently.</p>
                       </div>
                       <button 
                         type="submit"
                         disabled={isUpdatingProfile || settingsName === user?.displayName}
-                        className="px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all disabled:opacity-50 flex items-center gap-2"
+                        className="px-6 py-3 bg-gold-500 text-white font-bold rounded-xl hover:bg-gold-600 transition-all disabled:opacity-50 flex items-center gap-2"
                       >
                         {isUpdatingProfile && <Loader2 className="w-4 h-4 animate-spin" />}
                         Update Profile
@@ -3051,33 +3224,33 @@ export default function App() {
                     </form>
                   </section>
 
-                  <hr className="border-slate-100" />
+                  <hr className="border-zinc-800" />
 
                   {/* Subscription Section */}
                   <section className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Subscription Plan</h4>
+                      <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Subscription Plan</h4>
                       <div className="flex items-center gap-2">
                         {isSandbox && (
-                          <span className="bg-amber-100 text-amber-600 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
+                          <span className="bg-gold-500/20 text-gold-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
                             Sandbox
                           </span>
                         )}
                         <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                          userData?.subscriptionTier === 'pro' ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-600'
+                          userData?.subscriptionTier === 'pro' ? 'bg-gold-500/20 text-gold-400' : 'bg-zinc-800 text-zinc-400'
                         }`}>
                           {userData?.subscriptionTier === 'pro' ? 'Pro' : 'Free'} Tier
                         </span>
                       </div>
                     </div>
                     
-                    <div className="p-6 rounded-3xl border border-slate-200 bg-white shadow-sm">
+                    <div className="p-6 rounded-3xl border border-zinc-800 bg-zinc-900 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
                       <div className="flex items-start justify-between gap-6">
                         <div className="space-y-2">
-                          <p className="font-bold text-slate-900">
+                          <p className="font-black font-serif text-gold-400">
                             {userData?.subscriptionTier === 'pro' ? 'PawBehavior Pro' : 'PawBehavior Free'}
                           </p>
-                          <p className="text-sm text-slate-500 leading-relaxed">
+                          <p className="text-sm text-zinc-400 leading-relaxed">
                             {userData?.subscriptionTier === 'pro' 
                               ? 'You have unlimited access to behavioral analyses and expert follow-up chats.' 
                               : `You have used ${userData?.analysesCount || 0}/3 free analyses. Upgrade for unlimited access.`}
@@ -3086,7 +3259,7 @@ export default function App() {
                         {userData?.subscriptionTier !== 'pro' ? (
                           <button 
                             onClick={() => setShowLimitModal({ type: 'upgrade', message: "Unlock unlimited analyses and expert chat with PawBehavior Pro!" })}
-                            className="shrink-0 px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
+                            className="shrink-0 px-6 py-3 bg-gold-500 text-white font-bold rounded-xl hover:bg-gold-600 transition-all shadow-lg shadow-gold-500/20"
                           >
                             Upgrade to Pro
                           </button>
@@ -3094,7 +3267,7 @@ export default function App() {
                           <button 
                             onClick={handleRestorePurchases}
                             disabled={isRestoring}
-                            className="shrink-0 px-6 py-3 bg-white border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-all flex items-center gap-2"
+                            className="shrink-0 px-6 py-3 bg-zinc-900 border border-zinc-800 text-zinc-400 font-bold rounded-xl hover:bg-zinc-950 transition-all flex items-center gap-2"
                           >
                             {isRestoring && <Loader2 className="w-4 h-4 animate-spin" />}
                             Restore Purchases
@@ -3104,35 +3277,35 @@ export default function App() {
                       
                       {userData?.subscriptionTier !== 'pro' && (
                         <div className="mt-6 pt-6 border-t border-slate-50 grid grid-cols-2 gap-4">
-                          <div className="flex items-center gap-2 text-xs text-slate-500">
+                          <div className="flex items-center gap-2 text-xs text-zinc-400">
                             <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                             3 Analyses Total
                           </div>
-                          <div className="flex items-center gap-2 text-xs text-slate-500">
+                          <div className="flex items-center gap-2 text-xs text-zinc-400">
                             <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                             2 Chats per Analysis
                           </div>
                         </div>
                       )}
 
-                      <div className="mt-4 flex flex-wrap items-center gap-4 text-[10px] text-slate-400">
-                        <button onClick={() => setShowTermsModal(true)} className="hover:text-indigo-600 underline">Terms of Use (EULA)</button>
-                        <button onClick={() => setShowPrivacyModal(true)} className="hover:text-indigo-600 underline">Privacy Policy</button>
-                        <button onClick={() => setShowFairUseModal(true)} className="hover:text-indigo-600 underline">Fair Use Policy</button>
+                      <div className="mt-4 flex flex-wrap items-center gap-4 text-[10px] text-zinc-500">
+                        <button onClick={() => setShowTermsModal(true)} className="hover:text-gold-400 underline">Terms of Use (EULA)</button>
+                        <button onClick={() => setShowPrivacyModal(true)} className="hover:text-gold-400 underline">Privacy Policy</button>
+                        <button onClick={() => setShowFairUseModal(true)} className="hover:text-gold-400 underline">Fair Use Policy</button>
                       </div>
                     </div>
                   </section>
 
-                  <hr className="border-slate-100" />
+                  <hr className="border-zinc-800" />
 
                   {/* Referral Section */}
                   <section className="space-y-4">
-                    <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Referral Program</h4>
-                    <div className="bg-amber-50 p-6 rounded-3xl border border-amber-100 space-y-4">
+                    <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Referral Program</h4>
+                    <div className="bg-zinc-800 p-6 rounded-3xl border border-amber-100 space-y-4">
                       <div>
                         <p className="text-sm font-bold text-amber-900 mb-1">Your Referral Code</p>
                         <div className="flex items-center gap-2">
-                          <code className="bg-white px-4 py-2 rounded-xl border border-amber-200 font-mono font-bold text-amber-600 text-lg">
+                          <code className="bg-zinc-900 px-4 py-2 rounded-xl border border-gold-500/50 font-mono font-bold text-gold-400 text-lg">
                             {userData?.referralCode || '------'}
                           </code>
                           <button 
@@ -3140,7 +3313,7 @@ export default function App() {
                               navigator.clipboard.writeText(userData?.referralCode || '');
                               setNotification({ message: "Referral code copied!", type: 'success' });
                             }}
-                            className="p-2 text-amber-600 hover:bg-white rounded-lg transition-all"
+                            className="p-2 text-gold-400 hover:bg-zinc-900 rounded-lg transition-all"
                           >
                             <Copy className="w-5 h-5" />
                           </button>
@@ -3151,14 +3324,14 @@ export default function App() {
                       </div>
 
                       {!userData?.referredBy && (
-                        <div className="pt-4 border-t border-amber-200">
+                        <div className="pt-4 border-t border-gold-500/50">
                           <p className="text-sm font-bold text-amber-900 mb-2">Have a referral code?</p>
                           <form onSubmit={handleReferralSubmit} className="flex gap-2">
                             <input 
                               value={referralInput}
                               onChange={(e) => setReferralInput(e.target.value)}
                               placeholder="ENTER CODE"
-                              className="flex-1 px-4 py-2 rounded-xl border border-amber-200 focus:ring-2 focus:ring-amber-500 outline-none uppercase font-mono"
+                              className="flex-1 px-4 py-2 rounded-xl border border-gold-500/50 focus:ring-2 focus:ring-amber-500 outline-none uppercase font-mono"
                             />
                             <button 
                               type="submit"
@@ -3173,21 +3346,21 @@ export default function App() {
                     </div>
                   </section>
 
-                  <hr className="border-slate-100" />
+                  <hr className="border-zinc-800" />
 
                   {/* Security Section */}
                   <section className="space-y-4">
-                    <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Security</h4>
-                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                    <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Security</h4>
+                    <div className="p-4 bg-zinc-950 rounded-2xl border border-zinc-800">
                       <div className="flex items-center justify-between gap-4">
                         <div>
-                          <p className="font-bold text-slate-900">Reset Password</p>
-                          <p className="text-sm text-slate-500">We'll send a password reset link to your email address.</p>
+                          <p className="font-black font-serif text-gold-400">Reset Password</p>
+                          <p className="text-sm text-zinc-400">We'll send a password reset link to your email address.</p>
                         </div>
                         <button 
                           onClick={handlePasswordReset}
                           disabled={isSendingReset}
-                          className="px-4 py-2 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 transition-all shadow-sm disabled:opacity-50 flex items-center gap-2"
+                          className="px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-300 font-bold rounded-xl hover:bg-zinc-950 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.4)] disabled:opacity-50 flex items-center gap-2"
                         >
                           {isSendingReset && <Loader2 className="w-4 h-4 animate-spin" />}
                           Send Link
@@ -3196,7 +3369,7 @@ export default function App() {
                     </div>
                   </section>
 
-                  <hr className="border-slate-100" />
+                  <hr className="border-zinc-800" />
 
                   {/* Danger Zone */}
                   <section className="space-y-4">
@@ -3210,9 +3383,9 @@ export default function App() {
                     </button>
                   </section>
 
-                  <div className="pt-8 text-center border-t border-slate-100 mt-8">
-                    <p className="text-sm text-slate-500">
-                      Need help? Contact us at: <a href="mailto:xyz@gmail.com" className="text-indigo-600 hover:underline font-bold">xyz@gmail.com</a>
+                  <div className="pt-8 text-center border-t border-zinc-800 mt-8">
+                    <p className="text-sm text-zinc-400">
+                      Need help? Contact us at: <a href="mailto:xyz@gmail.com" className="text-gold-400 hover:underline font-bold">xyz@gmail.com</a>
                     </p>
                   </div>
                 </div>
@@ -3226,14 +3399,14 @@ export default function App() {
               exit={{ opacity: 0, scale: 0.95 }}
               className="max-w-2xl mx-auto"
             >
-              <div className="bg-white rounded-3xl border-2 border-dashed border-slate-200 p-12 text-center">
+              <div className="bg-zinc-900 rounded-3xl border-2 border-dashed border-zinc-800 p-12 text-center">
                 {isUploading ? (
                   <div className="space-y-6">
                     <div className="relative w-24 h-24 mx-auto">
                       <svg className="w-full h-full" viewBox="0 0 100 100">
                         <circle className="text-slate-100 stroke-current" strokeWidth="8" cx="50" cy="50" r="40" fill="transparent" />
                         <circle 
-                          className="text-indigo-600 stroke-current transition-all duration-500" 
+                          className="text-gold-400 stroke-current transition-all duration-500" 
                           strokeWidth="8" 
                           strokeDasharray={251.2}
                           strokeDashoffset={251.2 - (251.2 * uploadProgress) / 100}
@@ -3241,32 +3414,32 @@ export default function App() {
                           cx="50" cy="50" r="40" fill="transparent" 
                         />
                       </svg>
-                      <div className="absolute inset-0 flex items-center justify-center font-bold text-indigo-600">
+                      <div className="absolute inset-0 flex items-center justify-center font-bold text-gold-400">
                         {uploadProgress}%
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <h3 className="text-xl font-bold text-slate-900">{uploadStatus || 'Analyzing Behavior...'}</h3>
-                      <p className="text-slate-500">Please wait while we process your request.</p>
+                      <h3 className="text-xl font-black font-serif text-gold-400">{uploadStatus || 'Analyzing Behavior...'}</h3>
+                      <p className="text-zinc-400">Please wait while we process your request.</p>
                     </div>
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    <div className="w-20 h-20 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto">
-                      <Upload className="w-10 h-10 text-indigo-600" />
+                    <div className="w-20 h-20 bg-gold-500/10 rounded-2xl flex items-center justify-center mx-auto">
+                      <Upload className="w-10 h-10 text-gold-400" />
                     </div>
                     <div className="space-y-2">
-                      <h3 className="text-xl font-bold text-slate-900">Upload Pet Media</h3>
-                      <p className="text-slate-500">Select a video or audio clip of your pet's behavior for analysis.</p>
+                      <h3 className="text-xl font-black font-serif text-gold-400">Upload Pet Media</h3>
+                      <p className="text-zinc-400">Select a video or audio clip of your pet's behavior for analysis.</p>
                     </div>
 
                     <div className="max-w-md mx-auto space-y-4">
                       <div className="text-left">
-                        <label className="block text-sm font-semibold text-slate-700 mb-1">Select Pet</label>
+                        <label className="block text-sm font-semibold text-zinc-300 mb-1">Select Pet</label>
                         <select 
                           value={selectedPetId}
                           onChange={(e) => setSelectedPetId(e.target.value)}
-                          className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm"
+                          className="w-full px-4 py-3 rounded-xl border border-zinc-800 focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all text-sm"
                         >
                           <option value="">General Analysis (No Pet Profile)</option>
                           {pets.map(pet => (
@@ -3274,17 +3447,17 @@ export default function App() {
                           ))}
                         </select>
                         {pets.length === 0 && (
-                          <p className="text-xs text-amber-600 mt-1">Tip: Add a pet profile first for more accurate results!</p>
+                          <p className="text-xs text-gold-400 mt-1">Tip: Add a pet profile first for more accurate results!</p>
                         )}
                       </div>
 
                       <div className="text-left">
-                        <label className="block text-sm font-semibold text-slate-700 mb-1">Specific Question ("e.g., am I training my dog to sit correctly?)</label>
+                        <label className="block text-sm font-semibold text-zinc-300 mb-1">Specific Question ("e.g., am I training my dog to sit correctly?)</label>
                         <textarea 
                           value={userQuestion}
                           onChange={(e) => setUserQuestion(e.target.value)}
                           placeholder="e.g., Why does my dog bark when the doorbell rings?"
-                          className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none h-24 text-sm"
+                          className="w-full px-4 py-3 rounded-xl border border-zinc-800 focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all resize-none h-24 text-sm"
                         />
                       </div>
 
@@ -3301,8 +3474,8 @@ export default function App() {
                           disabled={paywallCooldown}
                           className={`w-full inline-flex items-center justify-center px-8 py-4 rounded-xl font-bold transition-all shadow-lg cursor-pointer active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed ${
                             paywallCooldown 
-                              ? 'bg-slate-100 text-slate-400 shadow-none' 
-                              : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-100'
+                              ? 'bg-zinc-800 text-zinc-500 shadow-none' 
+                              : 'bg-gold-500 text-white hover:bg-gold-600 shadow-gold-500/20'
                           }`}
                         >
                           {paywallCooldown ? (
@@ -3317,7 +3490,7 @@ export default function App() {
                       </div>
                     </div>
 
-                    <p className="text-xs text-slate-400">Supported formats: MP4, MOV, MP3, WAV (Max 50MB)</p>
+                    <p className="text-xs text-zinc-500">Supported formats: MP4, MOV, MP3, WAV (Max 50MB)</p>
                   </div>
                 )}
               </div>
@@ -3334,19 +3507,19 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-slate-100"
+              className="bg-zinc-900 rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-zinc-800"
             >
               <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mb-6">
                 <Trash2 className="w-8 h-8 text-red-600" />
               </div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-2">Delete {deleteConfirmation.type}?</h3>
-              <p className="text-slate-500 mb-8 leading-relaxed">
-                Are you sure you want to delete <span className="font-bold text-slate-900">"{deleteConfirmation.name}"</span>? This action cannot be undone.
+              <h3 className="text-2xl font-black font-serif text-gold-400 mb-2">Delete {deleteConfirmation.type}?</h3>
+              <p className="text-zinc-400 mb-8 leading-relaxed">
+                Are you sure you want to delete <span className="font-black font-serif text-gold-400">"{deleteConfirmation.name}"</span>? This action cannot be undone.
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setDeleteConfirmation(null)}
-                  className="flex-1 px-6 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-50 transition-colors"
+                  className="flex-1 px-6 py-3 rounded-xl font-bold text-zinc-400 hover:bg-zinc-950 transition-colors"
                 >
                   Cancel
                 </button>
@@ -3390,6 +3563,14 @@ export default function App() {
                 setTimeout(() => setPaywallCooldown(false), 5000);
               }
             }}
+            onShowTerms={() => {
+              setShowLimitModal(null);
+              setShowTermsModal(true);
+            }}
+            onShowPrivacy={() => {
+              setShowLimitModal(null);
+              setShowPrivacyModal(true);
+            }}
           />
         )}
       </AnimatePresence>
@@ -3402,24 +3583,24 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl text-center"
+              className="bg-zinc-900 rounded-3xl p-8 max-w-md w-full shadow-2xl text-center"
             >
-              <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <ShieldAlert className="w-10 h-10 text-amber-600" />
+              <div className="w-20 h-20 bg-gold-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <ShieldAlert className="w-10 h-10 text-gold-400" />
               </div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-4">Verification Required</h2>
-              <p className="text-slate-600 mb-8">
+              <h2 className="text-2xl font-black font-serif text-gold-400 mb-4">Verification Required</h2>
+              <p className="text-zinc-400 mb-8">
                 You've reached a high usage threshold (300+ analyses). To ensure service quality for everyone, please verify you are a human.
               </p>
               
-              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 mb-8">
+              <div className="bg-zinc-950 p-6 rounded-2xl border border-zinc-800 mb-8">
                 <label className="flex items-center gap-4 cursor-pointer group">
                   <input 
                     type="checkbox" 
-                    className="w-6 h-6 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                    className="w-6 h-6 rounded border-slate-300 text-gold-400 focus:ring-gold-500"
                     onChange={(e) => setIsBotVerified(e.target.checked)}
                   />
-                  <span className="text-lg font-medium text-slate-700 group-hover:text-indigo-600 transition-colors">
+                  <span className="text-lg font-medium text-zinc-300 group-hover:text-gold-400 transition-colors">
                     I am not a bot
                   </span>
                 </label>
@@ -3435,8 +3616,8 @@ export default function App() {
                 disabled={!isBotVerified}
                 className={`w-full py-4 rounded-2xl font-bold transition-all ${
                   isBotVerified 
-                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700' 
-                    : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                    ? 'bg-gold-500 text-white shadow-lg shadow-indigo-200 hover:bg-gold-600' 
+                    : 'bg-slate-200 text-zinc-500 cursor-not-allowed'
                 }`}
               >
                 Continue Analysis
@@ -3454,39 +3635,39 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto"
+              className="bg-zinc-900 rounded-3xl p-8 max-w-lg w-full shadow-2xl border border-zinc-800 max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-slate-900">Unlimited Analysis Fair Use Policy</h2>
-                <button onClick={() => setShowFairUseModal(false)} className="p-2 text-slate-400 hover:bg-slate-100 rounded-full transition-colors">
+                <h2 className="text-2xl font-black font-serif text-gold-400">Unlimited Analysis Fair Use Policy</h2>
+                <button onClick={() => setShowFairUseModal(false)} className="p-2 text-zinc-500 hover:bg-zinc-800 rounded-full transition-colors">
                   <X className="w-6 h-6" />
                 </button>
               </div>
               
-              <div className="space-y-6 text-slate-600 text-sm leading-relaxed">
+              <div className="space-y-6 text-zinc-400 text-sm leading-relaxed">
                 <p>
                   To ensure a high-quality experience for all users, our "Unlimited" plan is subject to a Fair Use Policy. This plan is intended for personal, non-commercial use by a single individual.
                 </p>
 
                 <div>
-                  <h4 className="font-bold text-slate-900 mb-1">Personal Use</h4>
+                  <h4 className="font-black font-serif text-gold-400 mb-1">Personal Use</h4>
                   <p>Analysis is intended for pets owned by the subscriber. Commercial use (e.g., professional training facilities or shelters) requires a Business License.</p>
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-slate-900 mb-1">Usage Caps</h4>
+                  <h4 className="font-black font-serif text-gold-400 mb-1">Usage Caps</h4>
                   <p>Accounts exceeding 300 analyses per month or 30 analyses per day may be subject to temporary speed throttling or a transition to our Standard Intelligence model.</p>
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-slate-900 mb-1">Automated Use</h4>
+                  <h4 className="font-black font-serif text-gold-400 mb-1">Automated Use</h4>
                   <p>Any attempt to use scripts, bots, or automated tools to submit videos is strictly prohibited and will result in immediate account termination.</p>
                 </div>
               </div>
 
               <button
                 onClick={() => setShowFairUseModal(false)}
-                className="w-full mt-8 py-4 bg-slate-100 text-slate-900 font-bold rounded-2xl hover:bg-slate-200 transition-all"
+                className="w-full mt-8 py-4 bg-zinc-800 text-zinc-100 font-bold rounded-2xl hover:bg-zinc-700 transition-all"
               >
                 Close
               </button>
@@ -3503,42 +3684,42 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white rounded-3xl p-8 max-w-2xl w-full shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto"
+              className="bg-zinc-900 rounded-3xl p-8 max-w-2xl w-full shadow-2xl border border-zinc-800 max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-slate-900">Terms of Use (EULA)</h2>
-                <button onClick={() => setShowTermsModal(false)} className="p-2 text-slate-400 hover:bg-slate-100 rounded-full transition-colors">
+                <h2 className="text-2xl font-black font-serif text-gold-400">Terms of Use (EULA)</h2>
+                <button onClick={() => setShowTermsModal(false)} className="p-2 text-zinc-500 hover:bg-zinc-800 rounded-full transition-colors">
                   <X className="w-6 h-6" />
                 </button>
               </div>
               
-              <div className="space-y-6 text-slate-600 text-sm leading-relaxed">
+              <div className="space-y-6 text-zinc-400 text-sm leading-relaxed">
                 <p className="italic">Last Updated: April 2026</p>
                 
                 <div>
-                  <h4 className="font-bold text-slate-900 mb-1">1. Acceptance of Terms</h4>
+                  <h4 className="font-black font-serif text-gold-400 mb-1">1. Acceptance of Terms</h4>
                   <p>By accessing and using PawBehavior, you agree to be bound by these Terms of Use. If you do not agree, please do not use the application.</p>
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-slate-900 mb-1">2. Medical Disclaimer</h4>
+                  <h4 className="font-black font-serif text-gold-400 mb-1">2. Medical Disclaimer</h4>
                   <p>PawBehavior provides AI-driven behavioral analysis for educational and training purposes only. It is NOT a substitute for professional veterinary or trainer's advice, diagnosis, or treatment. Always consult a qualified veterinarian for medical concerns.</p>
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-slate-900 mb-1">3. User Content</h4>
+                  <h4 className="font-black font-serif text-gold-400 mb-1">3. User Content</h4>
                   <p>You retain ownership of the videos and audio you upload. By uploading, you grant PawBehavior a license to process this media solely for the purpose of providing the analysis service.</p>
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-slate-900 mb-1">4. Subscriptions and Billing</h4>
+                  <h4 className="font-black font-serif text-gold-400 mb-1">4. Subscriptions and Billing</h4>
                   <p>Premium features require a subscription. Payments are processed securely through your device's app store (Apple App Store or Google Play). Subscriptions automatically renew unless canceled at least 24 hours before the end of the current period.</p>
                 </div>
               </div>
 
               <button
                 onClick={() => setShowTermsModal(false)}
-                className="w-full mt-8 py-4 bg-slate-100 text-slate-900 font-bold rounded-2xl hover:bg-slate-200 transition-all"
+                className="w-full mt-8 py-4 bg-zinc-800 text-zinc-100 font-bold rounded-2xl hover:bg-zinc-700 transition-all"
               >
                 Close
               </button>
@@ -3555,42 +3736,42 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white rounded-3xl p-8 max-w-2xl w-full shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto"
+              className="bg-zinc-900 rounded-3xl p-8 max-w-2xl w-full shadow-2xl border border-zinc-800 max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-slate-900">Privacy Policy</h2>
-                <button onClick={() => setShowPrivacyModal(false)} className="p-2 text-slate-400 hover:bg-slate-100 rounded-full transition-colors">
+                <h2 className="text-2xl font-black font-serif text-gold-400">Privacy Policy</h2>
+                <button onClick={() => setShowPrivacyModal(false)} className="p-2 text-zinc-500 hover:bg-zinc-800 rounded-full transition-colors">
                   <X className="w-6 h-6" />
                 </button>
               </div>
               
-              <div className="space-y-6 text-slate-600 text-sm leading-relaxed">
+              <div className="space-y-6 text-zinc-400 text-sm leading-relaxed">
                 <p className="italic">Last Updated: April 2026</p>
                 
                 <div>
-                  <h4 className="font-bold text-slate-900 mb-1">1. Information We Collect</h4>
+                  <h4 className="font-black font-serif text-gold-400 mb-1">1. Information We Collect</h4>
                   <p>We collect information you provide directly to us, including your email address, pet profiles (name, breed, age), and the media (video/audio) you upload for analysis.</p>
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-slate-900 mb-1">2. How We Use Your Information</h4>
+                  <h4 className="font-black font-serif text-gold-400 mb-1">2. How We Use Your Information</h4>
                   <p>Your media is processed using advanced AI models to provide behavioral insights. We do not use your personal videos to train public AI models. Your data is used strictly to deliver and improve your personal experience within the app.</p>
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-slate-900 mb-1">3. Data Storage and Security</h4>
+                  <h4 className="font-black font-serif text-gold-400 mb-1">3. Data Storage and Security</h4>
                   <p>Your data is securely stored using industry-standard cloud infrastructure. We implement robust security measures to protect your personal information from unauthorized access.</p>
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-slate-900 mb-1">4. Data Deletion</h4>
+                  <h4 className="font-black font-serif text-gold-400 mb-1">4. Data Deletion</h4>
                   <p>You can delete your pet profiles, analyses, or your entire account at any time from within the app. Deleting an item permanently removes it from our active servers.</p>
                 </div>
               </div>
 
               <button
                 onClick={() => setShowPrivacyModal(false)}
-                className="w-full mt-8 py-4 bg-slate-100 text-slate-900 font-bold rounded-2xl hover:bg-slate-200 transition-all"
+                className="w-full mt-8 py-4 bg-zinc-800 text-zinc-100 font-bold rounded-2xl hover:bg-zinc-700 transition-all"
               >
                 Close
               </button>
@@ -3627,10 +3808,10 @@ function NavItem({ active, onClick, icon, label }: { active: boolean, onClick: (
       whileHover={{ x: 4 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-bold text-sm ${
+      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-serif font-bold text-base ${
         active 
-          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' 
-          : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+          ? 'bg-gold-500 text-white shadow-lg shadow-gold-500/20' 
+          : 'text-zinc-400 hover:bg-zinc-950 hover:text-gold-400'
       }`}
     >
       {icon}
@@ -3643,13 +3824,13 @@ function StatCard({ label, value, icon }: { label: string, value: number | strin
   return (
     <motion.div 
       whileHover={{ y: -5 }}
-      className="bg-white p-4 lg:p-6 rounded-2xl border border-slate-200 shadow-sm"
+      className="bg-zinc-900 p-4 lg:p-6 rounded-2xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]"
     >
       <div className="flex justify-between items-start mb-4">
-        <div className="p-2 bg-slate-50 rounded-lg">{icon}</div>
+        <div className="p-2 bg-zinc-950 rounded-lg">{icon}</div>
       </div>
-      <p className="text-slate-500 text-xs lg:text-sm font-medium">{label}</p>
-      <p className="text-xl lg:text-2xl font-bold text-slate-900 mt-1">{value}</p>
+      <p className="text-zinc-400 text-xs lg:text-sm font-medium">{label}</p>
+      <p className="text-xl lg:text-2xl font-black font-serif text-gold-400 mt-1">{value}</p>
     </motion.div>
   );
 }

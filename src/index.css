@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+  --font-serif: "Playfair Display", serif;
+
+  --color-gold-50: #fbf9f1;
+  --color-gold-100: #f5f0db;
+  --color-gold-200: #ecdfb5;
+  --color-gold-300: #e0c885;
+  --color-gold-400: #d4af37;
+  --color-gold-500: #c69b2b;
+  --color-gold-600: #aa7d20;
+  --color-gold-700: #885f1b;
+  --color-gold-800: #714e1c;
+  --color-gold-900: #61421b;
+  --color-gold-950: #38240d;
+}

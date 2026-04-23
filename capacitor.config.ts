@@ -5,7 +5,18 @@ const config: CapacitorConfig = {
   appName: 'PawBehavior',
   webDir: 'dist',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    plugins: {
+      SplashScreen: {
+        launchShowDuration: 2000,
+        launchAutoHide: true,
+        backgroundColor: '#09090b',
+        androidScaleType: 'CENTER_CROP',
+        showSpinner: false,
+        splashFullScreen: true,
+        splashImmersive: true
+      }
+    }
   }
 };
 
