@@ -1325,8 +1325,12 @@ export default function App() {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(userCredential.user, { displayName });
       } else if (authMode === 'forgot') {
+        if (!email) {
+          setAuthError('Please enter your email address first.');
+          return;
+        }
         await sendPasswordResetEmail(auth, email);
-        setNotification({ message: 'Password reset email sent!', type: 'success' });
+        setNotification({ message: 'Success! Please check your inbox (and spam folder) for the reset link.', type: 'success' });
         setAuthMode('login');
       } else {
         await signInWithEmailAndPassword(auth, email, password);
