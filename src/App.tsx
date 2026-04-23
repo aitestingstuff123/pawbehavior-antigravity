@@ -1589,7 +1589,7 @@ export default function App() {
           
           <div className="text-center">
             <h1 className="text-3xl font-black font-serif tracking-[0.2em] text-gold-400 uppercase">PawBehavior</h1>
-            <p className="text-[10px] tracking-[0.5em] uppercase text-gold-600/70 mt-3 font-bold">Premium Concierge</p>
+            <p className="text-[10px] tracking-[0.5em] uppercase text-gold-600/70 mt-3 font-bold">Pet Analysis</p>
           </div>
           
           <div className="mt-12 flex items-center gap-3">
@@ -1618,7 +1618,7 @@ export default function App() {
           
           <div className="space-y-2">
             <h1 className="text-4xl font-black font-serif tracking-tight text-gold-400">PawBehavior</h1>
-            <p className="text-[10px] tracking-[0.3em] uppercase text-gold-600 mt-2 font-bold">Premium Concierge</p>
+            <p className="text-[10px] tracking-[0.3em] uppercase text-gold-600 mt-2 font-bold">Pet Analysis</p>
             <p className="text-zinc-400 text-lg">Professional AI behavior analysis for your beloved pets.</p>
           </div>
 
@@ -1878,7 +1878,7 @@ export default function App() {
           </div>
           <div className="flex flex-col">
               <span className="font-black font-serif text-xl text-gold-400 leading-none">PawBehavior</span>
-              <span className="text-[8px] tracking-[0.2em] uppercase text-gold-600 font-bold">Concierge</span>
+              <span className="text-[8px] tracking-[0.2em] uppercase text-gold-600 font-bold">Pet Analysis</span>
             </div>
         </div>
         <button 
@@ -1902,7 +1902,7 @@ export default function App() {
           </div>
           <div className="flex flex-col">
               <span className="font-black font-serif text-2xl text-gold-400 leading-none">PawBehavior</span>
-              <span className="text-[9px] tracking-[0.2em] uppercase text-gold-600 font-bold mt-1">Premium Concierge</span>
+              <span className="text-[9px] tracking-[0.2em] uppercase text-gold-600 font-bold mt-1">Pet Analysis</span>
             </div>
         </div>
 
