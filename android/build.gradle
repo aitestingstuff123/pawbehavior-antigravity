@@ -1,0 +1,43 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.9.1'
+        classpath 'com.google.gms:google-services:4.4.4'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+apply from: "variables.gradle"
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+subprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            project.android {
+                compileSdk = rootProject.ext.compileSdkVersion
+                defaultConfig {
+                    minSdkVersion = rootProject.ext.minSdkVersion
+                    targetSdkVersion = rootProject.ext.targetSdkVersion
+                }
+                // Namespace fix for AGP 8.x
+                if (project.android.namespace == null) {
+                    project.android.namespace = project.group.toString()
+                }
+            }
+        }
+    }
+}

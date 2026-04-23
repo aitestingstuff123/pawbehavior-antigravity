@@ -1,0 +1,147 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "status": { "type": "string", "enum": ["free", "pro"] },
+        "subscriptionTier": { "type": "string", "enum": ["free", "pro"] },
+        "is_subscriber": { "type": "boolean" },
+        "analysesCount": { "type": "number" },
+        "monthlyUsage": { "type": "object" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "role", "subscriptionTier"]
+    },
+    "Analysis": {
+      "title": "Analysis",
+      "description": "Pet behavior analysis result",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "petId": { "type": "string" },
+        "petName": { "type": "string" },
+        "mediaUrl": { "type": "string" },
+        "mediaType": { "type": "string", "enum": ["video", "audio"] },
+        "status": { "type": "string", "enum": ["pending", "processing", "completed", "failed"] },
+        "userQuestion": { "type": "string" },
+        "result": { "type": "object" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "status", "createdAt"]
+    },
+    "Pet": {
+      "title": "Pet",
+      "description": "Pet profile for contextual analysis",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "species": { "type": "string", "enum": ["dog", "cat", "other"] },
+        "breed": { "type": "string" },
+        "age": { "type": "string" },
+        "personality": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "species"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Follow-up chat message for a specific analysis",
+      "type": "object",
+      "properties": {
+        "analysisId": { "type": "string" },
+        "userId": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "assistant"] },
+        "content": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["analysisId", "role", "content", "createdAt"]
+    },
+    "Reminder": {
+      "title": "Reminder",
+      "description": "Pet care reminder (vaccination, medication, etc.)",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "petId": { "type": "string" },
+        "petName": { "type": "string" },
+        "title": { "type": "string" },
+        "type": { "type": "string", "enum": ["vaccination", "medication", "food", "grooming", "other"] },
+        "dueDate": { "type": "string", "format": "date" },
+        "completed": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "petId", "title", "type", "dueDate", "completed", "createdAt"]
+    },
+    "UserStats": {
+      "title": "UserStats",
+      "description": "Tracking user training consistency and streaks",
+      "type": "object",
+      "properties": {
+        "current_streak": { "type": "number" },
+        "last_upload_date": { "type": "string", "format": "date-time" },
+        "total_sessions": { "type": "number" },
+        "activity_log": { 
+          "type": "array",
+          "items": { "type": "string", "format": "date-time" }
+        }
+      },
+      "required": ["current_streak", "total_sessions"]
+    },
+    "Challenge": {
+      "title": "Challenge",
+      "description": "7-day training challenge generated from analysis",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "petId": { "type": "string" },
+        "petName": { "type": "string" },
+        "analysisId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "days": { "type": "array" },
+        "completedDays": { "type": "array" },
+        "status": { "type": "string", "enum": ["active", "completed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "title", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/pets/{petId}": {
+      "schema": "Pet",
+      "description": "Pet profiles"
+    },
+    "/analyses/{analysisId}": {
+      "schema": "Analysis",
+      "description": "Behavior analysis records"
+    },
+    "/analyses/{analysisId}/messages/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Follow-up chat messages"
+    },
+    "/reminders/{reminderId}": {
+      "schema": "Reminder",
+      "description": "Pet care reminders"
+    },
+    "/user_stats/{userId}": {
+      "schema": "UserStats",
+      "description": "User training statistics"
+    },
+    "/challenges/{challengeId}": {
+      "schema": "Challenge",
+      "description": "Training challenges"
+    }
+  }
+}

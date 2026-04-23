@@ -1,0 +1,216 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {userId}
+    // Fields:
+    //   - email: string (required)
+    //   - displayName: string
+    //   - photoURL: string
+    //   - role: string (required, 'user' | 'admin')
+    //   - subscriptionTier: string ('free' | 'pro')
+    //   - analysesCount: number
+    //   - bonusAnalyses: number
+    //   - bonusChats: number
+    //   - referralCode: string
+    //   - referredBy: string
+    //   - createdAt: timestamp
+    //
+    // Collection: challenges
+    // Document ID: {challengeId}
+    // Fields:
+    //   - userId: string (required)
+    //   - petId: string
+    //   - petName: string
+    //   - analysisId: string
+    //   - title: string (required)
+    //   - description: string
+    //   - days: list
+    //   - completedDays: list
+    //   - status: string ('active' | 'completed')
+    //   - createdAt: timestamp
+    //
+    // Collection: analyses
+    // Document ID: {analysisId}
+    // Fields:
+    //   - userId: string (required)
+    //   - petId: string
+    //   - petName: string
+    //   - mediaUrl: string
+    //   - mediaType: string ('video' | 'audio')
+    //   - status: string ('pending' | 'processing' | 'completed' | 'failed')
+    //   - userQuestion: string
+    //   - result: map
+    //   - createdAt: timestamp
+    //
+    // Collection: pets
+    // Document ID: {petId}
+    // Fields:
+    //   - userId: string (required)
+    //   - name: string (required)
+    //   - species: string (required, 'dog' | 'cat' | 'other')
+    //   - breed: string
+    //   - age: string
+    //   - personality: string
+    //   - createdAt: timestamp
+    //
+    // Collection: analyses/{analysisId}/messages
+    // Document ID: {messageId}
+    // Fields:
+    //   - analysisId: string (required)
+    //   - userId: string
+    //   - role: string (required, 'user' | 'assistant')
+    //   - content: string (required)
+    //   - createdAt: timestamp
+    //
+    // Collection: user_stats
+    // Document ID: {userId}
+    // Fields:
+    //   - current_streak: number (required)
+    //   - last_upload_date: timestamp
+    //   - total_sessions: number (required)
+    //   - activity_log: list of timestamps
+    //
+    // Collection: processed_events
+    // Document ID: {eventId}
+    // Fields:
+    //   - type: string
+    //   - processedAt: timestamp
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         (request.auth.token.email == "mejai0123@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['email', 'role']) &&
+             data.email is string &&
+             data.role in ['user', 'admin'] &&
+             (!('analysesCount' in data) || data.analysesCount is number) &&
+             (!('bonusAnalyses' in data) || data.bonusAnalyses is number) &&
+             (!('bonusChats' in data) || data.bonusChats is number) &&
+             (!('referralCode' in data) || data.referralCode is string) &&
+             (!('referredBy' in data) || data.referredBy is string) &&
+             (!('subscriptionTier' in data) || data.subscriptionTier in ['free', 'pro']);
+    }
+
+    function isValidChallenge(data) {
+      return data.keys().hasAll(['userId', 'title', 'status', 'createdAt']) &&
+             data.userId is string &&
+             data.title is string &&
+             data.status in ['active', 'completed'] &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidAnalysis(data) {
+      return data.keys().hasAll(['userId', 'status', 'createdAt']) &&
+             data.userId is string &&
+             data.status in ['pending', 'processing', 'completed', 'failed'] &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidPet(data) {
+      return data.keys().hasAll(['userId', 'name', 'species']) &&
+             data.userId is string &&
+             data.name is string &&
+             data.species in ['dog', 'cat', 'other'];
+    }
+
+    function isValidMessage(data) {
+      return data.keys().hasAll(['analysisId', 'role', 'content', 'createdAt']) &&
+             data.analysisId is string &&
+             data.role in ['user', 'assistant'] &&
+             data.content is string &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidUserStats(data) {
+      return data.keys().hasAll(['current_streak', 'total_sessions']) &&
+             data.current_streak is number &&
+             data.total_sessions is number &&
+             (!('last_upload_date' in data) || data.last_upload_date is timestamp) &&
+             (!('activity_log' in data) || data.activity_log is list);
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+    
+    match /users/{userId} {
+      allow read, write: if isAuthenticated() && request.auth.uid == userId;
+    }
+
+    match /analyses/{analysisId} {
+      allow read, write: if isAuthenticated() && (
+        (request.method == 'create' && request.resource.data.userId == request.auth.uid) ||
+        (resource != null && resource.data.userId == request.auth.uid) ||
+        isAdmin()
+      );
+      
+      match /messages/{messageId} {
+        allow read: if isAuthenticated() && (get(/databases/$(database)/documents/analyses/$(analysisId)).data.userId == request.auth.uid || isAdmin());
+        allow create: if isAuthenticated() && (get(/databases/$(database)/documents/analyses/$(analysisId)).data.userId == request.auth.uid) && isValidMessage(request.resource.data);
+      }
+    }
+
+    match /pets/{petId} {
+      allow read, write: if isAuthenticated() && (
+        (request.method == 'create' && request.resource.data.userId == request.auth.uid) ||
+        (resource != null && resource.data.userId == request.auth.uid) ||
+        isAdmin()
+      );
+    }
+
+    match /reminders/{reminderId} {
+      allow read, write: if isAuthenticated() && (
+        (request.method == 'create' && request.resource.data.userId == request.auth.uid) ||
+        (resource != null && resource.data.userId == request.auth.uid) ||
+        isAdmin()
+      );
+    }
+
+    match /user_stats/{userId} {
+      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow create, update: if isAuthenticated() && isOwner(userId) && isValidUserStats(request.resource.data);
+    }
+
+    match /files/{fileId} {
+      allow read, write: if isAuthenticated() && (request.resource.data.userId == request.auth.uid || resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    match /challenges/{challengeId} {
+      allow read, write: if isAuthenticated() && (
+        (request.method == 'create' && request.resource.data.userId == request.auth.uid) ||
+        (resource != null && resource.data.userId == request.auth.uid) ||
+        isAdmin()
+      );
+    }
+
+    match /processed_events/{eventId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

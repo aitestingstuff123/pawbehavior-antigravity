@@ -1,0 +1,5 @@
+{
+  "name": "PawBehavior",
+  "description": "Professional AI behavior analysis, 7-day training challenges, and pet care management with Pro subscription upgrades.",
+  "requestFramePermissions": ["camera", "microphone"]
+}
