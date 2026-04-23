@@ -458,7 +458,7 @@ async function startServer() {
           }
         ],
         config: {
-          systemInstruction: `You are a professional animal behaviorist. Your goal is to provide accurate, empathetic, and actionable insights based on pet behavior footage. 
+          systemInstruction: `You are a professional animal behaviorist specializing in both canine (dog) and feline (cat) behavior. Your goal is to provide accurate, empathetic, and actionable insights based on pet behavior footage. 
             
           ${petContext}
 
@@ -569,7 +569,7 @@ async function startServer() {
   apiRouter.post("/chat", async (req, res) => {
     try {
       const { history, messageContent, petContext, analysisContext } = req.body;
-      const systemPrompt = `System Instruction: You are a professional animal behaviorist. You are having a follow-up conversation about a specific behavior analysis you performed. 
+      const systemPrompt = `System Instruction: You are a professional animal behaviorist specializing in both canine (dog) and feline (cat) behavior. You are having a follow-up conversation about a specific behavior analysis you performed. 
         ${petContext || ''}
         ${analysisContext || ''}
         Keep your answers concise, professional, and empathetic. Do not provide medical advice.`;
