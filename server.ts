@@ -458,9 +458,12 @@ async function startServer() {
           }
         ],
         config: {
-          systemInstruction: `You are a professional animal behaviorist specializing in both canine (dog) and feline (cat) behavior. Your goal is to provide accurate, empathetic, and actionable insights based on pet behavior footage. 
+          systemInstruction: `You are a professional animal behaviorist specializing ONLY in canine (dog) and feline (cat) behavior. Your goal is to provide accurate, empathetic, and actionable insights based on pet behavior footage. 
             
           ${petContext}
+
+          RESTRICTION:
+          - If the video contains any animal other than a dog or a cat (e.g., birds, reptiles, rodents, exotic pets), you must politely decline the analysis and state that you currently only specialize in dogs and cats.
 
           TRAINING CHALLENGE:
           - If the behavior observed can be improved with training, generate a "7-Day Training Challenge".
@@ -569,10 +572,10 @@ async function startServer() {
   apiRouter.post("/chat", async (req, res) => {
     try {
       const { history, messageContent, petContext, analysisContext } = req.body;
-      const systemPrompt = `System Instruction: You are a professional animal behaviorist specializing in both canine (dog) and feline (cat) behavior. You are having a follow-up conversation about a specific behavior analysis you performed. 
+      const systemPrompt = `System Instruction: You are a professional animal behaviorist specializing ONLY in canine (dog) and feline (cat) behavior. You are having a follow-up conversation about a specific behavior analysis you performed. 
         ${petContext || ''}
         ${analysisContext || ''}
-        Keep your answers concise, professional, and empathetic. Do not provide medical advice.`;
+        Keep your answers concise, professional, and empathetic. Do not provide medical advice. If asked about other animals, politely state you only specialize in dogs and cats.`;
 
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
