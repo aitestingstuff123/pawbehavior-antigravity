@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   AreaChart,
   Area
 } from 'recharts';
-import { 
-  Upload, 
-  Dog, 
-  Cat, 
-  Activity, 
-  History, 
-  LogOut, 
-  ChevronRight, 
-  AlertCircle, 
-  CheckCircle2, 
+import {
+  Upload,
+  Dog,
+  Cat,
+  Activity,
+  History,
+  LogOut,
+  ChevronRight,
+  AlertCircle,
+  CheckCircle2,
   Loader2,
   Play,
   FileText,
@@ -49,13 +49,32 @@ import {
 import confetti from 'canvas-confetti';
 import { useAuth } from './lib/AuthContext';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://ais-dev-mxn6iudwu5v3axtx5wv3ic-720914652018.europe-west2.run.app';
+// ─────────────────────────────────────────────────────────────────────────────
+// API URL Strategy (commercial app):
+//
+//   Native - dev build  (vite build --mode development):
+//     import.meta.env.DEV = true  →  10.0.2.2:3000  (your PC via emulator alias)
+//
+//   Native - release build  (vite build):
+//     import.meta.env.DEV = false  →  Cloud Run  (production backend, has API key)
+//
+//   Web browser preview  (npm run dev):
+//     VITE_API_BASE_URL from .env  →  localhost:3000
+//
+//   The Gemini API key is NEVER in the bundle — it lives only on the server.
+// ─────────────────────────────────────────────────────────────────────────────
+const CLOUD_RUN_URL = 'https://ais-dev-mxn6iudwu5v3axtx5wv3ic-720914652018.europe-west2.run.app';
+const EMULATOR_URL  = 'http://10.0.2.2:3000';
+
+const API_BASE_URL = Capacitor.isNativePlatform()
+  ? (import.meta.env.DEV ? EMULATOR_URL : CLOUD_RUN_URL)
+  : (import.meta.env.VITE_API_BASE_URL || CLOUD_RUN_URL);
 
 const TrainingChallengeCard = ({ challenge, onCompleteDay }: { challenge: any, onCompleteDay?: (day: number) => void }) => {
   if (!challenge) return null;
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-zinc-900 p-4 lg:p-8 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]"
@@ -69,23 +88,22 @@ const TrainingChallengeCard = ({ challenge, onCompleteDay }: { challenge: any, o
           <p className="text-xs lg:text-sm text-zinc-400">7-Day Training Challenge</p>
         </div>
       </div>
-      
+
       <p className="text-sm lg:text-base text-zinc-400 mb-8 leading-relaxed">{challenge.description}</p>
-      
+
       <div className="space-y-4">
         {challenge.days?.map((day: any, idx: number) => {
           const isCompleted = challenge.completedDays?.includes(day.day);
           return (
-            <motion.div 
-              key={day.day} 
+            <motion.div
+              key={day.day}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: idx * 0.1 }}
-              className={`p-4 lg:p-6 rounded-2xl border transition-all ${
-                isCompleted 
-                  ? 'bg-zinc-800 border-emerald-100' 
+              className={`p-4 lg:p-6 rounded-2xl border transition-all ${isCompleted
+                  ? 'bg-zinc-800 border-emerald-100'
                   : 'bg-zinc-950 border-zinc-800 hover:border-gold-500/50'
-              }`}
+                }`}
             >
               <div className="flex items-center justify-between mb-3">
                 <span className={`text-[10px] lg:text-xs font-bold uppercase tracking-widest ${isCompleted ? 'text-emerald-600' : 'text-zinc-500'}`}>
@@ -107,9 +125,9 @@ const TrainingChallengeCard = ({ challenge, onCompleteDay }: { challenge: any, o
               <p className={`text-xs lg:text-sm ${isCompleted ? 'text-emerald-700' : 'text-zinc-400'}`}>
                 <span className="font-semibold">Goal:</span> {day.goal}
               </p>
-              
+
               {!isCompleted && onCompleteDay && (
-                <button 
+                <button
                   onClick={() => onCompleteDay(day.day)}
                   className="mt-4 w-full py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 rounded-xl text-sm font-bold hover:bg-zinc-950 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.4)] active:scale-95"
                 >
@@ -127,7 +145,7 @@ const TrainingChallengeCard = ({ challenge, onCompleteDay }: { challenge: any, o
 const SubscriptionPage = ({ message, onUpgrade, onRestore, onClose, isSandbox, onWatchAd, isWatchingAd, type, onShowTerms, onShowPrivacy }: { message: string, onUpgrade: () => void, onRestore: () => void, onClose: () => void, isSandbox?: boolean, onWatchAd?: () => void, isWatchingAd?: boolean, type?: 'analysis' | 'chat' | 'upgrade', onShowTerms: () => void, onShowPrivacy: () => void }) => {
   return (
     <div className="fixed inset-0 z-[100] flex items-end lg:items-center justify-center p-0 lg:p-4 bg-slate-900/60 backdrop-blur-sm">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: "100%" }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: "100%" }}
@@ -183,15 +201,15 @@ const SubscriptionPage = ({ message, onUpgrade, onRestore, onClose, isSandbox, o
         </div>
 
         <div className="space-y-3">
-          <button 
+          <button
             onClick={onUpgrade}
             className="w-full py-4 bg-gold-500 text-white font-bold rounded-2xl hover:bg-gold-600 transition-all shadow-[0_10px_40px_rgba(0,0,0,0.6)] shadow-gold-500/20 flex items-center justify-center gap-2"
           >
             Subscribe for $9.99/mo
           </button>
-          
+
           {onWatchAd && type !== 'upgrade' && (
-            <button 
+            <button
               onClick={onWatchAd}
               disabled={isWatchingAd}
               className="w-full py-3 bg-zinc-800 text-zinc-300 font-bold rounded-2xl hover:bg-zinc-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
@@ -204,8 +222,8 @@ const SubscriptionPage = ({ message, onUpgrade, onRestore, onClose, isSandbox, o
               Watch Ad for 1 Free {type === 'chat' ? 'Chat' : 'Analysis'}
             </button>
           )}
-          
-          <button 
+
+          <button
             onClick={onRestore}
             className="w-full py-3 text-zinc-400 font-bold hover:bg-zinc-950 rounded-2xl transition-all text-sm"
           >
@@ -250,24 +268,24 @@ const ConsistencyChart = ({ activityLog }: { activityLog: any[] }) => {
         <AreaChart data={data}>
           <defs>
             <linearGradient id="colorSessions" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.1}/>
-              <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
+              <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.1} />
+              <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-          <XAxis 
-            dataKey="date" 
-            axisLine={false} 
-            tickLine={false} 
+          <XAxis
+            dataKey="date"
+            axisLine={false}
+            tickLine={false}
             tick={{ fontSize: 10, fill: '#94a3b8' }}
             dy={10}
           />
-          <YAxis 
+          <YAxis
             axisLine={false}
             tickLine={false}
             tick={{ fontSize: 10, fill: '#94a3b8' }}
           />
-          <Tooltip 
+          <Tooltip
             content={({ active, payload }) => {
               if (active && payload && payload.length) {
                 return (
@@ -280,19 +298,19 @@ const ConsistencyChart = ({ activityLog }: { activityLog: any[] }) => {
               return null;
             }}
           />
-          <Area 
-            type="monotone" 
-            dataKey="sessions" 
-            stroke="#f59e0b" 
+          <Area
+            type="monotone"
+            dataKey="sessions"
+            stroke="#f59e0b"
             strokeWidth={3}
-            fillOpacity={1} 
-            fill="url(#colorSessions)" 
+            fillOpacity={1}
+            fill="url(#colorSessions)"
           />
-          <Line 
-            type="monotone" 
-            dataKey="target" 
-            stroke="#94a3b8" 
-            strokeDasharray="5 5" 
+          <Line
+            type="monotone"
+            dataKey="target"
+            stroke="#94a3b8"
+            strokeDasharray="5 5"
             dot={false}
             strokeWidth={1}
           />
@@ -311,15 +329,15 @@ const StreakHeader = ({ streak, activityLog }: { streak: number, activityLog: an
       <div className="relative w-16 h-16 lg:w-20 lg:h-20">
         <svg className="w-full h-full" viewBox="0 0 100 100">
           <circle className="text-slate-100 stroke-current" strokeWidth="8" cx="50" cy="50" r="40" fill="transparent" />
-          <motion.circle 
-            className="text-gold-500 stroke-current" 
-            strokeWidth="8" 
+          <motion.circle
+            className="text-gold-500 stroke-current"
+            strokeWidth="8"
             strokeDasharray={251.2}
             initial={{ strokeDashoffset: 251.2 }}
             animate={{ strokeDashoffset: hasUploadedToday ? 0 : 251.2 }}
             transition={{ duration: 1, ease: "easeOut" }}
-            strokeLinecap="round" 
-            cx="50" cy="50" r="40" fill="transparent" 
+            strokeLinecap="round"
+            cx="50" cy="50" r="40" fill="transparent"
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
@@ -344,24 +362,24 @@ const StreakHeader = ({ streak, activityLog }: { streak: number, activityLog: an
           )}
         </div>
         <p className="text-sm text-zinc-400 mt-1">
-          {hasUploadedToday 
-            ? "Great job! You've completed your training for today." 
+          {hasUploadedToday
+            ? "Great job! You've completed your training for today."
             : "Keep the momentum going! Upload a video to maintain your streak."}
         </p>
       </div>
     </div>
   );
 };
-import { 
-  signInWithGoogle, 
-  logout, 
-  db, 
+import {
+  signInWithGoogle,
+  logout,
+  db,
   auth,
-  collection, 
-  query, 
-  where, 
-  orderBy, 
-  onSnapshot, 
+  collection,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
   Timestamp,
   storage,
   ref,
@@ -498,7 +516,7 @@ export default function App() {
     const statsRef = doc(db, 'user_stats', userId);
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    
+
     let stats = userStats;
     if (!stats) {
       // Fallback if state hasn't loaded yet
@@ -512,7 +530,7 @@ export default function App() {
 
     let newStreak = stats.current_streak || 0;
     const lastUpload = stats.last_upload_date ? new Date(stats.last_upload_date.toMillis()) : null;
-    
+
     if (!lastUpload) {
       newStreak = 1;
     } else {
@@ -571,13 +589,30 @@ export default function App() {
     }
   }, [notification]);
 
+  // Returns today's date string in Eastern Time (America/New_York), e.g. "2026-05-02"
+  const getEasternDateString = (): string => {
+    return new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+  };
+
+  // Returns the effective daily analysis count for free-tier limiting.
+  // If the stored date doesn't match today's Eastern date, the count is 0 (reset).
+  const getEffectiveDailyAnalysesCount = (ud: any): number => {
+    if (!ud) return 0;
+    const todayET = getEasternDateString();
+    if (ud.dailyAnalysesDate === todayET) {
+      return ud.dailyAnalysesCount || 0;
+    }
+    return 0; // New Eastern day — count resets
+  };
+
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (paywallCooldown && !showLimitModal) {
       timer = setTimeout(() => {
         const isPro = userData?.subscriptionTier === 'pro';
         const freeLimit = 3;
-        if (!isPro && (userData?.analysesCount || 0) >= freeLimit && (userData?.bonusAnalyses || 0) <= 0) {
+        const dailyCount = getEffectiveDailyAnalysesCount(userData);
+        if (!isPro && dailyCount >= freeLimit && (userData?.bonusAnalyses || 0) <= 0) {
           setShowLimitModal({
             type: 'analysis',
             message: `Ready to learn more? Upgrade to Pro or watch a quick ad to continue analyzing your pet's behavior.`
@@ -697,17 +732,18 @@ export default function App() {
 
   const handleInitiateUpload = () => {
     if (!user || !userData) return;
-    
+
     const isPro = userData.subscriptionTier === 'pro';
     const freeLimit = 3;
-    if (!isPro && userData.analysesCount >= freeLimit && (userData.bonusAnalyses || 0) <= 0) {
+    const dailyCount = getEffectiveDailyAnalysesCount(userData);
+    if (!isPro && dailyCount >= freeLimit && (userData.bonusAnalyses || 0) <= 0) {
       setShowLimitModal({
         type: 'analysis',
-        message: `You've reached the free limit of ${freeLimit} analyses. Upgrade to Pro or watch an ad for +1 analysis!`
+        message: `You've reached today's free limit of ${freeLimit} analyses. It resets at midnight Eastern Time, or upgrade to Pro for unlimited access!`
       });
       return;
     }
-    
+
     // Trigger file input
     const fileInput = document.getElementById('behavior-file-input');
     if (fileInput) {
@@ -751,7 +787,7 @@ export default function App() {
     try {
       setUploadStatus('Processing analysis on secure server...');
       setUploadProgress(40);
-      
+
       let mediaUrl: string;
       let result: any;
 
@@ -762,7 +798,7 @@ export default function App() {
       });
 
       const responseText = await response.text();
-      
+
       if (!response.ok) {
         const errorData = JSON.parse(responseText);
         if (errorData.code === "SOFT_PAUSE") {
@@ -771,7 +807,7 @@ export default function App() {
         }
         throw new Error(responseText || `Server error (${response.status})`);
       }
-      
+
       const data = JSON.parse(responseText);
       mediaUrl = data.mediaUrl;
       result = data.geminiResult;
@@ -824,19 +860,24 @@ export default function App() {
         const isPro = userData.subscriptionTier === 'pro';
         const now = new Date();
         const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-        
+        const todayET = getEasternDateString();
+        const currentDailyCount = getEffectiveDailyAnalysesCount(userData);
+
         const updates: any = {
           analysesCount: increment(1),
-          [`monthlyUsage.${monthKey}`]: increment(1)
+          [`monthlyUsage.${monthKey}`]: increment(1),
+          // Daily ET counter — reset to 1 if it's a new day, otherwise increment
+          dailyAnalysesDate: todayET,
+          dailyAnalysesCount: currentDailyCount + 1,
         };
-        
-        // If we were over the free limit, consume a bonus
-        if (!isPro && userData.analysesCount >= 3) {
+
+        // If we were at or over the free daily limit, consume a bonus instead
+        if (!isPro && currentDailyCount >= 3) {
           if ((userData.bonusAnalyses || 0) > 0) {
             updates.bonusAnalyses = increment(-1);
           }
         }
-        
+
         await updateDoc(userRef, updates);
       } catch (error) {
         handleFirestoreError(error, OperationType.UPDATE, `users/${user.uid}`);
@@ -850,7 +891,7 @@ export default function App() {
       setUploadProgress(100);
       setUserQuestion('');
       setSelectedPetId('');
-      
+
       // Clear the file input
       const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
@@ -875,7 +916,7 @@ export default function App() {
     if (!isPro) {
       const userMessagesCount = chatMessages.filter(m => m.role === 'user').length;
       const freeLimit = 2;
-      
+
       if (userMessagesCount >= freeLimit) {
         if ((userData.bonusChats || 0) > 0) {
           // Consume a bonus chat
@@ -955,7 +996,7 @@ export default function App() {
 
   const handleUpgrade = async () => {
     if (!user) return;
-    
+
     if (!Capacitor.isNativePlatform()) {
       alert("In-app purchases are only available in the mobile app.");
       setUploadStatus('');
@@ -964,22 +1005,22 @@ export default function App() {
 
     try {
       setUploadStatus('Opening secure checkout...');
-      
+
       // Get offerings from RevenueCat Capacitor SDK
       const offerings = await Purchases.getOfferings();
       if (offerings.current && offerings.current.monthly) {
         // Purchase the monthly package
         const { customerInfo } = await Purchases.purchasePackage({ aPackage: offerings.current.monthly });
-        
+
         console.log("[RevenueCat] Purchase completed. CustomerInfo:", customerInfo);
-        
+
         // Check for 'pro' entitlement
         const isPro = !!customerInfo.entitlements.active.pro;
         const hasAnyEntitlement = Object.keys(customerInfo.entitlements.active).length > 0;
-        
+
         if (isPro || hasAnyEntitlement) {
           const entitlementName = isPro ? 'Pro' : Object.keys(customerInfo.entitlements.active)[0];
-          
+
           // Sync with backend (for logging/webhook purposes)
           try {
             console.log("[RevenueCat] Syncing subscription with backend for user:", user.uid);
@@ -1005,16 +1046,16 @@ export default function App() {
             console.error("[Firestore] Failed to update subscription:", fsError);
           }
 
-          setNotification({ 
-            message: `Welcome to ${entitlementName}! Your account has been upgraded.`, 
-            type: 'success' 
+          setNotification({
+            message: `Welcome to ${entitlementName}! Your account has been upgraded.`,
+            type: 'success'
           });
-          
+
           // Optimistic update to clear paywall immediately
           if (userData) {
             setUserData({ ...userData, subscriptionTier: 'pro', is_subscriber: true });
           }
-          
+
           setShowLimitModal(null);
           confetti({
             particleCount: 150,
@@ -1037,9 +1078,9 @@ export default function App() {
     } catch (error: any) {
       if (!error.userCancelled) {
         console.error("[RevenueCat] Purchase error:", error);
-        setNotification({ 
-          message: error.message || 'Failed to initiate purchase. Please try again.', 
-          type: 'error' 
+        setNotification({
+          message: error.message || 'Failed to initiate purchase. Please try again.',
+          type: 'error'
         });
       }
     } finally {
@@ -1049,7 +1090,7 @@ export default function App() {
 
   const handleRestorePurchases = async () => {
     if (!user) return;
-    
+
     if (!Capacitor.isNativePlatform()) {
       alert("In-app purchases are only available in the mobile app.");
       return;
@@ -1060,10 +1101,10 @@ export default function App() {
       const { customerInfo } = await Purchases.restorePurchases();
       const isPro = !!customerInfo.entitlements.active.pro;
       const hasAnyEntitlement = Object.keys(customerInfo.entitlements.active).length > 0;
-      
+
       if (isPro || hasAnyEntitlement) {
         const entitlementName = isPro ? 'Pro' : Object.keys(customerInfo.entitlements.active)[0];
-        
+
         // Sync with backend immediately
         try {
           console.log("[RevenueCat] Syncing restored purchases with backend for user:", user.uid);
@@ -1072,7 +1113,7 @@ export default function App() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ app_user_id: user.uid })
           });
-          
+
           const contentType = response.headers.get("content-type");
           if (contentType && contentType.indexOf("application/json") !== -1) {
             const result = await response.json();
@@ -1090,12 +1131,12 @@ export default function App() {
         }
 
         setNotification({ message: `Purchases restored! You are now ${entitlementName}.`, type: 'success' });
-        
+
         // Optimistic update to clear paywall immediately
         if (userData) {
           setUserData({ ...userData, subscriptionTier: 'pro', is_subscriber: true });
         }
-        
+
         setShowLimitModal(null);
       } else {
         setNotification({ message: 'No active subscription found to restore.', type: 'error' });
@@ -1118,9 +1159,9 @@ export default function App() {
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
       const lastAdDate = userData.lastAdAnalysisDate ? new Date(userData.lastAdAnalysisDate.toMillis()) : null;
       const lastAdDay = lastAdDate ? new Date(lastAdDate.getFullYear(), lastAdDate.getMonth(), lastAdDate.getDate()).getTime() : 0;
-      
+
       const currentDailyCount = (today > lastAdDay) ? 0 : (userData.dailyAdAnalysesCount || 0);
-      
+
       if (currentDailyCount >= 3) {
         setNotification({ message: 'Daily limit for free analysis ads reached (3/3). Reset at midnight.', type: 'error' });
         return;
@@ -1128,7 +1169,7 @@ export default function App() {
     }
 
     setIsWatchingAd(true);
-    
+
     rewardedAdService.loadAd('ca-app-pub-3940256099942544/5224354917', {
       onAdLoaded: () => {
         rewardedAdService.showAd({
@@ -1175,7 +1216,7 @@ export default function App() {
         setIsWatchingAd(false);
         setNotification({ message: 'Ad failed to load. Please try again.', type: 'error' });
       },
-      onUserEarnedReward: () => {} // Handled in showAd
+      onUserEarnedReward: () => { } // Handled in showAd
     });
   };
 
@@ -1363,8 +1404,8 @@ export default function App() {
       const storageRef = ref(storage, `users/${user.uid}/profile_${Date.now()}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
 
-      uploadTask.on('state_changed', 
-        () => {},
+      uploadTask.on('state_changed',
+        () => { },
         (error) => {
           console.error("Profile picture upload failed:", error);
           setNotification({ message: 'Failed to upload image', type: 'error' });
@@ -1373,7 +1414,7 @@ export default function App() {
         async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
           await updateProfile(user, { photoURL: downloadURL });
-          
+
           // Force a re-render by updating the user object reference slightly or just relying on auth state change
           // In many cases, Firebase Auth doesn't trigger a re-render for profile updates alone,
           // so we might need to manually trigger it if we had a local user state, but we use useAuth.
@@ -1425,7 +1466,7 @@ export default function App() {
         });
         setNotification({ message: 'Reminder added successfully!', type: 'success' });
       }
-      
+
       setIsAddingReminder(false);
       setEditingReminderId(null);
       setNewReminder({
@@ -1446,7 +1487,7 @@ export default function App() {
       await updateDoc(doc(db, 'reminders', reminderId), {
         completed: !completed
       });
-      
+
       if (!completed) {
         confetti({
           particleCount: 100,
@@ -1512,7 +1553,7 @@ export default function App() {
 
   const handleShareAnalysis = async (analysis: any) => {
     if (!analysis) return;
-    
+
     const shareData = {
       title: `PawBehavior Analysis: ${analysis.petName || 'My Pet'}`,
       text: `Check out this behavioral analysis for ${analysis.petName || 'my pet'}! Emotional State: ${analysis.result?.emotionalState || 'Unknown'}.`,
@@ -1540,10 +1581,10 @@ export default function App() {
 
   const handleShareChallenge = async (challenge: any) => {
     if (!challenge) return;
-    
+
     const progress = challenge.completedDays?.length || 0;
-    const statusText = challenge.status === 'completed' 
-      ? `fully completed the "${challenge.title}" challenge!` 
+    const statusText = challenge.status === 'completed'
+      ? `fully completed the "${challenge.title}" challenge!`
       : `completed ${progress}/7 days of the "${challenge.title}" challenge!`;
 
     const shareData = {
@@ -1576,8 +1617,8 @@ export default function App() {
       <div className="min-h-screen flex flex-col items-center justify-center bg-zinc-950 relative overflow-hidden">
         {/* Ambient glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold-500/5 rounded-full blur-[100px] pointer-events-none" />
-        
-        <motion.div 
+
+        <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: "easeOut" }}
@@ -1586,12 +1627,12 @@ export default function App() {
           <div className="w-24 h-24 bg-gold-500 rounded-[2.5rem] flex items-center justify-center shadow-[0_20px_50px_rgba(212,175,55,0.15)] border border-gold-400/20">
             <Dog className="w-12 h-12 text-white" />
           </div>
-          
+
           <div className="text-center">
             <h1 className="text-3xl font-black font-serif tracking-[0.2em] text-gold-400 uppercase">PawBehavior</h1>
             <p className="text-[10px] tracking-[0.5em] uppercase text-gold-600/70 mt-3 font-bold">Pet Analysis</p>
           </div>
-          
+
           <div className="mt-12 flex items-center gap-3">
             <div className="w-1.5 h-1.5 bg-gold-500 rounded-full animate-bounce [animation-delay:-0.3s]" />
             <div className="w-1.5 h-1.5 bg-gold-500 rounded-full animate-bounce [animation-delay:-0.15s]" />
@@ -1605,7 +1646,7 @@ export default function App() {
   if (!user) {
     return (
       <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center p-4 relative overflow-hidden">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-md w-full text-center space-y-8"
@@ -1615,7 +1656,7 @@ export default function App() {
               <Dog className="w-12 h-12 text-white" />
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <h1 className="text-4xl font-black font-serif tracking-tight text-gold-400">PawBehavior</h1>
             <p className="text-[10px] tracking-[0.3em] uppercase text-gold-600 mt-2 font-bold">Pet Analysis</p>
@@ -1650,8 +1691,8 @@ export default function App() {
               >
                 Sign in with Email
               </button>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={() => setAuthMode('forgot')}
                 className="text-xs font-bold text-gold-500 hover:text-gold-400 uppercase tracking-widest pt-2"
               >
@@ -1663,7 +1704,7 @@ export default function App() {
               {authMode === 'signup' && (
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-zinc-400 uppercase">Full Name</label>
-                  <input 
+                  <input
                     required
                     type="text"
                     value={displayName}
@@ -1675,7 +1716,7 @@ export default function App() {
               )}
               <div className="space-y-1">
                 <label className="text-xs font-bold text-zinc-400 uppercase">Email Address</label>
-                <input 
+                <input
                   required
                   type="email"
                   value={email}
@@ -1689,8 +1730,8 @@ export default function App() {
                   <div className="flex justify-between items-center">
                     <label className="text-xs font-bold text-zinc-400 uppercase">Password</label>
                     {authMode === 'login' && (
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         onClick={() => setAuthMode('forgot')}
                         className="text-sm font-black text-gold-400 hover:text-gold-300 transition-colors uppercase tracking-widest underline decoration-2 underline-offset-4"
                       >
@@ -1698,7 +1739,7 @@ export default function App() {
                       </button>
                     )}
                   </div>
-                  <input 
+                  <input
                     required
                     type="password"
                     value={password}
@@ -1755,7 +1796,7 @@ export default function App() {
               </div>
             </form>
           )}
-          
+
           <p className="text-xs text-zinc-500">
             By signing in, you agree to our <button type="button" onClick={() => setShowTermsModal(true)} className="hover:text-gold-400 underline">Terms of Service</button> and <button type="button" onClick={() => setShowPrivacyModal(true)} className="hover:text-gold-400 underline">Privacy Policy</button>.
           </p>
@@ -1765,7 +1806,7 @@ export default function App() {
         <AnimatePresence>
           {showTermsModal && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -1777,10 +1818,10 @@ export default function App() {
                     <X className="w-6 h-6" />
                   </button>
                 </div>
-                
+
                 <div className="space-y-6 text-zinc-400 text-sm leading-relaxed">
                   <p className="italic">Last Updated: April 2026</p>
-                  
+
                   <div>
                     <h4 className="font-black font-serif text-gold-400 mb-1">1. Acceptance of Terms</h4>
                     <p>By accessing and using PawBehavior, you agree to be bound by these Terms of Use. If you do not agree, please do not use the application.</p>
@@ -1817,7 +1858,7 @@ export default function App() {
         <AnimatePresence>
           {showPrivacyModal && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -1829,10 +1870,10 @@ export default function App() {
                     <X className="w-6 h-6" />
                   </button>
                 </div>
-                
+
                 <div className="space-y-6 text-zinc-400 text-sm leading-relaxed">
                   <p className="italic">Last Updated: April 2026</p>
-                  
+
                   <div>
                     <h4 className="font-black font-serif text-gold-400 mb-1">1. Information We Collect</h4>
                     <p>We collect information you provide directly to us, including your email address, pet profiles (name, breed, age), and the media (video/audio) you upload for analysis.</p>
@@ -1877,11 +1918,11 @@ export default function App() {
             <Dog className="w-5 h-5 text-white" />
           </div>
           <div className="flex flex-col">
-              <span className="font-black font-serif text-xl text-gold-400 leading-none">PawBehavior</span>
-              <span className="text-[8px] tracking-[0.2em] uppercase text-gold-600 font-bold">Pet Analysis</span>
-            </div>
+            <span className="font-black font-serif text-xl text-gold-400 leading-none">PawBehavior</span>
+            <span className="text-[8px] tracking-[0.2em] uppercase text-gold-600 font-bold">Pet Analysis</span>
+          </div>
         </div>
-        <button 
+        <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="p-2 text-zinc-400 hover:bg-zinc-950 rounded-lg"
         >
@@ -1901,50 +1942,50 @@ export default function App() {
             <Dog className="w-6 h-6 text-white" />
           </div>
           <div className="flex flex-col">
-              <span className="font-black font-serif text-2xl text-gold-400 leading-none">PawBehavior</span>
-              <span className="text-[9px] tracking-[0.2em] uppercase text-gold-600 font-bold mt-1">Pet Analysis</span>
-            </div>
+            <span className="font-black font-serif text-2xl text-gold-400 leading-none">PawBehavior</span>
+            <span className="text-[9px] tracking-[0.2em] uppercase text-gold-600 font-bold mt-1">Pet Analysis</span>
+          </div>
         </div>
 
         <nav className="flex-1 px-4 pt-20 pb-6 lg:py-0 space-y-2 overflow-y-auto">
-          <NavItem 
-            active={activeTab === 'dashboard'} 
+          <NavItem
+            active={activeTab === 'dashboard'}
             onClick={() => { setActiveTab('dashboard'); setSelectedAnalysis(null); setIsSidebarOpen(false); }}
             icon={<Activity className="w-5 h-5" />}
             label="Dashboard"
           />
-          <NavItem 
-            active={activeTab === 'upload'} 
+          <NavItem
+            active={activeTab === 'upload'}
             onClick={() => { setActiveTab('upload'); setSelectedAnalysis(null); setIsSidebarOpen(false); }}
             icon={<Upload className="w-5 h-5" />}
             label="New Analysis"
           />
-          <NavItem 
-            active={activeTab === 'history'} 
+          <NavItem
+            active={activeTab === 'history'}
             onClick={() => { setActiveTab('history'); setSelectedAnalysis(null); setIsSidebarOpen(false); }}
             icon={<History className="w-5 h-5" />}
             label="History"
           />
-          <NavItem 
-            active={activeTab === 'pets'} 
+          <NavItem
+            active={activeTab === 'pets'}
             onClick={() => { setActiveTab('pets'); setSelectedAnalysis(null); setIsSidebarOpen(false); }}
             icon={<Dog className="w-5 h-5" />}
             label="My Pets"
           />
-          <NavItem 
-            active={activeTab === 'reminders'} 
+          <NavItem
+            active={activeTab === 'reminders'}
             onClick={() => { setActiveTab('reminders'); setSelectedAnalysis(null); setIsSidebarOpen(false); }}
             icon={<Bell className="w-5 h-5" />}
             label="Reminders"
           />
-          <NavItem 
-            active={activeTab === 'challenges'} 
+          <NavItem
+            active={activeTab === 'challenges'}
             onClick={() => { setActiveTab('challenges'); setSelectedAnalysis(null); setIsSidebarOpen(false); }}
             icon={<Flame className="w-5 h-5" />}
             label="Training Challenges"
           />
-          <NavItem 
-            active={activeTab === 'settings'} 
+          <NavItem
+            active={activeTab === 'settings'}
             onClick={() => { setActiveTab('settings'); setSelectedAnalysis(null); setIsSidebarOpen(false); }}
             icon={<Settings className="w-5 h-5" />}
             label="Settings"
@@ -1965,7 +2006,7 @@ export default function App() {
               <p className="text-xs text-zinc-400 truncate">{user.email}</p>
             </div>
           </div>
-          <button 
+          <button
             onClick={logout}
             className="w-full flex items-center gap-2 text-zinc-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-colors text-sm font-medium"
           >
@@ -1980,13 +2021,13 @@ export default function App() {
         <header className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <h2 className="text-2xl lg:text-3xl font-black font-serif text-gold-400">
-              {selectedAnalysis ? 'Analysis Report' : 
-               activeTab === 'dashboard' ? 'Dashboard' : 
-               activeTab === 'upload' ? 'New Analysis' : 
-               activeTab === 'settings' ? 'Settings' : 
-               activeTab === 'reminders' ? 'Reminders' :
-               activeTab === 'challenges' ? 'Training Challenges' :
-               'Report History'}
+              {selectedAnalysis ? 'Analysis Report' :
+                activeTab === 'dashboard' ? 'Dashboard' :
+                  activeTab === 'upload' ? 'New Analysis' :
+                    activeTab === 'settings' ? 'Settings' :
+                      activeTab === 'reminders' ? 'Reminders' :
+                        activeTab === 'challenges' ? 'Training Challenges' :
+                          'Report History'}
             </h2>
             <p className="text-zinc-400 mt-1 text-sm lg:text-base">
               {selectedAnalysis ? `Report for ${selectedAnalysis.petName || 'My Pet'}` : `Welcome back, ${(user.displayName || 'User').split(' ')[0]}`}
@@ -1994,7 +2035,7 @@ export default function App() {
           </div>
           <div className="flex items-center gap-3">
             {activeTab === 'dashboard' && !selectedAnalysis && (
-              <button 
+              <button
                 onClick={() => setActiveTab('upload')}
                 className="w-full sm:w-auto bg-gold-500 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-gold-600 transition-all shadow-lg shadow-gold-500/20 flex items-center justify-center gap-2"
               >
@@ -2004,14 +2045,14 @@ export default function App() {
             )}
             {selectedAnalysis && (
               <div className="flex items-center gap-2 w-full sm:w-auto">
-                <button 
+                <button
                   onClick={() => handleShareAnalysis(selectedAnalysis)}
                   className="flex-1 sm:flex-none bg-zinc-900 text-zinc-400 border border-zinc-800 px-4 py-2.5 rounded-xl font-medium hover:bg-zinc-950 transition-all flex items-center justify-center gap-2"
                 >
                   <Share2 className="w-4 h-4" />
                   Share
                 </button>
-                <button 
+                <button
                   onClick={() => setSelectedAnalysis(null)}
                   className="flex-1 sm:flex-none text-zinc-400 hover:text-zinc-100 font-medium flex items-center justify-center gap-2 px-4 py-2.5"
                 >
@@ -2038,9 +2079,9 @@ export default function App() {
                   {selectedAnalysis.mediaUrl && (
                     <div className="bg-black rounded-3xl overflow-hidden shadow-2xl aspect-video relative group">
                       {selectedAnalysis.mediaType === 'video' ? (
-                        <video 
-                          src={selectedAnalysis.mediaUrl} 
-                          controls 
+                        <video
+                          src={selectedAnalysis.mediaUrl}
+                          controls
                           className="w-full h-full object-contain"
                         />
                       ) : (
@@ -2135,15 +2176,14 @@ export default function App() {
                         Hello! I'm your AI Behaviorist. Based on the analysis above, do you have any specific questions about your pet's behavior?
                       </div>
                       {chatMessages.map((msg) => (
-                        <div 
+                        <div
                           key={msg.id}
                           className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                         >
-                          <div className={`max-w-[85%] p-3 lg:p-4 rounded-2xl text-xs lg:text-sm ${
-                            msg.role === 'user' 
-                              ? 'bg-gold-500 text-white rounded-tr-none' 
+                          <div className={`max-w-[85%] p-3 lg:p-4 rounded-2xl text-xs lg:text-sm ${msg.role === 'user'
+                              ? 'bg-gold-500 text-white rounded-tr-none'
                               : 'bg-zinc-900 text-zinc-300 border border-zinc-800 rounded-tl-none shadow-[0_4px_20px_rgba(0,0,0,0.4)]'
-                          }`}>
+                            }`}>
                             {msg.content}
                           </div>
                         </div>
@@ -2158,13 +2198,13 @@ export default function App() {
                     </div>
 
                     <form onSubmit={handleSendMessage} className="p-3 lg:p-4 bg-zinc-900 border-t border-zinc-800 flex gap-2">
-                      <input 
+                      <input
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         placeholder="Type a follow-up question..."
                         className="flex-1 px-3 lg:px-4 py-2 rounded-xl border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none text-xs lg:text-sm"
                       />
-                      <button 
+                      <button
                         type="submit"
                         disabled={!newMessage.trim() || isSendingMessage}
                         className="p-2 bg-gold-500 text-white rounded-xl hover:bg-gold-600 transition-all disabled:opacity-50"
@@ -2212,7 +2252,7 @@ export default function App() {
               {selectedChallenge ? (
                 <div className="space-y-6">
                   <div className="flex justify-between items-center">
-                    <button 
+                    <button
                       onClick={() => setSelectedChallenge(null)}
                       className="flex items-center gap-2 text-zinc-400 hover:text-zinc-100 font-medium"
                     >
@@ -2220,14 +2260,14 @@ export default function App() {
                       Back to Challenges
                     </button>
                     <div className="flex items-center gap-2">
-                      <button 
+                      <button
                         onClick={() => handleShareChallenge(selectedChallenge)}
                         className="flex items-center gap-2 text-gold-400 hover:text-gold-300 font-medium px-4 py-2 rounded-xl hover:bg-gold-500/10 transition-all"
                       >
                         <Share2 className="w-4 h-4" />
                         Share Progress
                       </button>
-                      <button 
+                      <button
                         onClick={() => setDeleteConfirmation({
                           type: 'challenge',
                           id: selectedChallenge.id,
@@ -2240,22 +2280,22 @@ export default function App() {
                       </button>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2">
-                      <TrainingChallengeCard 
-                        challenge={selectedChallenge} 
+                      <TrainingChallengeCard
+                        challenge={selectedChallenge}
                         onCompleteDay={async (day) => {
                           try {
                             const challengeRef = doc(db, 'challenges', selectedChallenge.id);
                             const newCompletedDays = [...(selectedChallenge.completedDays || []), day];
                             const isFullyCompleted = newCompletedDays.length === 7;
-                            
+
                             await updateDoc(challengeRef, {
                               completedDays: newCompletedDays,
                               status: isFullyCompleted ? 'completed' : 'active'
                             });
-                            
+
                             if (isFullyCompleted) {
                               confetti({
                                 particleCount: 150,
@@ -2273,7 +2313,7 @@ export default function App() {
                               });
                               setNotification({ message: `Day ${day} completed! Keep it up!`, type: 'success' });
                             }
-                            
+
                             // Update local state for immediate feedback
                             setSelectedChallenge({
                               ...selectedChallenge,
@@ -2286,7 +2326,7 @@ export default function App() {
                         }}
                       />
                     </div>
-                    
+
                     <div className="space-y-6">
                       <div className="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
                         <h4 className="font-black font-serif text-gold-400 mb-4 flex items-center gap-2">
@@ -2296,7 +2336,7 @@ export default function App() {
                         <p className="text-sm text-zinc-400 mb-6">
                           Upload a video of your pet performing today's exercise for a targeted analysis of their progress.
                         </p>
-                        <button 
+                        <button
                           onClick={() => {
                             setUserQuestion(`I am working on Day ${selectedChallenge.completedDays.length + 1} of the "${selectedChallenge.title}" challenge. How is my pet doing with this specific exercise?`);
                             setSelectedPetId(selectedChallenge.petId);
@@ -2312,7 +2352,7 @@ export default function App() {
                       <div className="bg-slate-900 p-6 rounded-3xl text-white">
                         <h4 className="font-bold mb-2">Why this challenge?</h4>
                         <p className="text-sm text-zinc-500 leading-relaxed">
-                          This challenge was custom-generated by our AI Behaviorist based on your analysis of {selectedChallenge.petName}. 
+                          This challenge was custom-generated by our AI Behaviorist based on your analysis of {selectedChallenge.petName}.
                           Consistent daily practice is key to long-term behavioral change.
                         </p>
                       </div>
@@ -2334,7 +2374,7 @@ export default function App() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {challenges.length > 0 ? (
                       challenges.map((challenge) => (
-                        <div 
+                        <div
                           key={challenge.id}
                           onClick={() => setSelectedChallenge(challenge)}
                           className="bg-zinc-900 p-6 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:border-indigo-300 transition-all cursor-pointer group"
@@ -2344,12 +2384,11 @@ export default function App() {
                               {challenge.status === 'completed' ? <CheckCircle2 className="w-5 h-5" /> : <Flame className="w-5 h-5" />}
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-full ${
-                                challenge.status === 'completed' ? 'bg-emerald-500/20 text-emerald-700' : 'bg-gold-500/20 text-amber-700'
-                              }`}>
+                              <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-full ${challenge.status === 'completed' ? 'bg-emerald-500/20 text-emerald-700' : 'bg-gold-500/20 text-amber-700'
+                                }`}>
                                 {challenge.status}
                               </span>
-                              <button 
+                              <button
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   handleShareChallenge(challenge);
@@ -2358,7 +2397,7 @@ export default function App() {
                               >
                                 <Share2 className="w-4 h-4" />
                               </button>
-                              <button 
+                              <button
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setDeleteConfirmation({
@@ -2375,14 +2414,14 @@ export default function App() {
                           </div>
                           <h4 className="font-black font-serif text-gold-400 mb-1 group-hover:text-gold-400 transition-colors">{challenge.title}</h4>
                           <p className="text-xs text-zinc-400 mb-4">{challenge.petName}</p>
-                          
+
                           <div className="w-full bg-zinc-800 h-2 rounded-full overflow-hidden mb-4">
-                            <div 
+                            <div
                               className={`h-full transition-all duration-500 ${challenge.status === 'completed' ? 'bg-zinc-8000' : 'bg-zinc-8000'}`}
                               style={{ width: `${(challenge.completedDays?.length || 0) / 7 * 100}%` }}
                             ></div>
                           </div>
-                          
+
                           <div className="flex items-center justify-between text-xs font-bold text-zinc-500">
                             <span>{challenge.completedDays?.length || 0}/7 Days</span>
                             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -2405,7 +2444,7 @@ export default function App() {
               )}
             </motion.div>
           ) : activeTab === 'dashboard' ? (
-            <motion.div 
+            <motion.div
               key="dashboard-tab"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -2445,8 +2484,8 @@ export default function App() {
                     </div>
                     <div className="divide-y divide-slate-50">
                       {analyses.slice(0, 5).map((analysis, idx) => (
-                        <motion.div 
-                          key={analysis.id} 
+                        <motion.div
+                          key={analysis.id}
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: idx * 0.05 }}
@@ -2459,10 +2498,10 @@ export default function App() {
                             </div>
                             <div>
                               <p className="font-semibold text-zinc-100 truncate max-w-[200px] group-hover:text-gold-400 transition-colors">
-                                {analysis.result?.emotionalState ? 
-                                  (analysis.result.emotionalState.length > 40 ? 
-                                    analysis.result.emotionalState.substring(0, 40) + '...' : 
-                                    analysis.result.emotionalState) : 
+                                {analysis.result?.emotionalState ?
+                                  (analysis.result.emotionalState.length > 40 ?
+                                    analysis.result.emotionalState.substring(0, 40) + '...' :
+                                    analysis.result.emotionalState) :
                                   'New Analysis'}
                               </p>
                               <p className="text-xs text-zinc-400">
@@ -2471,9 +2510,8 @@ export default function App() {
                             </div>
                           </div>
                           <div className="flex items-center gap-4">
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                              analysis.status === 'completed' ? 'bg-zinc-800 text-emerald-700' : 'bg-zinc-800 text-amber-700'
-                            }`}>
+                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${analysis.status === 'completed' ? 'bg-zinc-800 text-emerald-700' : 'bg-zinc-800 text-amber-700'
+                              }`}>
                               {analysis.status}
                             </span>
                             <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-gold-400 group-hover:translate-x-1 transition-all" />
@@ -2481,7 +2519,7 @@ export default function App() {
                         </motion.div>
                       ))}
                       {analyses.length === 0 && (
-                        <motion.div 
+                        <motion.div
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           className="p-12 text-center"
@@ -2505,21 +2543,20 @@ export default function App() {
                     </div>
                     <div className="space-y-4">
                       {reminders.filter(r => !r.completed).slice(0, 4).map((reminder, idx) => (
-                        <motion.div 
-                          key={reminder.id} 
+                        <motion.div
+                          key={reminder.id}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: idx * 0.05 }}
                           className="flex items-start gap-4 p-4 rounded-2xl bg-zinc-950 border border-zinc-800 hover:border-indigo-200 transition-colors group"
                         >
-                          <div className={`p-2 rounded-xl transition-colors ${
-                            reminder.type === 'vaccination' ? 'bg-gold-500/20 text-gold-400 group-hover:bg-gold-500 group-hover:text-white' :
-                            reminder.type === 'medication' ? 'bg-rose-500/20 text-rose-600 group-hover:bg-rose-600 group-hover:text-white' :
-                            'bg-gold-500/20 text-gold-400 group-hover:bg-amber-600 group-hover:text-white'
-                          }`}>
-                            {reminder.type === 'vaccination' ? <Syringe className="w-4 h-4" /> : 
-                             reminder.type === 'medication' ? <Activity className="w-4 h-4" /> : 
-                             <Bell className="w-4 h-4" />}
+                          <div className={`p-2 rounded-xl transition-colors ${reminder.type === 'vaccination' ? 'bg-gold-500/20 text-gold-400 group-hover:bg-gold-500 group-hover:text-white' :
+                              reminder.type === 'medication' ? 'bg-rose-500/20 text-rose-600 group-hover:bg-rose-600 group-hover:text-white' :
+                                'bg-gold-500/20 text-gold-400 group-hover:bg-amber-600 group-hover:text-white'
+                            }`}>
+                            {reminder.type === 'vaccination' ? <Syringe className="w-4 h-4" /> :
+                              reminder.type === 'medication' ? <Activity className="w-4 h-4" /> :
+                                <Bell className="w-4 h-4" />}
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-black font-serif text-gold-400 truncate group-hover:text-gold-400 transition-colors">{reminder.title}</p>
@@ -2528,7 +2565,7 @@ export default function App() {
                         </motion.div>
                       ))}
                       {reminders.filter(r => !r.completed).length === 0 && (
-                        <motion.div 
+                        <motion.div
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           className="py-8 text-center"
@@ -2561,7 +2598,7 @@ export default function App() {
               {selectedPetForAnalyses ? (
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
-                    <button 
+                    <button
                       onClick={() => setSelectedPetForAnalyses(null)}
                       className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
                     >
@@ -2569,8 +2606,8 @@ export default function App() {
                     </button>
                     <div className="flex items-center gap-4">
                       {selectedPetForAnalyses.photoUrl ? (
-                        <img 
-                          src={selectedPetForAnalyses.photoUrl} 
+                        <img
+                          src={selectedPetForAnalyses.photoUrl}
                           alt={selectedPetForAnalyses.name}
                           className="w-12 h-12 rounded-xl object-cover border border-zinc-800"
                           referrerPolicy="no-referrer"
@@ -2593,8 +2630,8 @@ export default function App() {
                         analyses
                           .filter(a => a.petId === selectedPetForAnalyses.id)
                           .map((analysis) => (
-                            <div 
-                              key={analysis.id} 
+                            <div
+                              key={analysis.id}
                               onClick={() => setSelectedAnalysis(analysis)}
                               className="p-4 hover:bg-zinc-950 transition-colors flex items-center justify-between cursor-pointer"
                             >
@@ -2604,10 +2641,10 @@ export default function App() {
                                 </div>
                                 <div>
                                   <p className="font-semibold text-zinc-100 truncate max-w-[200px]">
-                                    {analysis.result?.emotionalState ? 
-                                      (analysis.result.emotionalState.length > 40 ? 
-                                        analysis.result.emotionalState.substring(0, 40) + '...' : 
-                                        analysis.result.emotionalState) : 
+                                    {analysis.result?.emotionalState ?
+                                      (analysis.result.emotionalState.length > 40 ?
+                                        analysis.result.emotionalState.substring(0, 40) + '...' :
+                                        analysis.result.emotionalState) :
                                       'New Analysis'}
                                   </p>
                                   <p className="text-xs text-zinc-400">
@@ -2616,18 +2653,17 @@ export default function App() {
                                 </div>
                               </div>
                               <div className="flex items-center gap-4">
-                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                  analysis.status === 'completed' ? 'bg-zinc-800 text-emerald-700' : 'bg-zinc-800 text-amber-700'
-                                }`}>
+                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${analysis.status === 'completed' ? 'bg-zinc-800 text-emerald-700' : 'bg-zinc-800 text-amber-700'
+                                  }`}>
                                   {analysis.status}
                                 </span>
-                                <button 
+                                <button
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    setDeleteConfirmation({ 
-                                      type: 'analysis', 
-                                      id: analysis.id, 
-                                      name: 'this analysis' 
+                                    setDeleteConfirmation({
+                                      type: 'analysis',
+                                      id: analysis.id,
+                                      name: 'this analysis'
                                     });
                                   }}
                                   className="p-2 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
@@ -2644,7 +2680,7 @@ export default function App() {
                             <FileText className="w-8 h-8 text-slate-300" />
                           </div>
                           <p className="text-zinc-400">No analyses found for {selectedPetForAnalyses.name}.</p>
-                          <button 
+                          <button
                             onClick={() => setActiveTab('upload')}
                             className="mt-4 text-gold-400 font-medium hover:underline"
                           >
@@ -2659,7 +2695,7 @@ export default function App() {
                 <>
                   <div className="flex justify-between items-center">
                     <h3 className="text-xl font-black font-serif text-gold-400">My Pet Profiles</h3>
-                    <button 
+                    <button
                       onClick={() => {
                         setIsAddingPet(true);
                         setEditingPetId(null);
@@ -2688,19 +2724,19 @@ export default function App() {
                       <form onSubmit={handleSavePet} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-1">
                           <label className="text-xs font-bold text-zinc-400 uppercase">Pet Name</label>
-                          <input 
+                          <input
                             required
                             value={newPet.name}
-                            onChange={e => setNewPet({...newPet, name: e.target.value})}
+                            onChange={e => setNewPet({ ...newPet, name: e.target.value })}
                             className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none"
                             placeholder="e.g., Buddy"
                           />
                         </div>
                         <div className="space-y-1">
                           <label className="text-xs font-bold text-zinc-400 uppercase">Species</label>
-                          <select 
+                          <select
                             value={newPet.species}
-                            onChange={e => setNewPet({...newPet, species: e.target.value})}
+                            onChange={e => setNewPet({ ...newPet, species: e.target.value })}
                             className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none"
                           >
                             <option value="dog">Dog</option>
@@ -2710,18 +2746,18 @@ export default function App() {
                         </div>
                         <div className="space-y-1">
                           <label className="text-xs font-bold text-zinc-400 uppercase">Breed</label>
-                          <input 
+                          <input
                             value={newPet.breed}
-                            onChange={e => setNewPet({...newPet, breed: e.target.value})}
+                            onChange={e => setNewPet({ ...newPet, breed: e.target.value })}
                             className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none"
                             placeholder="e.g., Golden Retriever"
                           />
                         </div>
                         <div className="space-y-1">
                           <label className="text-xs font-bold text-zinc-400 uppercase">Age</label>
-                          <input 
+                          <input
                             value={newPet.age}
-                            onChange={e => setNewPet({...newPet, age: e.target.value})}
+                            onChange={e => setNewPet({ ...newPet, age: e.target.value })}
                             className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none"
                             placeholder="e.g., 3 years"
                           />
@@ -2730,10 +2766,10 @@ export default function App() {
                           <label className="text-xs font-bold text-zinc-400 uppercase">Profile Picture</label>
                           <div className="flex items-center gap-4">
                             <label className="flex-1">
-                              <input 
-                                type="file" 
-                                accept="image/*" 
-                                className="hidden" 
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
                                 onChange={(e) => setPetImageFile(e.target.files?.[0] || null)}
                               />
                               <div className="w-full px-4 py-2 rounded-lg border border-dashed border-slate-300 hover:border-indigo-400 hover:bg-gold-500/10 transition-all cursor-pointer flex items-center justify-center gap-2 text-sm text-zinc-400">
@@ -2743,10 +2779,10 @@ export default function App() {
                             </label>
                             {(petImageFile || newPet.photoUrl) && (
                               <div className="w-10 h-10 rounded-lg overflow-hidden border border-zinc-800">
-                                <img 
-                                  src={petImageFile ? URL.createObjectURL(petImageFile) : newPet.photoUrl} 
-                                  alt="Preview" 
-                                  className="w-full h-full object-cover" 
+                                <img
+                                  src={petImageFile ? URL.createObjectURL(petImageFile) : newPet.photoUrl}
+                                  alt="Preview"
+                                  className="w-full h-full object-cover"
                                   referrerPolicy="no-referrer"
                                 />
                               </div>
@@ -2755,33 +2791,33 @@ export default function App() {
                         </div>
                         <div className="md:col-span-2 space-y-1">
                           <label className="text-xs font-bold text-zinc-400 uppercase">Dietary Information</label>
-                          <textarea 
+                          <textarea
                             value={newPet.diet}
-                            onChange={e => setNewPet({...newPet, diet: e.target.value})}
+                            onChange={e => setNewPet({ ...newPet, diet: e.target.value })}
                             className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none h-20 resize-none"
                             placeholder="e.g., Grain-free kibble, twice a day..."
                           />
                         </div>
                         <div className="md:col-span-2 space-y-1">
                           <label className="text-xs font-bold text-zinc-400 uppercase">Vaccination Records</label>
-                          <textarea 
+                          <textarea
                             value={newPet.vaccinations}
-                            onChange={e => setNewPet({...newPet, vaccinations: e.target.value})}
+                            onChange={e => setNewPet({ ...newPet, vaccinations: e.target.value })}
                             className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none h-20 resize-none"
                             placeholder="e.g., Rabies (2025), DHPP (2024)..."
                           />
                         </div>
                         <div className="md:col-span-2 space-y-1">
                           <label className="text-xs font-bold text-zinc-400 uppercase">Personality / Notes</label>
-                          <textarea 
+                          <textarea
                             value={newPet.personality}
-                            onChange={e => setNewPet({...newPet, personality: e.target.value})}
+                            onChange={e => setNewPet({ ...newPet, personality: e.target.value })}
                             className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none h-20 resize-none"
                             placeholder="e.g., Very energetic, afraid of thunder..."
                           />
                         </div>
                         <div className="md:col-span-2 flex justify-end gap-3 mt-2">
-                          <button 
+                          <button
                             type="button"
                             onClick={() => {
                               setIsAddingPet(false);
@@ -2791,7 +2827,7 @@ export default function App() {
                           >
                             Cancel
                           </button>
-                          <button 
+                          <button
                             type="submit"
                             disabled={isUploadingPetImage}
                             className="px-6 py-2 bg-gold-500 text-white font-bold rounded-lg hover:bg-gold-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
@@ -2810,13 +2846,13 @@ export default function App() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {pets.map(pet => (
-                      <div 
-                        key={pet.id} 
+                      <div
+                        key={pet.id}
                         onClick={() => setSelectedPetForAnalyses(pet)}
                         className="bg-zinc-900 p-6 rounded-2xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-all relative group cursor-pointer hover:border-indigo-200"
                       >
                         <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                          <button 
+                          <button
                             onClick={(e) => {
                               e.stopPropagation();
                               setEditingPetId(pet.id);
@@ -2837,13 +2873,13 @@ export default function App() {
                           >
                             <Pencil className="w-4 h-4" />
                           </button>
-                          <button 
+                          <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              setDeleteConfirmation({ 
-                                type: 'pet', 
-                                id: pet.id, 
-                                name: pet.name 
+                              setDeleteConfirmation({
+                                type: 'pet',
+                                id: pet.id,
+                                name: pet.name
                               });
                             }}
                             className="p-2 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
@@ -2853,8 +2889,8 @@ export default function App() {
                         </div>
                         <div className="flex items-center gap-4 mb-4">
                           {pet.photoUrl ? (
-                            <img 
-                              src={pet.photoUrl} 
+                            <img
+                              src={pet.photoUrl}
                               alt={pet.name}
                               className="w-12 h-12 rounded-xl object-cover border border-zinc-800"
                               referrerPolicy="no-referrer"
@@ -2921,8 +2957,8 @@ export default function App() {
             >
               <div className="divide-y divide-slate-50">
                 {analyses.map((analysis) => (
-                  <div 
-                    key={analysis.id} 
+                  <div
+                    key={analysis.id}
                     onClick={() => setSelectedAnalysis(analysis)}
                     className="p-4 hover:bg-zinc-950 transition-colors flex items-center justify-between cursor-pointer"
                   >
@@ -2932,10 +2968,10 @@ export default function App() {
                       </div>
                       <div>
                         <p className="font-semibold text-zinc-100 truncate max-w-[250px]">
-                          {analysis.result?.emotionalState ? 
-                            (analysis.result.emotionalState.length > 50 ? 
-                              analysis.result.emotionalState.substring(0, 50) + '...' : 
-                              analysis.result.emotionalState) : 
+                          {analysis.result?.emotionalState ?
+                            (analysis.result.emotionalState.length > 50 ?
+                              analysis.result.emotionalState.substring(0, 50) + '...' :
+                              analysis.result.emotionalState) :
                             'New Analysis'}
                         </p>
                         <p className="text-xs text-zinc-400">
@@ -2944,18 +2980,17 @@ export default function App() {
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        analysis.status === 'completed' ? 'bg-zinc-800 text-emerald-700' : 'bg-zinc-800 text-amber-700'
-                      }`}>
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${analysis.status === 'completed' ? 'bg-zinc-800 text-emerald-700' : 'bg-zinc-800 text-amber-700'
+                        }`}>
                         {analysis.status}
                       </span>
-                      <button 
+                      <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          setDeleteConfirmation({ 
-                            type: 'analysis', 
-                            id: analysis.id, 
-                            name: `${analysis.petName || 'Pet'}'s analysis` 
+                          setDeleteConfirmation({
+                            type: 'analysis',
+                            id: analysis.id,
+                            name: `${analysis.petName || 'Pet'}'s analysis`
                           });
                         }}
                         className="p-2 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
@@ -2978,7 +3013,7 @@ export default function App() {
             >
               <div className="flex justify-between items-center">
                 <h3 className="text-xl font-black font-serif text-gold-400">Care Reminders</h3>
-                <button 
+                <button
                   onClick={() => setIsAddingReminder(true)}
                   className="bg-gold-500 text-white px-4 py-2 rounded-xl font-medium hover:bg-gold-600 transition-all flex items-center gap-2"
                 >
@@ -2993,10 +3028,10 @@ export default function App() {
                   <form onSubmit={handleSaveReminder} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-zinc-400 uppercase">Pet</label>
-                      <select 
+                      <select
                         required
                         value={newReminder.petId}
-                        onChange={e => setNewReminder({...newReminder, petId: e.target.value})}
+                        onChange={e => setNewReminder({ ...newReminder, petId: e.target.value })}
                         className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none"
                       >
                         <option value="">Select Pet</option>
@@ -3007,9 +3042,9 @@ export default function App() {
                     </div>
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-zinc-400 uppercase">Type</label>
-                      <select 
+                      <select
                         value={newReminder.type}
-                        onChange={e => setNewReminder({...newReminder, type: e.target.value})}
+                        onChange={e => setNewReminder({ ...newReminder, type: e.target.value })}
                         className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none"
                       >
                         <option value="vaccination">Vaccination</option>
@@ -3021,26 +3056,26 @@ export default function App() {
                     </div>
                     <div className="md:col-span-2 space-y-1">
                       <label className="text-xs font-bold text-zinc-400 uppercase">Reminder Title</label>
-                      <input 
+                      <input
                         required
                         value={newReminder.title}
-                        onChange={e => setNewReminder({...newReminder, title: e.target.value})}
+                        onChange={e => setNewReminder({ ...newReminder, title: e.target.value })}
                         className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none"
                         placeholder="e.g., Annual Rabies Shot"
                       />
                     </div>
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-zinc-400 uppercase">Due Date</label>
-                      <input 
+                      <input
                         required
                         type="date"
                         value={newReminder.dueDate}
-                        onChange={e => setNewReminder({...newReminder, dueDate: e.target.value})}
+                        onChange={e => setNewReminder({ ...newReminder, dueDate: e.target.value })}
                         className="w-full px-4 py-2 rounded-lg border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none"
                       />
                     </div>
                     <div className="md:col-span-2 flex justify-end gap-3 mt-2">
-                      <button 
+                      <button
                         type="button"
                         onClick={() => {
                           setIsAddingReminder(false);
@@ -3050,7 +3085,7 @@ export default function App() {
                       >
                         Cancel
                       </button>
-                      <button 
+                      <button
                         type="submit"
                         className="px-6 py-2 bg-gold-500 text-white font-bold rounded-lg hover:bg-gold-600 transition-colors"
                       >
@@ -3063,14 +3098,13 @@ export default function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {reminders.map(reminder => (
-                  <div 
+                  <div
                     key={reminder.id}
-                    className={`bg-zinc-900 p-6 rounded-2xl border transition-all relative group ${
-                      reminder.completed ? 'border-zinc-800 opacity-60' : 'border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)]'
-                    }`}
+                    className={`bg-zinc-900 p-6 rounded-2xl border transition-all relative group ${reminder.completed ? 'border-zinc-800 opacity-60' : 'border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)]'
+                      }`}
                   >
                     <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                      <button 
+                      <button
                         onClick={() => {
                           setEditingReminderId(reminder.id);
                           setNewReminder({
@@ -3086,7 +3120,7 @@ export default function App() {
                       >
                         <Pencil className="w-4 h-4" />
                       </button>
-                      <button 
+                      <button
                         onClick={() => setDeleteConfirmation({ type: 'reminder', id: reminder.id, name: reminder.title })}
                         className="p-2 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                       >
@@ -3094,15 +3128,14 @@ export default function App() {
                       </button>
                     </div>
                     <div className="flex items-center gap-4 mb-4">
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                        reminder.completed ? 'bg-zinc-800 text-zinc-500' :
-                        reminder.type === 'vaccination' ? 'bg-gold-500/10 text-gold-400' :
-                        reminder.type === 'medication' ? 'bg-zinc-800 text-rose-600' :
-                        'bg-zinc-800 text-gold-400'
-                      }`}>
-                        {reminder.type === 'vaccination' ? <Syringe className="w-6 h-6" /> : 
-                         reminder.type === 'medication' ? <Activity className="w-6 h-6" /> : 
-                         <Bell className="w-6 h-6" />}
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${reminder.completed ? 'bg-zinc-800 text-zinc-500' :
+                          reminder.type === 'vaccination' ? 'bg-gold-500/10 text-gold-400' :
+                            reminder.type === 'medication' ? 'bg-zinc-800 text-rose-600' :
+                              'bg-zinc-800 text-gold-400'
+                        }`}>
+                        {reminder.type === 'vaccination' ? <Syringe className="w-6 h-6" /> :
+                          reminder.type === 'medication' ? <Activity className="w-6 h-6" /> :
+                            <Bell className="w-6 h-6" />}
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className={`font-black font-serif text-gold-400 truncate ${reminder.completed ? 'line-through' : ''}`}>{reminder.title}</h4>
@@ -3114,13 +3147,12 @@ export default function App() {
                         <Calendar className="w-4 h-4" />
                         <span className="text-xs font-medium">{new Date(reminder.dueDate).toLocaleDateString()}</span>
                       </div>
-                      <button 
+                      <button
                         onClick={() => handleToggleReminder(reminder.id, reminder.completed)}
-                        className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                          reminder.completed 
-                            ? 'bg-zinc-800 text-zinc-400' 
+                        className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${reminder.completed
+                            ? 'bg-zinc-800 text-zinc-400'
                             : 'bg-gold-500/10 text-gold-400 hover:bg-gold-500 hover:text-white'
-                        }`}
+                          }`}
                       >
                         {reminder.completed ? 'Completed' : 'Mark Done'}
                       </button>
@@ -3145,7 +3177,7 @@ export default function App() {
             >
               <div className="bg-zinc-900 p-8 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
                 <h3 className="text-2xl font-black font-serif text-gold-400 mb-6">Account Settings</h3>
-                
+
                 {userData?.subscriptionTier === 'pro' && (
                   <div className="mb-8 p-6 bg-gold-500/10 rounded-2xl border border-gold-500/20">
                     <h4 className="text-lg font-bold text-indigo-900 mb-2 flex items-center gap-2">
@@ -3157,18 +3189,18 @@ export default function App() {
                     </p>
                   </div>
                 )}
-                
+
                 <div className="space-y-8">
                   {/* Profile Section */}
                   <section className="space-y-4">
                     <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Profile Information</h4>
-                    
+
                     <div className="flex items-center gap-6 mb-6">
                       <div className="relative group">
                         {user?.photoURL ? (
-                          <img 
-                            src={user.photoURL} 
-                            alt={user.displayName || 'Profile'} 
+                          <img
+                            src={user.photoURL}
+                            alt={user.displayName || 'Profile'}
                             className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
                             referrerPolicy="no-referrer"
                           />
@@ -3183,10 +3215,10 @@ export default function App() {
                           ) : (
                             <Camera className="w-6 h-6 text-white" />
                           )}
-                          <input 
-                            type="file" 
-                            accept="image/*" 
-                            className="hidden" 
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
                             onChange={handleProfilePicUpload}
                             disabled={isUploadingProfilePic}
                           />
@@ -3201,7 +3233,7 @@ export default function App() {
                     <form onSubmit={handleUpdateProfile} className="space-y-4">
                       <div className="space-y-1">
                         <label className="text-xs font-bold text-zinc-400 uppercase">Display Name</label>
-                        <input 
+                        <input
                           value={settingsName}
                           onChange={(e) => setSettingsName(e.target.value)}
                           className="w-full px-4 py-3 rounded-xl border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none transition-all"
@@ -3210,14 +3242,14 @@ export default function App() {
                       </div>
                       <div className="space-y-1">
                         <label className="text-xs font-bold text-zinc-400 uppercase">Email Address</label>
-                        <input 
+                        <input
                           disabled
                           value={user?.email || ''}
                           className="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-500 outline-none cursor-not-allowed"
                         />
                         <p className="text-[10px] text-zinc-500 italic">Email cannot be changed currently.</p>
                       </div>
-                      <button 
+                      <button
                         type="submit"
                         disabled={isUpdatingProfile || settingsName === user?.displayName}
                         className="px-6 py-3 bg-gold-500 text-white font-bold rounded-xl hover:bg-gold-600 transition-all disabled:opacity-50 flex items-center gap-2"
@@ -3240,14 +3272,13 @@ export default function App() {
                             Sandbox
                           </span>
                         )}
-                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                          userData?.subscriptionTier === 'pro' ? 'bg-gold-500/20 text-gold-400' : 'bg-zinc-800 text-zinc-400'
-                        }`}>
+                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${userData?.subscriptionTier === 'pro' ? 'bg-gold-500/20 text-gold-400' : 'bg-zinc-800 text-zinc-400'
+                          }`}>
                           {userData?.subscriptionTier === 'pro' ? 'Pro' : 'Free'} Tier
                         </span>
                       </div>
                     </div>
-                    
+
                     <div className="p-6 rounded-3xl border border-zinc-800 bg-zinc-900 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
                       <div className="flex items-start justify-between gap-6">
                         <div className="space-y-2">
@@ -3255,20 +3286,20 @@ export default function App() {
                             {userData?.subscriptionTier === 'pro' ? 'PawBehavior Pro' : 'PawBehavior Free'}
                           </p>
                           <p className="text-sm text-zinc-400 leading-relaxed">
-                            {userData?.subscriptionTier === 'pro' 
-                              ? 'You have unlimited access to behavioral analyses and expert follow-up chats.' 
+                            {userData?.subscriptionTier === 'pro'
+                              ? 'You have unlimited access to behavioral analyses and expert follow-up chats.'
                               : `You have used ${userData?.analysesCount || 0}/3 free analyses. Upgrade for unlimited access.`}
                           </p>
                         </div>
                         {userData?.subscriptionTier !== 'pro' ? (
-                          <button 
+                          <button
                             onClick={() => setShowLimitModal({ type: 'upgrade', message: "Unlock unlimited analyses and expert chat with PawBehavior Pro!" })}
                             className="shrink-0 px-6 py-3 bg-gold-500 text-white font-bold rounded-xl hover:bg-gold-600 transition-all shadow-lg shadow-gold-500/20"
                           >
                             Upgrade to Pro
                           </button>
                         ) : (
-                          <button 
+                          <button
                             onClick={handleRestorePurchases}
                             disabled={isRestoring}
                             className="shrink-0 px-6 py-3 bg-zinc-900 border border-zinc-800 text-zinc-400 font-bold rounded-xl hover:bg-zinc-950 transition-all flex items-center gap-2"
@@ -3278,7 +3309,7 @@ export default function App() {
                           </button>
                         )}
                       </div>
-                      
+
                       {userData?.subscriptionTier !== 'pro' && (
                         <div className="mt-6 pt-6 border-t border-slate-50 grid grid-cols-2 gap-4">
                           <div className="flex items-center gap-2 text-xs text-zinc-400">
@@ -3312,7 +3343,7 @@ export default function App() {
                           <code className="bg-zinc-900 px-4 py-2 rounded-xl border border-gold-500/50 font-mono font-bold text-gold-400 text-lg">
                             {userData?.referralCode || '------'}
                           </code>
-                          <button 
+                          <button
                             onClick={() => {
                               navigator.clipboard.writeText(userData?.referralCode || '');
                               setNotification({ message: "Referral code copied!", type: 'success' });
@@ -3331,13 +3362,13 @@ export default function App() {
                         <div className="pt-4 border-t border-gold-500/50">
                           <p className="text-sm font-bold text-amber-900 mb-2">Have a referral code?</p>
                           <form onSubmit={handleReferralSubmit} className="flex gap-2">
-                            <input 
+                            <input
                               value={referralInput}
                               onChange={(e) => setReferralInput(e.target.value)}
                               placeholder="ENTER CODE"
                               className="flex-1 px-4 py-2 rounded-xl border border-gold-500/50 focus:ring-2 focus:ring-amber-500 outline-none uppercase font-mono"
                             />
-                            <button 
+                            <button
                               type="submit"
                               disabled={isSubmittingReferral || !referralInput.trim()}
                               className="px-6 py-2 bg-amber-600 text-white font-bold rounded-xl hover:bg-amber-700 transition-all disabled:opacity-50"
@@ -3361,7 +3392,7 @@ export default function App() {
                           <p className="font-black font-serif text-gold-400">Reset Password</p>
                           <p className="text-sm text-zinc-400">We'll send a password reset link to your email address.</p>
                         </div>
-                        <button 
+                        <button
                           onClick={handlePasswordReset}
                           disabled={isSendingReset}
                           className="px-4 py-2 bg-zinc-900 border border-zinc-800 text-zinc-300 font-bold rounded-xl hover:bg-zinc-950 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.4)] disabled:opacity-50 flex items-center gap-2"
@@ -3378,7 +3409,7 @@ export default function App() {
                   {/* Danger Zone */}
                   <section className="space-y-4">
                     <h4 className="text-sm font-bold text-red-400 uppercase tracking-wider">Danger Zone</h4>
-                    <button 
+                    <button
                       onClick={logout}
                       className="w-full px-6 py-4 bg-red-50 text-red-600 font-bold rounded-2xl hover:bg-red-100 transition-all flex items-center justify-center gap-2"
                     >
@@ -3396,7 +3427,7 @@ export default function App() {
               </div>
             </motion.div>
           ) : (
-            <motion.div 
+            <motion.div
               key="upload"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -3409,13 +3440,13 @@ export default function App() {
                     <div className="relative w-24 h-24 mx-auto">
                       <svg className="w-full h-full" viewBox="0 0 100 100">
                         <circle className="text-slate-100 stroke-current" strokeWidth="8" cx="50" cy="50" r="40" fill="transparent" />
-                        <circle 
-                          className="text-gold-400 stroke-current transition-all duration-500" 
-                          strokeWidth="8" 
+                        <circle
+                          className="text-gold-400 stroke-current transition-all duration-500"
+                          strokeWidth="8"
                           strokeDasharray={251.2}
                           strokeDashoffset={251.2 - (251.2 * uploadProgress) / 100}
-                          strokeLinecap="round" 
-                          cx="50" cy="50" r="40" fill="transparent" 
+                          strokeLinecap="round"
+                          cx="50" cy="50" r="40" fill="transparent"
                         />
                       </svg>
                       <div className="absolute inset-0 flex items-center justify-center font-bold text-gold-400">
@@ -3440,7 +3471,7 @@ export default function App() {
                     <div className="max-w-md mx-auto space-y-4">
                       <div className="text-left">
                         <label className="block text-sm font-semibold text-zinc-300 mb-1">Select Pet</label>
-                        <select 
+                        <select
                           value={selectedPetId}
                           onChange={(e) => setSelectedPetId(e.target.value)}
                           className="w-full px-4 py-3 rounded-xl border border-zinc-800 focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all text-sm"
@@ -3457,7 +3488,7 @@ export default function App() {
 
                       <div className="text-left">
                         <label className="block text-sm font-semibold text-zinc-300 mb-1">Specific Question ("e.g., am I training my dog to sit correctly?)</label>
-                        <textarea 
+                        <textarea
                           value={userQuestion}
                           onChange={(e) => setUserQuestion(e.target.value)}
                           placeholder="e.g., Why does my dog bark when the doorbell rings?"
@@ -3466,21 +3497,20 @@ export default function App() {
                       </div>
 
                       <div className="block">
-                        <input 
+                        <input
                           id="behavior-file-input"
-                          type="file" 
-                          className="hidden" 
-                          accept="video/*,audio/*" 
-                          onChange={handleUpload} 
+                          type="file"
+                          className="hidden"
+                          accept="video/*,audio/*"
+                          onChange={handleUpload}
                         />
-                        <button 
+                        <button
                           onClick={handleInitiateUpload}
                           disabled={paywallCooldown}
-                          className={`w-full inline-flex items-center justify-center px-8 py-4 rounded-xl font-bold transition-all shadow-lg cursor-pointer active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed ${
-                            paywallCooldown 
-                              ? 'bg-zinc-800 text-zinc-500 shadow-none' 
+                          className={`w-full inline-flex items-center justify-center px-8 py-4 rounded-xl font-bold transition-all shadow-lg cursor-pointer active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed ${paywallCooldown
+                              ? 'bg-zinc-800 text-zinc-500 shadow-none'
                               : 'bg-gold-500 text-white hover:bg-gold-600 shadow-gold-500/20'
-                          }`}
+                            }`}
                         >
                           {paywallCooldown ? (
                             <div className="flex items-center gap-2">
@@ -3552,7 +3582,7 @@ export default function App() {
       {/* Limit Modal / Subscription Page */}
       <AnimatePresence>
         {showLimitModal && (
-          <SubscriptionPage 
+          <SubscriptionPage
             message={showLimitModal.message}
             onUpgrade={handleUpgrade}
             onRestore={handleRestorePurchases}
@@ -3583,7 +3613,7 @@ export default function App() {
       <AnimatePresence>
         {showBotModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
@@ -3596,11 +3626,11 @@ export default function App() {
               <p className="text-zinc-400 mb-8">
                 You've reached a high usage threshold (300+ analyses). To ensure service quality for everyone, please verify you are a human.
               </p>
-              
+
               <div className="bg-zinc-950 p-6 rounded-2xl border border-zinc-800 mb-8">
                 <label className="flex items-center gap-4 cursor-pointer group">
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     className="w-6 h-6 rounded border-slate-300 text-gold-400 focus:ring-gold-500"
                     onChange={(e) => setIsBotVerified(e.target.checked)}
                   />
@@ -3618,11 +3648,10 @@ export default function App() {
                   }
                 }}
                 disabled={!isBotVerified}
-                className={`w-full py-4 rounded-2xl font-bold transition-all ${
-                  isBotVerified 
-                    ? 'bg-gold-500 text-white shadow-lg shadow-indigo-200 hover:bg-gold-600' 
+                className={`w-full py-4 rounded-2xl font-bold transition-all ${isBotVerified
+                    ? 'bg-gold-500 text-white shadow-lg shadow-indigo-200 hover:bg-gold-600'
                     : 'bg-slate-200 text-zinc-500 cursor-not-allowed'
-                }`}
+                  }`}
               >
                 Continue Analysis
               </button>
@@ -3635,7 +3664,7 @@ export default function App() {
       <AnimatePresence>
         {showFairUseModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -3647,7 +3676,7 @@ export default function App() {
                   <X className="w-6 h-6" />
                 </button>
               </div>
-              
+
               <div className="space-y-6 text-zinc-400 text-sm leading-relaxed">
                 <p>
                   To ensure a high-quality experience for all users, our "Unlimited" plan is subject to a Fair Use Policy. This plan is intended for personal, non-commercial use by a single individual.
@@ -3684,7 +3713,7 @@ export default function App() {
       <AnimatePresence>
         {showTermsModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -3696,10 +3725,10 @@ export default function App() {
                   <X className="w-6 h-6" />
                 </button>
               </div>
-              
+
               <div className="space-y-6 text-zinc-400 text-sm leading-relaxed">
                 <p className="italic">Last Updated: April 2026</p>
-                
+
                 <div>
                   <h4 className="font-black font-serif text-gold-400 mb-1">1. Acceptance of Terms</h4>
                   <p>By accessing and using PawBehavior, you agree to be bound by these Terms of Use. If you do not agree, please do not use the application.</p>
@@ -3736,7 +3765,7 @@ export default function App() {
       <AnimatePresence>
         {showPrivacyModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -3748,10 +3777,10 @@ export default function App() {
                   <X className="w-6 h-6" />
                 </button>
               </div>
-              
+
               <div className="space-y-6 text-zinc-400 text-sm leading-relaxed">
                 <p className="italic">Last Updated: April 2026</p>
-                
+
                 <div>
                   <h4 className="font-black font-serif text-gold-400 mb-1">1. Information We Collect</h4>
                   <p>We collect information you provide directly to us, including your email address, pet profiles (name, breed, age), and the media (video/audio) you upload for analysis.</p>
@@ -3791,11 +3820,10 @@ export default function App() {
             initial={{ opacity: 0, y: 50, x: '-50%' }}
             animate={{ opacity: 1, y: 0, x: '-50%' }}
             exit={{ opacity: 0, y: 50, x: '-50%' }}
-            className={`fixed bottom-8 left-1/2 z-[110] px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 min-w-[320px] border ${
-              notification.type === 'success' 
-                ? 'bg-emerald-600 text-white border-emerald-500' 
+            className={`fixed bottom-8 left-1/2 z-[110] px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 min-w-[320px] border ${notification.type === 'success'
+                ? 'bg-emerald-600 text-white border-emerald-500'
                 : 'bg-red-600 text-white border-red-500'
-            }`}
+              }`}
           >
             {notification.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
             <p className="font-bold text-sm">{notification.message}</p>
@@ -3808,15 +3836,14 @@ export default function App() {
 
 function NavItem({ active, onClick, icon, label }: { active: boolean, onClick: () => void, icon: React.ReactNode, label: string }) {
   return (
-    <motion.button 
+    <motion.button
       whileHover={{ x: 4 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-serif font-bold text-base ${
-        active 
-          ? 'bg-gold-500 text-white shadow-lg shadow-gold-500/20' 
+      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-serif font-bold text-base ${active
+          ? 'bg-gold-500 text-white shadow-lg shadow-gold-500/20'
           : 'text-zinc-400 hover:bg-zinc-950 hover:text-gold-400'
-      }`}
+        }`}
     >
       {icon}
       {label}
@@ -3826,7 +3853,7 @@ function NavItem({ active, onClick, icon, label }: { active: boolean, onClick: (
 
 function StatCard({ label, value, icon }: { label: string, value: number | string, icon: React.ReactNode }) {
   return (
-    <motion.div 
+    <motion.div
       whileHover={{ y: -5 }}
       className="bg-zinc-900 p-4 lg:p-6 rounded-2xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]"
     >

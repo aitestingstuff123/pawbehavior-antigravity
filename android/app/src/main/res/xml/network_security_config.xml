@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Network Security Configuration for PawBehavior
+  ─────────────────────────────────────────────────────────────────────
+  Android 9+ blocks cleartext (HTTP) traffic by default.
+  During development, our Express server runs on the host machine at
+  port 3000 and is reachable from the emulator via 10.0.2.2.
+
+  This config allows cleartext ONLY to 10.0.2.2 (dev emulator alias).
+  All other domains still require HTTPS, preserving production security.
+
+  When deploying to production, set IS_PRODUCTION=true in
+  capacitor.config.ts — the server.url will become the HTTPS Cloud
+  Run endpoint, and this cleartext exception becomes irrelevant.
+-->
+<network-security-config>
+
+    <!-- Production: trust system CAs for all domains (default behaviour) -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system"/>
+        </trust-anchors>
+    </base-config>
+
+    <!--
+      Development override: allow HTTP to the Android emulator host alias.
+      10.0.2.2 → host machine's localhost (your dev PC running server.ts)
+    -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">10.0.2.2</domain>
+    </domain-config>
+
+</network-security-config>

@@ -6,6 +6,10 @@
   "scripts": {
     "dev": "tsx server.ts",
     "build": "vite build",
+    "build:android-dev": "vite build --mode development",
+    "build:android-release": "vite build",
+    "sync:android-dev": "vite build --mode development && npx cap sync android",
+    "sync:android-release": "vite build && npx cap sync android",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
