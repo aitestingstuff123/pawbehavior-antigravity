@@ -105,7 +105,25 @@ async function startServer() {
   const app = express();
   const PORT = parseInt(process.env.PORT || '3000', 10);
 
-  app.use(cors());
+  app.use(cors({
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        'https://localhost',
+        'http://localhost',
+        'capacitor://localhost',
+        'http://localhost:5173',
+        'http://localhost:5174'
+      ];
+      // Allow requests with no origin or explicitly allowed origins
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        // Also allow other origins by reflecting them back (supports credentials)
+        callback(null, true);
+      }
+    },
+    credentials: true
+  }));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
