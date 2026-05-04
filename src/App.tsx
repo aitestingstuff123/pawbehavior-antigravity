@@ -142,7 +142,30 @@ const TrainingChallengeCard = ({ challenge, onCompleteDay }: { challenge: any, o
   );
 };
 
-const SubscriptionPage = ({ message, onUpgrade, onRestore, onClose, isSandbox, onWatchAd, isWatchingAd, type, onShowTerms, onShowPrivacy }: { message: string, onUpgrade: () => void, onRestore: () => void, onClose: () => void, isSandbox?: boolean, onWatchAd?: () => void, isWatchingAd?: boolean, type?: 'analysis' | 'chat' | 'upgrade', onShowTerms: () => void, onShowPrivacy: () => void }) => {
+const SubscriptionPage = ({ message, onUpgrade, onRestore, onClose, isSandbox, onWatchAd, isWatchingAd, type, onShowTerms, onShowPrivacy }: { message: string, onUpgrade: (pkg?: any) => void, onRestore: () => void, onClose: () => void, isSandbox?: boolean, onWatchAd?: () => void, isWatchingAd?: boolean, type?: 'analysis' | 'chat' | 'upgrade', onShowTerms: () => void, onShowPrivacy: () => void }) => {
+  const [packages, setPackages] = useState<any[]>([]);
+  const [isLoadingPackages, setIsLoadingPackages] = useState(true);
+
+  useEffect(() => {
+    const fetchOfferings = async () => {
+      if (!Capacitor.isNativePlatform()) {
+        setIsLoadingPackages(false);
+        return;
+      }
+      try {
+        const offerings = await Purchases.getOfferings();
+        if (offerings.current && offerings.current.availablePackages) {
+          setPackages(offerings.current.availablePackages);
+        }
+      } catch (err) {
+        console.error("Failed to fetch offerings", err);
+      } finally {
+        setIsLoadingPackages(false);
+      }
+    };
+    fetchOfferings();
+  }, []);
+
   return (
     <div className="fixed inset-0 z-[100] flex items-end lg:items-center justify-center p-0 lg:p-4 bg-slate-900/60 backdrop-blur-sm">
       <motion.div
@@ -201,12 +224,29 @@ const SubscriptionPage = ({ message, onUpgrade, onRestore, onClose, isSandbox, o
         </div>
 
         <div className="space-y-3">
-          <button
-            onClick={onUpgrade}
-            className="w-full py-4 bg-gold-500 text-white font-bold rounded-2xl hover:bg-gold-600 transition-all shadow-[0_10px_40px_rgba(0,0,0,0.6)] shadow-gold-500/20 flex items-center justify-center gap-2"
-          >
-            Subscribe for $9.99/mo
-          </button>
+          {isLoadingPackages ? (
+            <div className="flex justify-center py-4">
+              <Loader2 className="w-6 h-6 animate-spin text-gold-500" />
+            </div>
+          ) : packages.length > 0 ? (
+            packages.map((pkg) => (
+              <button
+                key={pkg.identifier}
+                onClick={() => onUpgrade(pkg)}
+                className="w-full py-4 mb-3 bg-gold-500 text-white font-bold rounded-2xl hover:bg-gold-600 transition-all shadow-[0_10px_40px_rgba(0,0,0,0.6)] shadow-gold-500/20 flex flex-col items-center justify-center gap-1"
+              >
+                <span>{pkg.packageType === 'ANNUAL' ? 'Yearly Pro' : 'Monthly Pro'}</span>
+                <span className="text-xs font-normal opacity-90">{pkg.product.priceString} {pkg.packageType === 'ANNUAL' ? '/ year' : '/ month'}</span>
+              </button>
+            ))
+          ) : (
+            <button
+              onClick={() => onUpgrade()}
+              className="w-full py-4 bg-gold-500 text-white font-bold rounded-2xl hover:bg-gold-600 transition-all shadow-[0_10px_40px_rgba(0,0,0,0.6)] shadow-gold-500/20 flex items-center justify-center gap-2"
+            >
+              Subscribe for $9.99/mo
+            </button>
+          )}
 
           {onWatchAd && type !== 'upgrade' && (
             <button
@@ -994,7 +1034,7 @@ export default function App() {
     }
   };
 
-  const handleUpgrade = async () => {
+  const handleUpgrade = async (selectedPackage?: any) => {
     if (!user) return;
 
     if (!Capacitor.isNativePlatform()) {
@@ -1006,11 +1046,18 @@ export default function App() {
     try {
       setUploadStatus('Opening secure checkout...');
 
-      // Get offerings from RevenueCat Capacitor SDK
-      const offerings = await Purchases.getOfferings();
-      if (offerings.current && offerings.current.monthly) {
-        // Purchase the monthly package
-        const { customerInfo } = await Purchases.purchasePackage({ aPackage: offerings.current.monthly });
+      let packageToBuy = selectedPackage;
+
+      if (!packageToBuy) {
+        // Fallback to getting the monthly package if none selected
+        const offerings = await Purchases.getOfferings();
+        if (offerings.current && offerings.current.monthly) {
+          packageToBuy = offerings.current.monthly;
+        }
+      }
+
+      if (packageToBuy) {
+        const { customerInfo } = await Purchases.purchasePackage({ aPackage: packageToBuy });
 
         console.log("[RevenueCat] Purchase completed. CustomerInfo:", customerInfo);
 
