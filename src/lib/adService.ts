@@ -1,4 +1,4 @@
-import { AdMob, RewardAdOptions } from '@capacitor-community/admob';
+import { AdMob, RewardAdOptions, RewardAdPluginEvents } from '@capacitor-community/admob';
 import { Capacitor } from '@capacitor/core';
 
 export const rewardedAdService = {
@@ -19,10 +19,10 @@ export const rewardedAdService = {
         return;
       }
 
-      AdMob.addListener('onRewardedVideoAdLoaded', () => {
+      AdMob.addListener(RewardAdPluginEvents.Loaded, () => {
         callbacks.onAdLoaded();
       });
-      AdMob.addListener('onRewardedVideoAdFailedToLoad', (err) => {
+      AdMob.addListener(RewardAdPluginEvents.FailedToLoad, (err) => {
         callbacks.onAdFailedToLoad(err);
       });
 
@@ -59,12 +59,12 @@ export const rewardedAdService = {
 
       let rewarded = false;
 
-      AdMob.addListener('onRewardedVideoAdRewarded', (rewardItem) => {
+      AdMob.addListener(RewardAdPluginEvents.Rewarded, (rewardItem) => {
         rewarded = true;
         callbacks.onUserEarnedReward(rewardItem);
       });
 
-      AdMob.addListener('onRewardedVideoAdDismissed', () => {
+      AdMob.addListener(RewardAdPluginEvents.Dismissed, () => {
         if (!rewarded) {
           // Ad was closed before reward
           callbacks.onAdClosed();
