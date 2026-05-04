@@ -63,7 +63,7 @@ import { useAuth } from './lib/AuthContext';
 //
 //   The Gemini API key is NEVER in the bundle — it lives only on the server.
 // ─────────────────────────────────────────────────────────────────────────────
-const CLOUD_RUN_URL = 'https://ais-dev-81627259248.europe-west2.run.app';
+const CLOUD_RUN_URL = 'https://ais-dev-ffaggajiuq-nw.a.run.app';
 const EMULATOR_URL  = 'http://10.0.2.2:3000';
 
 const API_BASE_URL = Capacitor.isNativePlatform()

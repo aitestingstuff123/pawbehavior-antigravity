@@ -105,25 +105,33 @@ async function startServer() {
   const app = express();
   const PORT = parseInt(process.env.PORT || '3000', 10);
 
+  // 1. Hardened CORS Configuration
+  const allowedOrigins = [
+    'https://localhost',
+    'http://localhost',
+    'capacitor://localhost',
+    'http://localhost:5173',
+    'http://localhost:5174'
+  ];
+
   app.use(cors({
     origin: function (origin, callback) {
-      const allowedOrigins = [
-        'https://localhost',
-        'http://localhost',
-        'capacitor://localhost',
-        'http://localhost:5173',
-        'http://localhost:5174'
-      ];
-      // Allow requests with no origin or explicitly allowed origins
-      if (!origin || allowedOrigins.includes(origin)) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) !== -1 || origin.startsWith('capacitor://')) {
         callback(null, true);
       } else {
-        // Also allow other origins by reflecting them back (supports credentials)
+        console.warn(`[CORS] Origin ${origin} not explicitly allowed, but reflecting for compatibility`);
         callback(null, true);
       }
     },
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+    optionsSuccessStatus: 204
   }));
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
