@@ -4,12 +4,22 @@ service firebase.storage {
     // Helper to check if user is admin
     function isAdmin() {
       return request.auth != null && 
-        (firestore.get(/databases/ai-studio-53ddde92-ff15-462f-b8a9-38246ba8ede2/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        (firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
          request.auth.token.email == "mejai0123@gmail.com");
     }
 
     // User-specific analysis files
     match /analyses/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+    }
+
+    // User-specific pet profiles
+    match /pets/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+    }
+
+    // User-specific profile data
+    match /users/{userId}/{allPaths=**} {
       allow read, write: if request.auth != null && (request.auth.uid == userId || isAdmin());
     }
 
