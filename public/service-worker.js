@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pawbehavior-v1';
+const CACHE_NAME = 'pawsitive-behavior-v1';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

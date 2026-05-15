@@ -12,7 +12,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.petanalysis.app',
-  appName: 'PawBehavior',
+  appName: 'Pawsitive Behavior',
   webDir: 'dist',
   server: {
     androidScheme: 'https',

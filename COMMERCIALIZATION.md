@@ -1,4 +1,4 @@
-# Commercialization Guide for PawBehavior
+# Commercialization Guide for Pawsitive Behavior
 
 This guide outlines the steps to move from the current development/simulation mode to a live, monetized application.
 
@@ -9,11 +9,9 @@ The application is now configured to use **Stripe Checkout** for "Pro" upgrades.
 ### Steps to Go Live:
 1.  **Create a Stripe Account**: Sign up at [stripe.com](https://stripe.com).
 2.  **Get API Keys**: Go to the Stripe Dashboard -> Developers -> API Keys.
-    -   Copy the **Secret Key**.
-    -   Add it to your AI Studio Secrets as `STRIPE_SECRET_KEY`.
 3.  **Create a Product**:
     -   Go to Product Catalog -> Add Product.
-    -   Name it "PawBehavior Pro".
+    -   Name it "Pawsitive Behavior Pro".
     -   Set it as a **Recurring** (Subscription) price.
     -   Copy the **Price ID** (starts with `price_...`).
     -   Add it to your AI Studio Secrets as `STRIPE_PRO_PRICE_ID`.
@@ -44,4 +42,4 @@ If you wrap this app using **Capacitor** or **Cordova** for iOS/Android:
 
 1.  **Firebase Quotas**: Monitor your Firestore and Storage usage. As you scale, you may need to move to a paid Firebase plan (Blaze).
 2.  **Gemini API Limits**: The free tier of Gemini has rate limits. For high traffic, consider the paid tier in Google Cloud Console.
-3.  **Domain**: Connect a custom domain (e.g., `pawbehavior.com`) via the AI Studio settings or your hosting provider.
+3.  **Domain**: Connect a custom domain (e.g., `pawsitivebehavior.com`) via the AI Studio settings or your hosting provider.

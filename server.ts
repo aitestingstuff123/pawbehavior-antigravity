@@ -103,27 +103,23 @@ interface MulterRequest extends express.Request {
 
 async function startServer() {
   const app = express();
-  const PORT = parseInt(process.env.PORT || '3000', 10);
+  const PORT = process.env.PORT || '8080';
+  console.log(`[Server] Initializing on port ${PORT}...`);
 
   // 1. Hardened CORS Configuration
   const allowedOrigins = [
-    'https://localhost',
-    'http://localhost',
+    'https://petanalysis.app',
+    'https://ais-dev-ffaggajiuq-nw.a.run.app',
     'capacitor://localhost',
-    'http://localhost:5173',
-    'http://localhost:5174'
+    'https://localhost'
   ];
 
   app.use(cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.indexOf(origin) !== -1 || origin.startsWith('capacitor://')) {
+    origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1 || origin.startsWith('capacitor://')) {
         callback(null, true);
       } else {
-        console.warn(`[CORS] Origin ${origin} not explicitly allowed, but reflecting for compatibility`);
-        callback(null, true);
+        callback(new Error('Not allowed by CORS'));
       }
     },
     credentials: true,
@@ -297,6 +293,14 @@ async function startServer() {
         return res.status(400).json({ error: "No media file uploaded" });
       }
 
+      if (req.file.size === 0) {
+        console.error("[Server] Received empty file");
+        if (tempPath && fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
+        return res.status(400).json({ error: "Uploaded file is empty" });
+      }
+
+      console.log("[Server] Processing file:", req.file.originalname, "Mime:", req.file.mimetype, "Size:", req.file.size);
+
       const userId = req.body.userId;
       if (!userId) {
         return res.status(400).json({ error: "User ID is required for processing" });
@@ -347,14 +351,27 @@ async function startServer() {
       const modelToUse = "gemini-3-flash-preview";
       const isHeavyUser = monthlyAnalysesCount >= 30;
 
-      // Strict type enforcement for security
-      const isVideo = req.file.mimetype.startsWith("video/");
-      const isAudio = req.file.mimetype.startsWith("audio/");
+      // 2. Media Type Detection
+      const mimeType = req.file.mimetype || "";
+      const originalName = req.file.originalname || "";
+      
+      const isVideo = mimeType.startsWith("video/") || 
+                      originalName.toLowerCase().endsWith(".mp4") || 
+                      originalName.toLowerCase().endsWith(".webm") ||
+                      originalName.toLowerCase().endsWith(".mov");
+                      
+      const isAudio = mimeType.startsWith("audio/") || 
+                      originalName.toLowerCase().endsWith(".mp3") || 
+                      originalName.toLowerCase().endsWith(".wav") ||
+                      originalName.toLowerCase().endsWith(".m4a");
       
       if (!isVideo && !isAudio) {
-        console.warn(`[Server] Rejected invalid file type: ${req.file.mimetype}`);
+        console.warn(`[Server] Rejected invalid file type. Mime: "${mimeType}", Name: "${originalName}"`);
         if (tempPath && fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
-        return res.status(400).json({ error: "Invalid file type. Only video and audio are allowed." });
+        return res.status(400).json({ 
+          error: "Invalid file type. Only video and audio are allowed.",
+          details: `Received mime: ${mimeType}, filename: ${originalName}`
+        });
       }
 
       // 2. Token Shaving (FFmpeg)
@@ -401,14 +418,14 @@ async function startServer() {
       // 4. Upload to Firebase Storage using Admin SDK (bypasses rules)
       let mediaUrl = "";
       const fileName = `analyses/${userId}/${Date.now()}_${req.file.originalname}`;
-      const mimeType = compressedPath ? "video/mp4" : req.file.mimetype;
+      const finalMimeType = compressedPath ? "video/mp4" : (mimeType || req.file.mimetype);
       
       try {
         if (bucket) {
           console.log(`[Server] Saving to bucket: ${fileName}...`);
           const file = bucket.file(fileName);
           await file.save(fs.readFileSync(compressedPath || tempPath), {
-            metadata: { contentType: mimeType }
+            metadata: { contentType: finalMimeType }
           });
           // Construct public URL - if public:true fails, we can use a signed URL or a standard Firebase Storage URL
           mediaUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(fileName)}?alt=media`;
@@ -430,7 +447,7 @@ async function startServer() {
             try {
               const storageRef = ref(storage, fileName);
               const snapshot = await uploadBytes(storageRef, fs.readFileSync(compressedPath || tempPath), {
-                contentType: mimeType
+                contentType: finalMimeType
               });
               mediaUrl = await getDownloadURL(snapshot.ref);
             } catch (clientErr) {
@@ -483,13 +500,29 @@ async function startServer() {
             ]
           }
         ],
-        config: {
+          config: {
           systemInstruction: `You are a professional animal behaviorist specializing ONLY in canine (dog) and feline (cat) behavior. Your goal is to provide accurate, empathetic, and actionable insights based on pet behavior footage. 
             
           ${petContext}
 
+          TONE AND MANNER:
+          - Always respond in an exceptionally supportive, warm, and empathetic manner.
+          - Use language that makes the user feel "heard" and "acknowledged." For example, start by validating their concern or thanking them for sharing their pet's moment with you.
+          - Be supportive of the effort they are making to understand their pet better.
+          - Maintain a professional yet deeply caring tone throughout the analysis.
+
+          STRICT CONTENT RESTRICTIONS:
+          - You must ONLY respond to questions or analyze media that are directly related to animal behavior (specifically dogs and cats).
+          - You MUST NOT process, analyze, or converse about any content involving harm, cruelty, abuse, or violence toward animals.
+          - You MUST NOT process or converse about bestiality or any sexually explicit content involving animals.
+          - You MUST NOT respond to topics unrelated to pet behavior, especially human mental health, human physical health issues, or any non-animal topics.
+          - If the user asks about restricted topics, politely but firmly decline and state that you are only programmed for positive pet behavior analysis.
+
           RESTRICTION:
           - If the video contains any animal other than a dog or a cat (e.g., birds, reptiles, rodents, exotic pets), you must politely decline the analysis and state that you currently only specialize in dogs and cats.
+
+          MANDATORY DISCLAIMER:
+          - Every analysis and direct answer MUST include a reminder that this is for educational purposes only and is not professional veterinary or training advice. You must recommend seeking a certified professional for further analysis or specific concerns.
 
           TRAINING CHALLENGE:
           - If the behavior observed can be improved with training, generate a "7-Day Training Challenge".
@@ -601,6 +634,23 @@ async function startServer() {
       const systemPrompt = `System Instruction: You are a professional animal behaviorist specializing ONLY in canine (dog) and feline (cat) behavior. You are having a follow-up conversation about a specific behavior analysis you performed. 
         ${petContext || ''}
         ${analysisContext || ''}
+
+        TONE AND MANNER:
+        - Always respond in an exceptionally supportive, warm, and empathetic manner.
+        - Use language that makes the user feel "heard" and "acknowledged." Validate their questions and thank them for seeking to improve their pet's well-being.
+        - Be supportive of their journey as a pet owner.
+        - Maintain a professional yet deeply caring tone throughout the conversation.
+
+        STRICT CONTENT RESTRICTIONS:
+        - You must ONLY respond to questions directly related to animal behavior (specifically dogs and cats).
+        - You MUST NOT converse about any content involving harm, cruelty, abuse, or violence toward animals.
+        - You MUST NOT converse about bestiality or any sexually explicit content involving animals.
+        - You MUST NOT respond to topics unrelated to pet behavior, especially human mental health, human physical health issues, or any non-animal topics.
+        - If the user asks about restricted topics, politely but firmly decline and state that you are only programmed for positive pet behavior analysis.
+
+        MANDATORY DISCLAIMER:
+        - Every response MUST include a reminder that this is for educational purposes only and is not professional veterinary or training advice. Remind the user to seek a certified professional for serious concerns.
+
         Keep your answers concise, professional, and empathetic. Do not provide medical advice. If asked about other animals, politely state you only specialize in dogs and cats.`;
 
       const response = await ai.models.generateContent({

@@ -64,11 +64,9 @@ import { useAuth } from './lib/AuthContext';
 //   The Gemini API key is NEVER in the bundle — it lives only on the server.
 // ─────────────────────────────────────────────────────────────────────────────
 const CLOUD_RUN_URL = 'https://ais-dev-ffaggajiuq-nw.a.run.app';
-const EMULATOR_URL  = 'http://10.0.2.2:3000';
+const API_BASE_URL = CLOUD_RUN_URL;
 
-const API_BASE_URL = Capacitor.isNativePlatform()
-  ? (import.meta.env.DEV ? EMULATOR_URL : CLOUD_RUN_URL)
-  : (import.meta.env.VITE_API_BASE_URL || CLOUD_RUN_URL);
+console.log("[API] Production Base URL:", API_BASE_URL);
 
 const TrainingChallengeCard = ({ challenge, onCompleteDay }: { challenge: any, onCompleteDay?: (day: number) => void }) => {
   if (!challenge) return null;
@@ -196,7 +194,7 @@ const SubscriptionPage = ({ message, onUpgrade, onRestore, onClose, isSandbox, o
         </div>
 
         <h3 className="text-2xl font-black font-serif text-gold-400 mb-3">
-          Unlock PawBehavior Pro
+          Unlock Pawsitive Behavior Pro
         </h3>
         <p className="text-zinc-400 mb-8 leading-relaxed">
           {message || "Get unlimited access to behavioral analyses, expert chats, and advanced training tools."}
@@ -473,6 +471,7 @@ export default function App() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const isCancelledRef = useRef(false);
   const [cameraFacingMode, setCameraFacingMode] = useState<'user' | 'environment'>('user');
+  const [isStopping, setIsStopping] = useState(false);
   const chunksRef = useRef<Blob[]>([]);
 
   // Challenges state
@@ -815,6 +814,39 @@ export default function App() {
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       chunksRef.current = [];
+      isCancelledRef.current = false;
+      mediaRecorder.onstop = () => {
+        setIsStopping(false);
+        if (isCancelledRef.current) {
+          console.log("[Recording] Cancelled, not processing.");
+          return;
+        }
+
+        const recordedMimeType = mediaRecorder.mimeType;
+        const fallbackMimeType = 'video/webm';
+        const finalMimeType = recordedMimeType || fallbackMimeType;
+        
+        console.log("[Recording] Stop event. Recorder Mime:", recordedMimeType, "Final Mime:", finalMimeType);
+
+        const extension = finalMimeType.includes('mp4') ? 'mp4' : 'webm';
+        const blob = new Blob(chunksRef.current, { type: finalMimeType });
+        
+        console.log("[Recording] Blob created. Size:", blob.size, "Type:", blob.type);
+
+        if (blob.size === 0) {
+          setNotification({ message: 'Recording failed: No data captured.', type: 'error' });
+          setIsRecordingVideo(false);
+          return;
+        }
+
+        const file = new File([blob], `recording_${Date.now()}.${extension}`, { type: finalMimeType });
+        processUploadFile(file);
+        
+        // Small delay before closing modal for smoother transition
+        setTimeout(() => {
+          setIsRecordingVideo(false);
+        }, 800);
+      };
 
       mediaRecorder.ondataavailable = (e) => {
         if (e.data.size > 0) {
@@ -822,18 +854,9 @@ export default function App() {
         }
       };
 
-      mediaRecorder.onstop = () => {
-        if (isCancelledRef.current) {
-          console.log("Recording cancelled, not processing.");
-          return;
-        }
-        const blob = new Blob(chunksRef.current, { type: 'video/mp4' });
-        const file = new File([blob], 'recording.mp4', { type: 'video/mp4' });
-        processUploadFile(file);
-      };
-
       mediaRecorder.start();
       setIsRecordingVideo(true);
+      setActiveTab('upload'); // Ensure user is on upload tab to see progress after modal closes
       setRecordingTimeLeft(30);
 
       // Give React a tick to render the video element
@@ -851,8 +874,10 @@ export default function App() {
 
   const stopRecording = () => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      setIsStopping(true);
       mediaRecorderRef.current.stop();
     }
+
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
       stream.getTracks().forEach(track => track.stop());
@@ -959,8 +984,11 @@ export default function App() {
       formData.append('userQuestion', userQuestion.trim());
     }
 
+    console.log("[API] Attempting upload to:", `${API_BASE_URL}/api/process`);
+    console.log("[API] File details:", file.name, file.size, file.type);
+
     try {
-      setUploadStatus('Processing analysis on secure server...');
+      setUploadStatus('Processing analysis...');
       setUploadProgress(40);
 
       let mediaUrl: string;
@@ -1737,7 +1765,7 @@ export default function App() {
     if (!analysis) return;
 
     const shareData = {
-      title: `PawBehavior Analysis: ${analysis.petName || 'My Pet'}`,
+      title: `Pawsitive Behavior Analysis: ${analysis.petName || 'My Pet'}`,
       text: `Check out this behavioral analysis for ${analysis.petName || 'my pet'}! Emotional State: ${analysis.result?.emotionalState || 'Unknown'}.`,
       url: window.location.href,
     };
@@ -1770,8 +1798,8 @@ export default function App() {
       : `completed ${progress}/7 days of the "${challenge.title}" challenge!`;
 
     const shareData = {
-      title: `PawBehavior Training: ${challenge.petName || 'My Pet'}`,
-      text: `My pet ${challenge.petName || 'my pet'} has ${statusText} Check out PawBehavior for custom pet training!`,
+      title: `Pawsitive Behavior Training: ${challenge.petName || 'My Pet'}`,
+      text: `My pet ${challenge.petName || 'my pet'} has ${statusText} Check out Pawsitive Behavior for custom pet training!`,
       url: window.location.href,
     };
 
@@ -1811,7 +1839,7 @@ export default function App() {
           </div>
 
           <div className="text-center">
-            <h1 className="text-3xl font-black font-serif tracking-[0.2em] text-gold-400 uppercase">PawBehavior</h1>
+            <h1 className="text-3xl font-black font-serif tracking-[0.2em] text-gold-400 uppercase">Pawsitive Behavior</h1>
             <p className="text-[10px] tracking-[0.5em] uppercase text-gold-600/70 mt-3 font-bold">Pet Analysis</p>
           </div>
 
@@ -1840,7 +1868,7 @@ export default function App() {
           </div>
 
           <div className="space-y-2">
-            <h1 className="text-4xl font-black font-serif tracking-tight text-gold-400">PawBehavior</h1>
+            <h1 className="text-4xl font-black font-serif tracking-tight text-gold-400">Pawsitive Behavior</h1>
             <p className="text-[10px] tracking-[0.3em] uppercase text-gold-600 mt-2 font-bold">Pet Analysis</p>
             <p className="text-zinc-400 text-lg">Professional AI behavior analysis for your beloved pets.</p>
           </div>
@@ -2006,17 +2034,17 @@ export default function App() {
 
                   <div>
                     <h4 className="font-black font-serif text-gold-400 mb-1">1. Acceptance of Terms</h4>
-                    <p>By accessing and using PawBehavior, you agree to be bound by these Terms of Use. If you do not agree, please do not use the application.</p>
+                    <p>By accessing and using Pawsitive Behavior, you agree to be bound by these Terms of Use. If you do not agree, please do not use the application.</p>
                   </div>
 
                   <div>
                     <h4 className="font-black font-serif text-gold-400 mb-1">2. Medical Disclaimer</h4>
-                    <p>PawBehavior provides AI-driven behavioral analysis for educational and training purposes only. It is NOT a substitute for professional veterinary or trainer's advice, diagnosis, or treatment. Always consult a qualified veterinarian for medical concerns.</p>
+                    <p>Pawsitive Behavior provides AI-driven behavioral analysis for educational and training purposes only. It is NOT a substitute for professional veterinary or trainer's advice, diagnosis, or treatment. Always consult a qualified veterinarian for medical concerns.</p>
                   </div>
 
                   <div>
                     <h4 className="font-black font-serif text-gold-400 mb-1">3. User Content</h4>
-                    <p>You retain ownership of the videos and audio you upload. By uploading, you grant PawBehavior a license to process this media solely for the purpose of providing the analysis service.</p>
+                    <p>You retain ownership of the videos and audio you upload. By uploading, you grant Pawsitive Behavior a license to process this media solely for the purpose of providing the analysis service.</p>
                   </div>
 
                   <div>
@@ -2100,7 +2128,7 @@ export default function App() {
             <Dog className="w-5 h-5 text-white" />
           </div>
           <div className="flex flex-col">
-            <span className="font-black font-serif text-xl text-gold-400 leading-none">PawBehavior</span>
+            <span className="font-black font-serif text-xl text-gold-400 leading-none">Pawsitive Behavior</span>
             <span className="text-[8px] tracking-[0.2em] uppercase text-gold-600 font-bold">Pet Analysis</span>
           </div>
         </div>
@@ -2124,7 +2152,7 @@ export default function App() {
             <Dog className="w-6 h-6 text-white" />
           </div>
           <div className="flex flex-col">
-            <span className="font-black font-serif text-2xl text-gold-400 leading-none">PawBehavior</span>
+            <span className="font-black font-serif text-2xl text-gold-400 leading-none">Pawsitive Behavior</span>
             <span className="text-[9px] tracking-[0.2em] uppercase text-gold-600 font-bold mt-1">Pet Analysis</span>
           </div>
         </div>
@@ -3465,7 +3493,7 @@ export default function App() {
                       <div className="flex items-start justify-between gap-6">
                         <div className="space-y-2">
                           <p className="font-black font-serif text-gold-400">
-                            {userData?.subscriptionTier === 'pro' ? 'PawBehavior Pro' : 'PawBehavior Free'}
+                            {userData?.subscriptionTier === 'pro' ? 'Pawsitive Behavior Pro' : 'Pawsitive Behavior Free'}
                           </p>
                           <p className="text-sm text-zinc-400 leading-relaxed">
                             {userData?.subscriptionTier === 'pro'
@@ -3475,7 +3503,7 @@ export default function App() {
                         </div>
                         {userData?.subscriptionTier !== 'pro' ? (
                           <button
-                            onClick={() => setShowLimitModal({ type: 'upgrade', message: "Unlock unlimited analyses and expert chat with PawBehavior Pro!" })}
+                            onClick={() => setShowLimitModal({ type: 'upgrade', message: "Unlock unlimited analyses and expert chat with Pawsitive Behavior Pro!" })}
                             className="shrink-0 px-6 py-3 bg-gold-500 text-white font-bold rounded-xl hover:bg-gold-600 transition-all shadow-lg shadow-gold-500/20"
                           >
                             Upgrade to Pro
@@ -3913,17 +3941,17 @@ export default function App() {
 
                 <div>
                   <h4 className="font-black font-serif text-gold-400 mb-1">1. Acceptance of Terms</h4>
-                  <p>By accessing and using PawBehavior, you agree to be bound by these Terms of Use. If you do not agree, please do not use the application.</p>
+                  <p>By accessing and using Pawsitive Behavior, you agree to be bound by these Terms of Use. If you do not agree, please do not use the application.</p>
                 </div>
 
                 <div>
                   <h4 className="font-black font-serif text-gold-400 mb-1">2. Medical Disclaimer</h4>
-                  <p>PawBehavior provides AI-driven behavioral analysis for educational and training purposes only. It is NOT a substitute for professional veterinary or trainer's advice, diagnosis, or treatment. Always consult a qualified veterinarian for medical concerns.</p>
+                  <p>Pawsitive Behavior provides AI-driven behavioral analysis for educational and training purposes only. It is NOT a substitute for professional veterinary or trainer's advice, diagnosis, or treatment. Always consult a qualified veterinarian for medical concerns.</p>
                 </div>
 
                 <div>
                   <h4 className="font-black font-serif text-gold-400 mb-1">3. User Content</h4>
-                  <p>You retain ownership of the videos and audio you upload. By uploading, you grant PawBehavior a license to process this media solely for the purpose of providing the analysis service.</p>
+                  <p>You retain ownership of the videos and audio you upload. By uploading, you grant Pawsitive Behavior a license to process this media solely for the purpose of providing the analysis service.</p>
                 </div>
 
                 <div>
@@ -4070,7 +4098,12 @@ export default function App() {
       {/* Recording Modal */}
       <AnimatePresence>
         {isRecordingVideo && (
-          <div className="fixed inset-0 z-[110] bg-black flex flex-col">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[110] bg-black flex flex-col"
+          >
             <div className="flex-1 relative">
               <video
                 ref={videoRef}
@@ -4117,13 +4150,18 @@ export default function App() {
               <div className="absolute bottom-12 inset-x-0 flex justify-center">
                 <button
                   onClick={stopRecording}
-                  className="w-20 h-20 bg-red-500 rounded-full border-4 border-white/20 shadow-[0_0_20px_rgba(239,68,68,0.5)] flex items-center justify-center hover:scale-105 transition-transform"
+                  disabled={isStopping}
+                  className="w-20 h-20 bg-red-500 rounded-full border-4 border-white/20 shadow-[0_0_20px_rgba(239,68,68,0.5)] flex items-center justify-center hover:scale-105 transition-transform disabled:opacity-50"
                 >
-                  <div className="w-8 h-8 bg-white rounded-sm" />
+                  {isStopping ? (
+                    <Loader2 className="w-8 h-8 text-white animate-spin" />
+                  ) : (
+                    <div className="w-8 h-8 bg-white rounded-sm" />
+                  )}
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Network Security Configuration for PawBehavior
+  Network Security Configuration for Pawsitive Behavior
   ─────────────────────────────────────────────────────────────────────
   Android 9+ blocks cleartext (HTTP) traffic by default.
   During development, our Express server runs on the host machine at
