@@ -481,7 +481,9 @@ async function startServer() {
             metadata: { contentType: finalMimeType }
           });
           // Use our proxy URL to bypass CORS and mobile playback issues
-          mediaUrl = `${API_BASE_URL}/api/proxy-media?path=${encodeURIComponent(fileName)}`;
+          const protocol = req.protocol === 'http' && req.headers['x-forwarded-proto'] ? req.headers['x-forwarded-proto'] : req.protocol;
+          const host = req.get('host');
+          mediaUrl = `${protocol}://${host}/api/proxy-media?path=${encodeURIComponent(fileName)}`;
           console.log("[Server] Uploaded and generated proxy URL:", mediaUrl);
         } else {
           throw new Error("Storage bucket not initialized");
