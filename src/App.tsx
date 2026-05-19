@@ -64,9 +64,9 @@ import { useAuth } from './lib/AuthContext';
 //   The Gemini API key is NEVER in the bundle — it lives only on the server.
 // ─────────────────────────────────────────────────────────────────────────────
 const CLOUD_RUN_URL = 'https://ais-dev-ffaggajiuq-nw.a.run.app';
-const API_BASE_URL = CLOUD_RUN_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
-console.log("[API] Production Base URL:", API_BASE_URL);
+console.log("[API] API Base URL:", API_BASE_URL);
 
 const resolveMediaUrl = (url: string) => {
   if (!url) return url;
@@ -1064,6 +1064,17 @@ export default function App() {
 
       const data = JSON.parse(responseText);
       mediaUrl = data.mediaUrl;
+      
+      // Fallback: Upload from frontend if backend failed to upload (e.g., missing credentials locally)
+      if (!mediaUrl && storage) {
+        setUploadStatus('Saving media to cloud...');
+        const fileExt = file.name.split('.').pop() || 'mp4';
+        const fileName = `analyses/${user.uid}/${Date.now()}_client.${fileExt}`;
+        const storageRef = ref(storage, fileName);
+        const uploadTask = await uploadBytesResumable(storageRef, file);
+        mediaUrl = await getDownloadURL(uploadTask.ref);
+      }
+
       result = data.geminiResult;
       setRoutingInfo({
         modelToUse: data.modelToUse,
@@ -2337,14 +2348,14 @@ export default function App() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-8">
                   {/* Non-Pet Warning */}
-                  {selectedAnalysis.result?.isDogOrCat === false && (
+                  {selectedAnalysis.result?.isValidPet === false && (
                     <div className="bg-red-500/10 border border-red-500/50 p-8 rounded-3xl text-center space-y-4">
                       <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto">
                         <AlertCircle className="w-8 h-8 text-red-500" />
                       </div>
                       <h3 className="text-xl font-black font-serif text-red-500">Analysis Limited</h3>
                       <p className="text-zinc-400 leading-relaxed">
-                        {selectedAnalysis.result?.userQuestionAnswer || "Our AI behaviorist only specializes in canine (dog) and feline (cat) behavior. This media does not appear to contain a dog or a cat."}
+                        {selectedAnalysis.result?.userQuestionAnswer || "Our AI behaviorist only specializes in pet behavior. This media does not appear to contain a pet."}
                       </p>
                       <button 
                         onClick={() => setSelectedAnalysis(null)}
@@ -2379,7 +2390,7 @@ export default function App() {
                   )}
 
                   {/* User Question & Answer */}
-                  {selectedAnalysis.result?.isDogOrCat !== false && selectedAnalysis.userQuestion && (
+                  {selectedAnalysis.result?.isValidPet !== false && selectedAnalysis.userQuestion && (
                     <div className="bg-gold-500 p-8 rounded-3xl text-white shadow-[0_10px_40px_rgba(0,0,0,0.6)] shadow-gold-500/20 relative overflow-hidden">
                       <div className="absolute top-0 right-0 p-4 opacity-10">
                         <MessageSquare className="w-24 h-24" />
@@ -2396,7 +2407,7 @@ export default function App() {
                   )}
 
                   {/* Observations */}
-                  {selectedAnalysis.result?.isDogOrCat !== false && (
+                  {selectedAnalysis.result?.isValidPet !== false && (
                     <div className="bg-zinc-900 p-8 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
                       <h3 className="text-xl font-black font-serif text-gold-400 mb-6 flex items-center gap-3">
                         <Activity className="w-6 h-6 text-gold-400" />
@@ -2414,7 +2425,7 @@ export default function App() {
                   )}
 
                   {/* Action Steps */}
-                  {selectedAnalysis.result?.isDogOrCat !== false && (
+                  {selectedAnalysis.result?.isValidPet !== false && (
                     <div className="bg-zinc-900 p-8 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
                       <h3 className="text-xl font-black font-serif text-gold-400 mb-6 flex items-center gap-3">
                         <CheckCircle2 className="w-6 h-6 text-emerald-600" />
@@ -2434,14 +2445,14 @@ export default function App() {
                   )}
 
                   {/* Training Challenge */}
-                  {selectedAnalysis.result?.isDogOrCat !== false && selectedAnalysis.result?.trainingChallenge && (
+                  {selectedAnalysis.result?.isValidPet !== false && selectedAnalysis.result?.trainingChallenge && (
                     <TrainingChallengeCard challenge={selectedAnalysis.result.trainingChallenge} />
                   )}
                 </div>
 
                 <div className="space-y-8">
                   {/* Emotional State Card */}
-                  {selectedAnalysis.result?.isDogOrCat !== false && (
+                  {selectedAnalysis.result?.isValidPet !== false && (
                     <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-3xl text-white shadow-[0_10px_40px_rgba(0,0,0,0.6)] shadow-gold-500/20">
                       <h3 className="text-xs font-bold uppercase tracking-widest opacity-70 mb-2">Primary Emotional State</h3>
                       <p className="text-4xl font-black font-serif tracking-tight">

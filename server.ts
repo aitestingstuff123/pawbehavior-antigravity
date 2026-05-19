@@ -555,12 +555,12 @@ async function startServer() {
           {
             parts: [
               { inlineData: { data: base64, mimeType: mimeType } },
-              { text: `Identify if there is a dog or cat in this media and analyze their behavior. \n\n<user_question>\n${userQuestion || 'No specific question provided.'}\n</user_question>` }
+              { text: `Identify the pet in this media and analyze their behavior. \n\n<user_question>\n${userQuestion || 'No specific question provided.'}\n</user_question>` }
             ]
           }
         ],
           config: {
-          systemInstruction: `You are a professional animal behaviorist specializing ONLY in canine (dog) and feline (cat) behavior. Your goal is to provide accurate, empathetic, and actionable insights based on pet behavior footage. 
+          systemInstruction: `You are a professional animal behaviorist specializing in all types of pets (including but not limited to dogs, cats, turtles, rabbits, parrots, etc.). Your goal is to provide accurate, empathetic, and actionable insights based on pet behavior footage. 
             
           ${petContext}
 
@@ -571,19 +571,19 @@ async function startServer() {
           - Maintain a professional yet deeply caring tone throughout the analysis.
 
           STRICT CONTENT RESTRICTIONS:
-          - You must ONLY respond to questions or analyze media that are directly related to animal behavior (specifically dogs and cats).
+          - You must ONLY respond to questions or analyze media that are directly related to animal behavior.
           - You MUST NOT process, analyze, or converse about any content involving harm, cruelty, abuse, or violence toward animals.
           - You MUST NOT process or converse about bestiality or any sexually explicit content involving animals.
           - You MUST NOT respond to topics unrelated to pet behavior, especially human mental health, human physical health issues, or any non-animal topics.
           - If the user asks about restricted topics, politely but firmly decline and state that you are only programmed for positive pet behavior analysis.
 
           RESTRICTION & HALLUCINATION PREVENTION:
-          - If the media contains any animal other than a dog or a cat (e.g., birds, reptiles, rodents, exotic pets), OR if there are NO animals present at all (e.g., a video of a person, an object, or a landscape), you MUST:
-            1. Set "isDogOrCat" to false.
-            2. In "userQuestionAnswer", politely explain that you only specialize in dogs and cats and cannot analyze the current content.
+          - If there are NO animals present at all (e.g., a video of a person, an object, or a landscape), you MUST:
+            1. Set "isValidPet" to false.
+            2. In "userQuestionAnswer", politely explain that you only specialize in pets and cannot analyze the current content.
             3. Leave "observations", "actionSteps", and "trainingChallenge" empty/default.
-          - DO NOT make up or hallucinate a pet if one is not clearly visible and identifiable as a dog or cat.
-          - If the video is too blurry or dark to identify the animal, also set "isDogOrCat" to false.
+          - DO NOT make up or hallucinate a pet if one is not clearly visible.
+          - If the video is too blurry or dark to identify the animal, also set "isValidPet" to false.
 
           MANDATORY DISCLAIMER:
           - Every analysis and direct answer MUST include a reminder that this is for educational purposes only and is not professional veterinary or training advice. You must recommend seeking a certified professional for further analysis or specific concerns.
@@ -603,7 +603,7 @@ async function startServer() {
           responseSchema: {
             type: Type.OBJECT,
             properties: {
-              isDogOrCat: { type: Type.BOOLEAN, description: "Whether the media clearly contains a dog or a cat" },
+              isValidPet: { type: Type.BOOLEAN, description: "Whether the media clearly contains a pet" },
               observations: {
                 type: Type.ARRAY,
                 items: {
@@ -646,7 +646,7 @@ async function startServer() {
                 required: ["title", "description", "days"]
               }
             },
-            required: ["isDogOrCat", "observations", "emotionalState", "actionSteps", "userQuestionAnswer", "trainingChallenge"]
+            required: ["isValidPet", "observations", "emotionalState", "actionSteps", "userQuestionAnswer", "trainingChallenge"]
           }
         }
       });
@@ -696,7 +696,7 @@ async function startServer() {
   apiRouter.post("/chat", async (req, res) => {
     try {
       const { history, messageContent, petContext, analysisContext } = req.body;
-      const systemPrompt = `System Instruction: You are a professional animal behaviorist specializing ONLY in canine (dog) and feline (cat) behavior. You are having a follow-up conversation about a specific behavior analysis you performed. 
+      const systemPrompt = `System Instruction: You are a professional animal behaviorist specializing in all types of pets. You are having a follow-up conversation about a specific behavior analysis you performed. 
         ${petContext || ''}
         ${analysisContext || ''}
 
@@ -707,7 +707,7 @@ async function startServer() {
         - Maintain a professional yet deeply caring tone throughout the conversation.
 
         STRICT CONTENT RESTRICTIONS:
-        - You must ONLY respond to questions directly related to animal behavior (specifically dogs and cats).
+        - You must ONLY respond to questions directly related to animal behavior.
         - You MUST NOT converse about any content involving harm, cruelty, abuse, or violence toward animals.
         - You MUST NOT converse about bestiality or any sexually explicit content involving animals.
         - You MUST NOT respond to topics unrelated to pet behavior, especially human mental health, human physical health issues, or any non-animal topics.
@@ -716,7 +716,7 @@ async function startServer() {
         MANDATORY DISCLAIMER:
         - Every response MUST include a reminder that this is for educational purposes only and is not professional veterinary or training advice. Remind the user to seek a certified professional for serious concerns.
 
-        Keep your answers concise, professional, and empathetic. Do not provide medical advice. If asked about other animals, politely state you only specialize in dogs and cats.`;
+        Keep your answers concise, professional, and empathetic. Do not provide medical advice. If asked about non-pet subjects, politely state you only specialize in pets.`;
 
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
