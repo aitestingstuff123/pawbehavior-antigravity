@@ -53,20 +53,25 @@ import { useAuth } from './lib/AuthContext';
 // API URL Strategy (commercial app):
 //
 //   Native - dev build  (vite build --mode development):
-//     import.meta.env.DEV = true  →  10.0.2.2:3000  (your PC via emulator alias)
+//     import.meta.env.DEV = true  →  10.0.2.2:8080  (your PC via emulator alias)
 //
 //   Native - release build  (vite build):
 //     import.meta.env.DEV = false  →  Cloud Run  (production backend, has API key)
 //
 //   Web browser preview  (npm run dev):
-//     VITE_API_BASE_URL from .env  →  localhost:3000
+//     VITE_API_BASE_URL from .env  →  localhost:8080
 //
 //   The Gemini API key is NEVER in the bundle — it lives only on the server.
 // ─────────────────────────────────────────────────────────────────────────────
 const CLOUD_RUN_URL = 'https://ais-dev-ffaggajiuq-nw.a.run.app';
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
-console.log("[API] API Base URL:", API_BASE_URL);
+// Determine API base URL based on platform and build mode
+const isNative = typeof window !== 'undefined' && (window as any).Capacitor?.isNativePlatform?.();
+const API_BASE_URL = isNative
+  ? (import.meta.env.DEV ? 'http://10.0.2.2:8080' : CLOUD_RUN_URL)
+  : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080');
+
+console.log("[API] Base URL:", API_BASE_URL, "| Native:", isNative, "| DEV:", import.meta.env.DEV);
 
 const resolveMediaUrl = (url: string) => {
   if (!url) return url;
