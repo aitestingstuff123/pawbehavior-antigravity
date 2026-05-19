@@ -457,7 +457,7 @@ import { Capacitor } from '@capacitor/core';
 import { Purchases } from '@revenuecat/purchases-capacitor';
 import { Share } from '@capacitor/share';
 import { Camera as CapCamera } from '@capacitor/camera';
-import { useLanguage } from './lib/i18n';
+import { useLanguage } from './lib/i18n.tsx';
 
 export default function App() {
   const { user, userData, loading, isAdmin, setUserData } = useAuth();
