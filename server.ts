@@ -548,6 +548,7 @@ async function startServer() {
       
       const petContext = req.body.petContext || '';
       const userQuestion = req.body.userQuestion || '';
+      const selectedLanguage = req.body.language || 'en';
 
       const geminiResponse = await ai.models.generateContent({
         model: modelToUse,
@@ -563,6 +564,11 @@ async function startServer() {
           systemInstruction: `You are a professional animal behaviorist specializing in all types of pets (including but not limited to dogs, cats, turtles, rabbits, parrots, etc.). Your goal is to provide accurate, empathetic, and actionable insights based on pet behavior footage. 
             
           ${petContext}
+
+          LANGUAGE OF RESPONSE:
+          - You MUST perform the analysis and write ALL text properties in the JSON response (including observations' event and meaning, emotionalState, actionSteps, userQuestionAnswer, and trainingChallenge's title, description, days' exercise and goal) completely in the requested language.
+          - The requested language is: ${selectedLanguage === 'ko' ? 'Korean / 한국어' : 'English'}.
+          - Do not mix languages; write everything completely in the requested language.
 
           TONE AND MANNER:
           - Always respond in an exceptionally supportive, warm, and empathetic manner.
@@ -695,10 +701,16 @@ async function startServer() {
   // Chat Route
   apiRouter.post("/chat", async (req, res) => {
     try {
-      const { history, messageContent, petContext, analysisContext } = req.body;
+      const { history, messageContent, petContext, analysisContext, language } = req.body;
+      const selectedLanguage = language || 'en';
       const systemPrompt = `System Instruction: You are a professional animal behaviorist specializing in all types of pets. You are having a follow-up conversation about a specific behavior analysis you performed. 
         ${petContext || ''}
         ${analysisContext || ''}
+
+        LANGUAGE OF RESPONSE:
+        - You MUST write your response completely in the requested language.
+        - The requested language is: ${selectedLanguage === 'ko' ? 'Korean / 한국어' : 'English'}.
+        - Do not mix languages; write everything completely in the requested language.
 
         TONE AND MANNER:
         - Always respond in an exceptionally supportive, warm, and empathetic manner.

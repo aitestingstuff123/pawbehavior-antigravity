@@ -1040,6 +1040,7 @@ export default function App() {
     formData.append('media', file);
     formData.append('userId', user.uid);
     formData.append('petContext', petContext);
+    formData.append('language', language);
     if (userQuestion.trim()) {
       formData.append('userQuestion', userQuestion.trim());
     }
@@ -1242,7 +1243,8 @@ export default function App() {
           history,
           messageContent,
           petContext,
-          analysisContext
+          analysisContext,
+          language
         })
       });
 
