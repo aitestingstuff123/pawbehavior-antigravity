@@ -4,6 +4,7 @@ import App from './App.tsx';
 import './index.css';
 
 import { AuthProvider } from './lib/AuthContext';
+import { LanguageProvider } from './lib/i18n';
 import { defineCustomElements } from '@ionic/pwa-elements/loader';
 import { AdMob } from '@capacitor-community/admob';
 import { Capacitor } from '@capacitor/core';
@@ -38,7 +39,9 @@ if (Capacitor.isNativePlatform()) {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
-      <App />
+      <LanguageProvider>
+        <App />
+      </LanguageProvider>
     </AuthProvider>
   </StrictMode>,
 );

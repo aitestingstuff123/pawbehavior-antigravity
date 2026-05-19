@@ -457,9 +457,11 @@ import { Capacitor } from '@capacitor/core';
 import { Purchases } from '@revenuecat/purchases-capacitor';
 import { Share } from '@capacitor/share';
 import { Camera as CapCamera } from '@capacitor/camera';
+import { useLanguage } from './lib/i18n';
 
 export default function App() {
   const { user, userData, loading, isAdmin, setUserData } = useAuth();
+  const { t, language, setLanguage } = useLanguage();
   const [activeTab, setActiveTab] = useState<'dashboard' | 'upload' | 'history' | 'pets' | 'settings' | 'reminders' | 'challenges'>('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -1935,9 +1937,9 @@ export default function App() {
           </div>
 
           <div className="space-y-2">
-            <h1 className="text-4xl font-black font-serif tracking-tight text-gold-400">Pawsitive Behavior</h1>
-            <p className="text-[10px] tracking-[0.3em] uppercase text-gold-600 mt-2 font-bold">Pet Analysis</p>
-            <p className="text-zinc-400 text-lg">Professional AI behavior analysis for your beloved pets.</p>
+            <h1 className="text-4xl font-black font-serif tracking-tight text-gold-400">{t('appName')}</h1>
+            <p className="text-[10px] tracking-[0.3em] uppercase text-gold-600 mt-2 font-bold">{t('appName').toLowerCase().includes('pawsitive') ? 'Pet Analysis' : '반려동물 행동 분석'}</p>
+            <p className="text-zinc-400 text-lg">{t('signInGoogleDesc')}</p>
           </div>
 
           {authMode === 'google' ? (
@@ -1952,7 +1954,7 @@ export default function App() {
                 ) : (
                   <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/layout/google.svg" className="w-5 h-5" alt="Google" />
                 )}
-                {isLoggingIn ? 'Signing in...' : 'Sign in with Google'}
+                {isLoggingIn ? t('signingIn') : t('signInWithGoogle')}
               </button>
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
@@ -2229,43 +2231,43 @@ export default function App() {
             active={activeTab === 'dashboard'}
             onClick={() => { setActiveTab('dashboard'); setSelectedAnalysis(null); setIsSidebarOpen(false); }}
             icon={<Activity className="w-5 h-5" />}
-            label="Dashboard"
+            label={t('dashboard')}
           />
           <NavItem
             active={activeTab === 'upload'}
             onClick={() => { setActiveTab('upload'); setSelectedAnalysis(null); setIsSidebarOpen(false); }}
             icon={<Upload className="w-5 h-5" />}
-            label="New Analysis"
+            label={t('upload')}
           />
           <NavItem
             active={activeTab === 'history'}
             onClick={() => { setActiveTab('history'); setSelectedAnalysis(null); setIsSidebarOpen(false); }}
             icon={<History className="w-5 h-5" />}
-            label="History"
+            label={t('history')}
           />
           <NavItem
             active={activeTab === 'pets'}
             onClick={() => { setActiveTab('pets'); setSelectedAnalysis(null); setIsSidebarOpen(false); }}
             icon={<Dog className="w-5 h-5" />}
-            label="My Pets"
+            label={t('pets')}
           />
           <NavItem
             active={activeTab === 'reminders'}
             onClick={() => { setActiveTab('reminders'); setSelectedAnalysis(null); setIsSidebarOpen(false); }}
             icon={<Bell className="w-5 h-5" />}
-            label="Reminders"
+            label={t('reminders')}
           />
           <NavItem
             active={activeTab === 'challenges'}
             onClick={() => { setActiveTab('challenges'); setSelectedAnalysis(null); setIsSidebarOpen(false); }}
             icon={<Flame className="w-5 h-5" />}
-            label="Training Challenges"
+            label={t('challenges')}
           />
           <NavItem
             active={activeTab === 'settings'}
             onClick={() => { setActiveTab('settings'); setSelectedAnalysis(null); setIsSidebarOpen(false); }}
             icon={<Settings className="w-5 h-5" />}
-            label="Settings"
+            label={t('settings')}
           />
         </nav>
 
@@ -2288,7 +2290,7 @@ export default function App() {
             className="w-full flex items-center gap-2 text-zinc-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-colors text-sm font-medium"
           >
             <LogOut className="w-4 h-4" />
-            Sign Out
+            {t('logout')}
           </button>
         </div>
       </aside>
@@ -2298,16 +2300,16 @@ export default function App() {
         <header className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <h2 className="text-2xl lg:text-3xl font-black font-serif text-gold-400">
-              {selectedAnalysis ? 'Analysis Report' :
-                activeTab === 'dashboard' ? 'Dashboard' :
-                  activeTab === 'upload' ? 'New Analysis' :
-                    activeTab === 'settings' ? 'Settings' :
-                      activeTab === 'reminders' ? 'Reminders' :
-                        activeTab === 'challenges' ? 'Training Challenges' :
-                          'Report History'}
+              {selectedAnalysis ? t('analysisReport') :
+                activeTab === 'dashboard' ? t('dashboard') :
+                  activeTab === 'upload' ? t('upload') :
+                    activeTab === 'settings' ? t('settings') :
+                      activeTab === 'reminders' ? t('reminders') :
+                        activeTab === 'challenges' ? t('challenges') :
+                          t('history')}
             </h2>
             <p className="text-zinc-400 mt-1 text-sm lg:text-base">
-              {selectedAnalysis ? `Report for ${selectedAnalysis.petName || 'My Pet'}` : `Welcome back, ${(user.displayName || 'User').split(' ')[0]}`}
+              {selectedAnalysis ? (language === 'ko' ? `${selectedAnalysis.petName || '반려동물'} 분석 보고서` : `Report for ${selectedAnalysis.petName || 'My Pet'}`) : t('welcomeBack', { name: (user.displayName || 'User').split(' ')[0] })}
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -2317,7 +2319,7 @@ export default function App() {
                 className="w-full sm:w-auto bg-gold-500 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-gold-600 transition-all shadow-lg shadow-gold-500/20 flex items-center justify-center gap-2"
               >
                 <Upload className="w-4 h-4" />
-                New Analysis
+                {t('upload')}
               </button>
             )}
             {selectedAnalysis && (
@@ -2327,14 +2329,14 @@ export default function App() {
                   className="flex-1 sm:flex-none bg-zinc-900 text-zinc-400 border border-zinc-800 px-4 py-2.5 rounded-xl font-medium hover:bg-zinc-950 transition-all flex items-center justify-center gap-2"
                 >
                   <Share2 className="w-4 h-4" />
-                  Share
+                  {language === 'ko' ? '공유하기' : 'Share'}
                 </button>
                 <button
                   onClick={() => setSelectedAnalysis(null)}
                   className="flex-1 sm:flex-none text-zinc-400 hover:text-zinc-100 font-medium flex items-center justify-center gap-2 px-4 py-2.5"
                 >
                   <ArrowLeft className="w-4 h-4" />
-                  Back
+                  {language === 'ko' ? '뒤로가기' : 'Back'}
                 </button>
               </div>
             )}
@@ -3483,16 +3485,16 @@ export default function App() {
               className="max-w-2xl mx-auto space-y-8"
             >
               <div className="bg-zinc-900 p-8 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
-                <h3 className="text-2xl font-black font-serif text-gold-400 mb-6">Account Settings</h3>
+                <h3 className="text-2xl font-black font-serif text-gold-400 mb-6">{t('accountSettings')}</h3>
 
                 {userData?.subscriptionTier === 'pro' && (
                   <div className="mb-8 p-6 bg-gold-500/10 rounded-2xl border border-gold-500/20">
                     <h4 className="text-lg font-bold text-indigo-900 mb-2 flex items-center gap-2">
                       <Zap className="w-5 h-5" />
-                      Pro Membership Active
+                      {t('proActiveTitle')}
                     </h4>
                     <p className="text-sm text-gold-300">
-                      You have unlimited access to all AI Behaviorist features.
+                      {t('proActiveDesc')}
                     </p>
                   </div>
                 )}
@@ -3500,7 +3502,7 @@ export default function App() {
                 <div className="space-y-8">
                   {/* Profile Section */}
                   <section className="space-y-4">
-                    <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Profile Information</h4>
+                    <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">{t('profileInfo')}</h4>
 
                     <div className="flex items-center gap-6 mb-6">
                       <div className="relative group">
@@ -3532,29 +3534,29 @@ export default function App() {
                         </label>
                       </div>
                       <div>
-                        <p className="font-black font-serif text-gold-400">Profile Picture</p>
-                        <p className="text-xs text-zinc-400">Click the image to upload a new one.</p>
+                        <p className="font-black font-serif text-gold-400">{t('profilePic')}</p>
+                        <p className="text-xs text-zinc-400">{t('profilePicDesc')}</p>
                       </div>
                     </div>
 
                     <form onSubmit={handleUpdateProfile} className="space-y-4">
                       <div className="space-y-1">
-                        <label className="text-xs font-bold text-zinc-400 uppercase">Display Name</label>
+                        <label className="text-xs font-bold text-zinc-400 uppercase">{t('displayName')}</label>
                         <input
                           value={settingsName}
                           onChange={(e) => setSettingsName(e.target.value)}
-                          className="w-full px-4 py-3 rounded-xl border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none transition-all"
-                          placeholder="Your full name"
+                          className="w-full px-4 py-3 rounded-xl border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none transition-all text-zinc-100 bg-zinc-900"
+                          placeholder={language === 'ko' ? '사용자 이름 입력' : 'Your full name'}
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-xs font-bold text-zinc-400 uppercase">Email Address</label>
+                        <label className="text-xs font-bold text-zinc-400 uppercase">{t('emailAddress')}</label>
                         <input
                           disabled
                           value={user?.email || ''}
                           className="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-500 outline-none cursor-not-allowed"
                         />
-                        <p className="text-[10px] text-zinc-500 italic">Email cannot be changed currently.</p>
+                        <p className="text-[10px] text-zinc-500 italic">{t('emailCantBeChanged')}</p>
                       </div>
                       <button
                         type="submit"
@@ -3562,9 +3564,27 @@ export default function App() {
                         className="px-6 py-3 bg-gold-500 text-white font-bold rounded-xl hover:bg-gold-600 transition-all disabled:opacity-50 flex items-center gap-2"
                       >
                         {isUpdatingProfile && <Loader2 className="w-4 h-4 animate-spin" />}
-                        Update Profile
+                        {t('updateProfile')}
                       </button>
                     </form>
+                  </section>
+
+                  <hr className="border-zinc-800" />
+
+                  {/* Language Section */}
+                  <section className="space-y-4">
+                    <h4 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">{t('languageSettings')}</h4>
+                    <div className="p-6 rounded-3xl border border-zinc-800 bg-zinc-900 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
+                      <label className="block text-xs font-bold text-zinc-400 uppercase mb-2">{t('selectLanguage')}</label>
+                      <select
+                        value={language}
+                        onChange={(e) => setLanguage(e.target.value as any)}
+                        className="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-100 focus:ring-2 focus:ring-gold-500 outline-none transition-all cursor-pointer font-medium"
+                      >
+                        <option value="en">English (US)</option>
+                        <option value="ko">한국어 (Korean)</option>
+                      </select>
+                    </div>
                   </section>
 
                   <hr className="border-zinc-800" />
