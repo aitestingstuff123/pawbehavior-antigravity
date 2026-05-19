@@ -38,6 +38,18 @@ export const translations: TranslationDictionary = {
   activeChallenges: { en: 'Active Challenges', ko: '진행 중인 챌린지' },
   proMemberSince: { en: 'Pro Member Since', ko: '프로 멤버 가입일' },
   freeMemberLimit: { en: 'Free analyses left this month: {left}', ko: '이번 달 남은 무료 분석: {left}회' },
+  currentStreak: { en: 'Current Streak', ko: '현재 스트릭' },
+  totalSessions: { en: 'Total Sessions', ko: '총 세션 수' },
+  trainingConsistency: { en: 'Training Consistency', ko: '훈련 일관성' },
+  cumulativeSessions: { en: 'Cumulative training sessions over time', ko: '시간에 따른 누적 훈련 세션' },
+  sessions: { en: 'Sessions', ko: '세션' },
+  recentAnalyses: { en: 'Recent Analyses', ko: '최근 분석 기록' },
+  viewAll: { en: 'View All', ko: '전체 보기' },
+  upcomingCare: { en: 'Upcoming Care', ko: '예정된 일정' },
+  allCaughtUp: { en: 'All caught up!', ko: '모두 완료했습니다!' },
+  noUpcomingTasks: { en: 'No upcoming tasks for today.', ko: '오늘 예정된 일정이 없습니다.' },
+  trainerStatus: { en: 'Trainer Status', ko: '트레이너 등급' },
+  trainerStatusDesc: { en: 'Complete 30 sessions and unlock your pet\'s potential!', ko: '30세션을 완료하여 반려동물의 잠재력을 일깨워주세요!' },
 
   // Upload Tab
   analyzeBehavior: { en: 'Analyze Behavior', ko: '행동 분석하기' },

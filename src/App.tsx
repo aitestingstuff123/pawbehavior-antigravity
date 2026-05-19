@@ -83,6 +83,7 @@ const resolveMediaUrl = (url: string) => {
 };
 
 const TrainingChallengeCard = ({ challenge, onCompleteDay }: { challenge: any, onCompleteDay?: (day: number) => void }) => {
+  const { t, language } = useLanguage();
   if (!challenge) return null;
 
   return (
@@ -97,7 +98,7 @@ const TrainingChallengeCard = ({ challenge, onCompleteDay }: { challenge: any, o
         </div>
         <div>
           <h3 className="text-lg lg:text-xl font-black font-serif text-gold-400">{challenge.title}</h3>
-          <p className="text-xs lg:text-sm text-zinc-400">7-Day Training Challenge</p>
+          <p className="text-xs lg:text-sm text-zinc-400">{t('trainingChallengeCardTitle')}</p>
         </div>
       </div>
 
@@ -119,7 +120,7 @@ const TrainingChallengeCard = ({ challenge, onCompleteDay }: { challenge: any, o
             >
               <div className="flex items-center justify-between mb-3">
                 <span className={`text-[10px] lg:text-xs font-bold uppercase tracking-widest ${isCompleted ? 'text-emerald-600' : 'text-zinc-500'}`}>
-                  Day {day.day}
+                  {t('dayCount', { day: day.day })}
                 </span>
                 {isCompleted && (
                   <motion.div
@@ -135,7 +136,7 @@ const TrainingChallengeCard = ({ challenge, onCompleteDay }: { challenge: any, o
                 {day.exercise}
               </p>
               <p className={`text-xs lg:text-sm ${isCompleted ? 'text-emerald-700' : 'text-zinc-400'}`}>
-                <span className="font-semibold">Goal:</span> {day.goal}
+                <span className="font-semibold">{language === 'ko' ? '목표:' : 'Goal:'}</span> {day.goal}
               </p>
 
               {!isCompleted && onCompleteDay && (
@@ -143,7 +144,7 @@ const TrainingChallengeCard = ({ challenge, onCompleteDay }: { challenge: any, o
                   onClick={() => onCompleteDay(day.day)}
                   className="mt-4 w-full py-2 bg-zinc-900 border border-zinc-800 text-zinc-400 rounded-xl text-sm font-bold hover:bg-zinc-950 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.4)] active:scale-95"
                 >
-                  Mark as Completed
+                  {language === 'ko' ? '완료로 표시' : 'Mark as Completed'}
                 </button>
               )}
             </motion.div>
@@ -373,6 +374,7 @@ const ConsistencyChart = ({ activityLog }: { activityLog: any[] }) => {
 };
 
 const StreakHeader = ({ streak, activityLog }: { streak: number, activityLog: any[] }) => {
+  const { t } = useLanguage();
   const today = new Date().toDateString();
   const hasUploadedToday = activityLog.some(ts => new Date(ts.toMillis()).toDateString() === today);
 
@@ -406,17 +408,17 @@ const StreakHeader = ({ streak, activityLog }: { streak: number, activityLog: an
       </div>
       <div className="text-center sm:text-left">
         <div className="flex flex-col sm:flex-row items-center gap-2">
-          <h2 className="text-2xl lg:text-3xl font-black font-serif text-zinc-100">🔥 {streak} Day Streak</h2>
+          <h2 className="text-2xl lg:text-3xl font-black font-serif text-zinc-100">🔥 {t('dayStreak', { streak })}</h2>
           {hasUploadedToday && (
             <span className="bg-gold-500/20 text-gold-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
-              Daily Goal Met
+              {t('dailyGoalMet')}
             </span>
           )}
         </div>
         <p className="text-sm text-zinc-400 mt-1">
           {hasUploadedToday
-            ? "Great job! You've completed your training for today."
-            : "Keep the momentum going! Upload a video to maintain your streak."}
+            ? t('streakActiveDesc')
+            : t('streakInactiveDesc')}
         </p>
       </div>
     </div>
@@ -2360,15 +2362,15 @@ export default function App() {
                       <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto">
                         <AlertCircle className="w-8 h-8 text-red-500" />
                       </div>
-                      <h3 className="text-xl font-black font-serif text-red-500">Analysis Limited</h3>
+                      <h3 className="text-xl font-black font-serif text-red-500">{t('nonPetWarningTitle')}</h3>
                       <p className="text-zinc-400 leading-relaxed">
-                        {selectedAnalysis.result?.userQuestionAnswer || "Our AI behaviorist only specializes in pet behavior. This media does not appear to contain a pet."}
+                        {selectedAnalysis.result?.userQuestionAnswer || t('nonPetWarningDesc')}
                       </p>
                       <button 
                         onClick={() => setSelectedAnalysis(null)}
                         className="bg-zinc-800 text-zinc-100 px-6 py-2 rounded-xl font-bold hover:bg-zinc-700 transition-all"
                       >
-                        Try Another Video
+                        {t('tryAnotherVideo')}
                       </button>
                     </div>
                   )}
@@ -2402,12 +2404,12 @@ export default function App() {
                       <div className="absolute top-0 right-0 p-4 opacity-10">
                         <MessageSquare className="w-24 h-24" />
                       </div>
-                      <h3 className="text-sm font-bold uppercase tracking-wider opacity-80 mb-2">Your Initial Question</h3>
+                      <h3 className="text-sm font-bold uppercase tracking-wider opacity-80 mb-2">{language === 'ko' ? '초기 질문' : 'Your Initial Question'}</h3>
                       <p className="text-2xl font-medium mb-8 leading-tight">"{selectedAnalysis.userQuestion}"</p>
                       <div className="bg-zinc-900/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
-                        <h4 className="text-xs font-bold uppercase tracking-wider opacity-80 mb-3">AI Behaviorist Answer</h4>
+                        <h4 className="text-xs font-bold uppercase tracking-wider opacity-80 mb-3">{language === 'ko' ? 'AI 행동분석가의 답변' : 'AI Behaviorist Answer'}</h4>
                         <p className="text-white/90 leading-relaxed text-lg">
-                          {selectedAnalysis.result?.userQuestionAnswer || "No specific answer provided."}
+                          {selectedAnalysis.result?.userQuestionAnswer || (language === 'ko' ? '제공된 답변이 없습니다.' : 'No specific answer provided.')}
                         </p>
                       </div>
                     </div>
@@ -2418,7 +2420,7 @@ export default function App() {
                     <div className="bg-zinc-900 p-8 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
                       <h3 className="text-xl font-black font-serif text-gold-400 mb-6 flex items-center gap-3">
                         <Activity className="w-6 h-6 text-gold-400" />
-                        Detailed Observations
+                        {t('detailedObservations')}
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {selectedAnalysis.result?.observations?.map((obs: any, i: number) => (
@@ -2426,7 +2428,7 @@ export default function App() {
                             <p className="font-bold text-gold-400 text-xs uppercase tracking-widest mb-2">{obs.event}</p>
                             <p className="text-zinc-300 leading-relaxed">{obs.meaning}</p>
                           </div>
-                        )) || <p className="text-zinc-400 italic">No detailed observations recorded.</p>}
+                        )) || <p className="text-zinc-400 italic">{language === 'ko' ? '기록된 상세 관찰 결과가 없습니다.' : 'No detailed observations recorded.'}</p>}
                       </div>
                     </div>
                   )}
@@ -2436,7 +2438,7 @@ export default function App() {
                     <div className="bg-zinc-900 p-8 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
                       <h3 className="text-xl font-black font-serif text-gold-400 mb-6 flex items-center gap-3">
                         <CheckCircle2 className="w-6 h-6 text-emerald-600" />
-                        Recommended Action Steps
+                        {t('recommendedActionSteps')}
                       </h3>
                       <div className="space-y-4">
                         {selectedAnalysis.result?.actionSteps?.map((step: string, i: number) => (
@@ -2446,7 +2448,7 @@ export default function App() {
                             </div>
                             <span className="text-zinc-300 text-lg leading-relaxed">{step}</span>
                           </div>
-                        )) || <p className="text-zinc-400 italic">No specific action steps provided.</p>}
+                        )) || <p className="text-zinc-400 italic">{language === 'ko' ? '제공된 구체적인 행동 지침이 없습니다.' : 'No specific action steps provided.'}</p>}
                       </div>
                     </div>
                   )}
@@ -2461,9 +2463,9 @@ export default function App() {
                   {/* Emotional State Card */}
                   {selectedAnalysis.result?.isValidPet !== false && (
                     <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-3xl text-white shadow-[0_10px_40px_rgba(0,0,0,0.6)] shadow-gold-500/20">
-                      <h3 className="text-xs font-bold uppercase tracking-widest opacity-70 mb-2">Primary Emotional State</h3>
+                      <h3 className="text-xs font-bold uppercase tracking-widest opacity-70 mb-2">{t('primaryEmotionalState')}</h3>
                       <p className="text-4xl font-black font-serif tracking-tight">
-                        {selectedAnalysis.result?.emotionalState || 'Unknown'}
+                        {selectedAnalysis.result?.emotionalState || (language === 'ko' ? '알 수 없음' : 'Unknown')}
                       </p>
                     </div>
                   )}
@@ -2475,14 +2477,14 @@ export default function App() {
                         <MessageSquare className="w-4 h-4 lg:w-5 lg:h-5 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-black font-serif text-gold-400 text-sm lg:text-base">Follow-up Chat</h3>
-                        <p className="text-[10px] lg:text-xs text-zinc-400">Ask more about this behavior</p>
+                        <h3 className="font-black font-serif text-gold-400 text-sm lg:text-base">{t('chatWithBehaviorist')}</h3>
+                        <p className="text-[10px] lg:text-xs text-zinc-400">{language === 'ko' ? '이 행동에 대해 더 자세히 물어보세요' : 'Ask more about this behavior'}</p>
                       </div>
                     </div>
 
                     <div className="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4 bg-zinc-950/30">
                       <div className="bg-gold-500/10 p-3 lg:p-4 rounded-2xl rounded-tl-none text-xs lg:text-sm text-indigo-900 border border-gold-500/20">
-                        Hello! I'm your AI Behaviorist. Based on the analysis above, do you have any specific questions about your pet's behavior?
+                        {language === 'ko' ? '안녕하세요! AI 행동분석가입니다. 위의 분석 결과를 바탕으로, 반려동물의 행동에 대해 추가로 궁금한 점이 있으신가요?' : 'Hello! I\'m your AI Behaviorist. Based on the analysis above, do you have any specific questions about your pet\'s behavior?'}
                       </div>
                       {chatMessages.map((msg) => (
                         <div
@@ -2510,7 +2512,7 @@ export default function App() {
                       <input
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Type a follow-up question..."
+                        placeholder={t('chatPlaceholder')}
                         className="flex-1 px-3 lg:px-4 py-2 rounded-xl border border-zinc-800 focus:ring-2 focus:ring-gold-500 outline-none text-xs lg:text-sm"
                       />
                       <button
@@ -2530,19 +2532,19 @@ export default function App() {
                         <FileText className="w-5 h-5 lg:w-6 lg:h-6 text-indigo-400" />
                       </div>
                       <div>
-                        <h4 className="text-[10px] lg:text-xs font-bold text-zinc-500 uppercase tracking-widest">Report ID</h4>
+                        <h4 className="text-[10px] lg:text-xs font-bold text-zinc-500 uppercase tracking-widest">{language === 'ko' ? '보고서 ID' : 'Report ID'}</h4>
                         <p className="text-slate-200 font-mono text-[10px] lg:text-xs">{selectedAnalysis.id}</p>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4 lg:gap-6">
                       <div>
-                        <h4 className="text-[10px] lg:text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">Date</h4>
+                        <h4 className="text-[10px] lg:text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">{language === 'ko' ? '날짜' : 'Date'}</h4>
                         <p className="text-slate-200 font-medium text-sm lg:text-base">
                           {new Date(selectedAnalysis.createdAt?.seconds * 1000).toLocaleDateString()}
                         </p>
                       </div>
                       <div>
-                        <h4 className="text-[10px] lg:text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">Media</h4>
+                        <h4 className="text-[10px] lg:text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">{language === 'ko' ? '미디어 유형' : 'Media'}</h4>
                         <p className="text-slate-200 font-medium capitalize text-sm lg:text-base">{selectedAnalysis.mediaType}</p>
                       </div>
                     </div>
@@ -2765,9 +2767,9 @@ export default function App() {
               )}
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <StatCard label="Total Analyses" value={analyses.length} icon={<Activity className="text-gold-400" />} />
-                <StatCard label="Current Streak" value={userStats?.current_streak || 0} icon={<Flame className="text-gold-400" />} />
-                <StatCard label="Total Sessions" value={userStats?.total_sessions || 0} icon={<CheckCircle2 className="text-emerald-600" />} />
+                <StatCard label={t('totalAnalyses')} value={analyses.length} icon={<Activity className="text-gold-400" />} />
+                <StatCard label={t('currentStreak')} value={userStats?.current_streak || 0} icon={<Flame className="text-gold-400" />} />
+                <StatCard label={t('totalSessions')} value={userStats?.total_sessions || 0} icon={<CheckCircle2 className="text-emerald-600" />} />
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -2775,12 +2777,12 @@ export default function App() {
                   <div className="bg-zinc-900 p-8 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
                     <div className="flex justify-between items-center mb-8">
                       <div>
-                        <h3 className="text-xl font-black font-serif text-gold-400">Training Consistency</h3>
-                        <p className="text-sm text-zinc-400">Cumulative training sessions over time</p>
+                        <h3 className="text-xl font-black font-serif text-gold-400">{t('trainingConsistency')}</h3>
+                        <p className="text-sm text-zinc-400">{t('cumulativeSessions')}</p>
                       </div>
                       <div className="flex items-center gap-2 text-xs font-bold text-zinc-500 uppercase tracking-widest">
-                        <div className="w-3 h-3 rounded-full bg-zinc-8000"></div>
-                        Sessions
+                        <div className="w-3 h-3 rounded-full bg-zinc-800"></div>
+                        {t('sessions')}
                       </div>
                     </div>
                     <ConsistencyChart activityLog={userStats?.activity_log || []} />
@@ -2788,8 +2790,8 @@ export default function App() {
 
                   <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
                     <div className="p-6 border-b border-zinc-800 flex justify-between items-center">
-                      <h3 className="font-black font-serif text-gold-400">Recent Analyses</h3>
-                      <button onClick={() => setActiveTab('history')} className="text-gold-400 text-sm font-medium hover:underline">View All</button>
+                      <h3 className="font-black font-serif text-gold-400">{t('recentAnalyses')}</h3>
+                      <button onClick={() => setActiveTab('history')} className="text-gold-400 text-sm font-medium hover:underline">{t('viewAll')}</button>
                     </div>
                     <div className="divide-y divide-slate-50">
                       {analyses.slice(0, 5).map((analysis, idx) => (
@@ -2836,8 +2838,7 @@ export default function App() {
                           <div className="w-16 h-16 bg-zinc-950 rounded-full flex items-center justify-center mx-auto mb-4">
                             <FileText className="w-8 h-8 text-slate-300" />
                           </div>
-                          <p className="text-zinc-400 font-medium">No analyses yet.</p>
-                          <p className="text-xs text-zinc-500 mt-1">Start by uploading a video of your pet!</p>
+                          <p className="text-zinc-400 font-medium">{t('noAnalysesYet')}</p>
                         </motion.div>
                       )}
                     </div>
@@ -2847,8 +2848,8 @@ export default function App() {
                 <div className="space-y-8">
                   <div className="bg-zinc-900 p-8 rounded-3xl border border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
                     <div className="flex justify-between items-center mb-6">
-                      <h3 className="text-lg font-black font-serif text-gold-400">Upcoming Care</h3>
-                      <button onClick={() => setActiveTab('reminders')} className="text-gold-400 text-xs font-bold uppercase tracking-widest hover:underline">View All</button>
+                      <h3 className="text-lg font-black font-serif text-gold-400">{t('upcomingCare')}</h3>
+                      <button onClick={() => setActiveTab('reminders')} className="text-gold-400 text-xs font-bold uppercase tracking-widest hover:underline">{t('viewAll')}</button>
                     </div>
                     <div className="space-y-4">
                       {reminders.filter(r => !r.completed).slice(0, 4).map((reminder, idx) => (
@@ -2880,17 +2881,17 @@ export default function App() {
                           className="py-8 text-center"
                         >
                           <Calendar className="w-8 h-8 text-slate-200 mx-auto mb-2" />
-                          <p className="text-xs text-zinc-500 font-medium">All caught up!</p>
-                          <p className="text-[10px] text-slate-300">No upcoming tasks for today.</p>
+                          <p className="text-xs text-zinc-500 font-medium">{t('allCaughtUp')}</p>
+                          <p className="text-[10px] text-slate-300">{t('noUpcomingTasks')}</p>
                         </motion.div>
                       )}
                     </div>
                   </div>
 
                   <div className="bg-amber-600 p-8 rounded-3xl text-white shadow-[0_10px_40px_rgba(0,0,0,0.6)] shadow-amber-100">
-                    <h3 className="text-lg font-bold mb-2">Trainer Status</h3>
+                    <h3 className="text-lg font-bold mb-2">{t('trainerStatus')}</h3>
                     <p className="text-amber-100 text-sm leading-relaxed">
-                      Complete 30 sessions and unlock your pet's potential!
+                      {t('trainerStatusDesc')}
                     </p>
                   </div>
                 </div>
@@ -3781,8 +3782,8 @@ export default function App() {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <h3 className="text-xl font-black font-serif text-gold-400">{uploadStatus || 'Analyzing Behavior...'}</h3>
-                      <p className="text-zinc-400">Please wait while we process your request.</p>
+                      <h3 className="text-xl font-black font-serif text-gold-400">{uploadStatus ? t(uploadStatus) : t('analyzingBehavior')}</h3>
+                      <p className="text-zinc-400">{language === 'ko' ? '요청을 처리하는 동안 잠시 기다려 주세요.' : 'Please wait while we process your request.'}</p>
                     </div>
                   </div>
                 ) : (
@@ -3791,34 +3792,36 @@ export default function App() {
                       <Upload className="w-10 h-10 text-gold-400" />
                     </div>
                     <div className="space-y-2">
-                      <h3 className="text-xl font-black font-serif text-gold-400">Upload Pet Media</h3>
-                      <p className="text-zinc-400">Select a video or audio clip of your pet's behavior for analysis.</p>
+                      <h3 className="text-xl font-black font-serif text-gold-400">{language === 'ko' ? '반려동물 미디어 업로드' : 'Upload Pet Media'}</h3>
+                      <p className="text-zinc-400">{language === 'ko' ? '분석할 반려동물의 행동 비디오 또는 오디오 클립을 선택해 주세요.' : 'Select a video or audio clip of your pet\'s behavior for analysis.'}</p>
                     </div>
 
                     <div className="max-w-md mx-auto space-y-4">
                       <div className="text-left">
-                        <label className="block text-sm font-semibold text-zinc-300 mb-1">Select Pet</label>
+                        <label className="block text-sm font-semibold text-zinc-300 mb-1">{t('choosePet')}</label>
                         <select
                           value={selectedPetId}
                           onChange={(e) => setSelectedPetId(e.target.value)}
-                          className="w-full px-4 py-3 rounded-xl border border-zinc-800 focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all text-sm"
+                          className="w-full px-4 py-3 rounded-xl border border-zinc-800 focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all text-sm animate-none"
                         >
-                          <option value="">General Analysis (No Pet Profile)</option>
+                          <option value="">{t('noPetSelected')}</option>
                           {pets.map(pet => (
                             <option key={pet.id} value={pet.id}>{pet.name} ({pet.species})</option>
                           ))}
                         </select>
                         {pets.length === 0 && (
-                          <p className="text-xs text-gold-400 mt-1">Tip: Add a pet profile first for more accurate results!</p>
+                          <p className="text-xs text-gold-400 mt-1">{language === 'ko' ? '팁: 보다 정확한 분석을 위해 반려동물 프로필을 먼저 등록해 보세요!' : 'Tip: Add a pet profile first for more accurate results!'}</p>
                         )}
                       </div>
 
                       <div className="text-left">
-                        <label className="block text-sm font-semibold text-zinc-300 mb-1">Specific Question ("e.g., am I training my dog to sit correctly?)</label>
+                        <label className="block text-sm font-semibold text-zinc-300 mb-1">
+                          {language === 'ko' ? '특별히 궁금한 점 ("예: 강아지가 올바르게 앉도록 훈련하고 있나요?")' : 'Specific Question ("e.g., am I training my dog to sit correctly?")'}
+                        </label>
                         <textarea
                           value={userQuestion}
                           onChange={(e) => setUserQuestion(e.target.value)}
-                          placeholder="e.g., Why does my dog bark when the doorbell rings?"
+                          placeholder={language === 'ko' ? '예: 초인종이 울릴 때 강아지가 왜 짖을까요?' : 'e.g., Why does my dog bark when the doorbell rings?'}
                           className="w-full px-4 py-3 rounded-xl border border-zinc-800 focus:ring-2 focus:ring-gold-500 focus:border-transparent transition-all resize-none h-24 text-sm"
                         />
                       </div>
@@ -3842,16 +3845,16 @@ export default function App() {
                           {paywallCooldown ? (
                             <div className="flex items-center gap-2">
                               <Clock className="w-5 h-5" />
-                              <span>Limit Reached</span>
+                              <span>{t('limitReached')}</span>
                             </div>
                           ) : (
-                            'Analyze Behavior'
+                            t('analyzeBehavior')
                           )}
                         </button>
                       </div>
                     </div>
 
-                    <p className="text-xs text-zinc-500">Supported formats: MP4, MOV, MP3, WAV (Max 50MB)</p>
+                    <p className="text-xs text-zinc-500">{language === 'ko' ? '지원되는 형식: MP4, MOV, MP3, WAV (최대 50MB)' : 'Supported formats: MP4, MOV, MP3, WAV (Max 50MB)'}</p>
                   </div>
                 )}
               </div>
